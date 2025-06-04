@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,174 +5,219 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base target="_top">
   <title>Survey Kebugaran - WETools Versi 2</title>
+  
   <!-- Bootstrap 5 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/styleWETools.css">
-  <style>
-  </style>
 </head>
+
 <body>
-  <div class="container py-4">
-    <div class="form-container">
-      <h2 class="text-center mb-4">Form Survey Kebugaran</h2>
-      
-      <!-- Progress Bar -->
-      <div class="progress mb-4">
-        <div id="progressBar" class="progress-bar" role="progressbar" style="width:33%">Step 1 dari 3</div>
-      </div>
-      
-      <!-- Form Pages -->
-      <form id="formDaftar">
-        <!-- Page 1 -->
-        <div class="page active" id="page1">
-          <!-- Konten halaman 1 -->
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="nama" class="form-label">Nama Lengkap</label>
-              <input type="text" class="form-control" id="nama" required>
-            </div>
-            
-            <div class="col-md-6">
-              <label class="form-label">Nomor HP</label>
-              <input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Umur</label>
-              <input type="number" id="mUmur" class="form-control" required min="18" max="80">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Jenis Kelamin</label>
-              <select id="mJenisKelamin" class="form-select" required>
-                <option value="">Pilih Gender</option>
-                <option value="Pria">Pria</option>
-                <option value="Wanita">Wanita</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Berat Badan (kg)</label>
-              <input type="number" id="mBeratBadan" class="form-control" required min="40" max="150">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Tinggi Badan (cm)</label>
-              <input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190">
-            </div>
-
-            <div class="col-md-6">
-            <label class="form-label">Lingkar Perut (gunakan ukuran celana)</label>
-              <select id="mLingkarPerut" class="form-select" required>
-                  <option value="">Pilih Ukuran Celana</option>
-                  <option value="68">26 = Lingkar 68 cm</option>
-                  <option value="70">27 = Lingkar 70 cm</option>
-                  <option value="72">28 = Lingkar 72 cm</option>
-                  <option value="74">29 = Lingkar 74 cm</option>
-                  <option value="76">30 = Lingkar 76 cm</option>
-                  <option value="78">31 = Lingkar 78 cm</option>
-                  <option value="80">32 = Lingkar 80 cm</option>
-                  <option value="82">33 = Lingkar 82 cm</option>
-                  <option value="84">34 = Lingkar 84 cm</option>
-                  <option value="86">35 = Lingkar 86 cm</option>
-                  <option value="88">36 = Lingkar 88 cm</option>
-                  <option value="90">37 = Lingkar 90 cm</option>
-                  <option value="92">38 = Lingkar 92 cm</option>
-                  <option value="94">39 = Lingkar 94 cm</option>
-                  <option value="96">40 = Lingkar 96 cm</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Aktivitas Fisik</label>
-              <select id="mAktivitasFisik" class="form-select" required>
-                <option value="">Pilih aktifitas yang dijalani</option>
-                <option value="Sedikit/Tidak Olahraga">Sedentari : Sedikit/Tidak Olahraga</option>
-                <option value="Olahraga ringan 1-3 hari/minggu">Ringan aktif : Olahraga ringan 1-3 hari/minggu</option>
-                <option value="Olahraga moderat 3-5 hari/minggu">Moderat aktif : Olahraga moderat 3-5 hari/minggu</option>
-                <option value="Olahraga berat 6-7 hari per minggu">Sangat aktif : Olahraga berat 6-7 hari per minggu</option>
-                <option value="Olahraga sangat aktif + Kegiatan fisik">Ekstra aktif : Olahraga sangat aktif + Kegiatan fisik</option>
-              </select>
-            </div>
-          </div>
-
-             <!-- PESAN VALIDASI HALAMAN 1 -->
-             <div id="formMessage1"></div>
-
-             <!-- TOMBOL RESPONSIVE HAMALAMAN 1 -->
-             <div class="d-flex justify-content-between mt-4">
-               <button type="button" class="btn btn-secondary btn-custom w-100 w-md-auto mb-2 mb-md-0" onclick="resetForm()">
-                 <i class="fas fa-rotate-left me-2"></i>Reset
-               </button>
-               
-               <button type="button" class="btn btn-custom w-100 w-md-auto" onclick="validatePage1()">
-                 <i class="fas fa-arrow-right me-2"></i>Berikutnya
-               </button>
-             </div>
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>Form Survey Kebugaran</h4>
         </div>
         
-        <!-- Page 2 -->
-        <div class="page" id="page2">
-          <!-- Pertanyaan Survey -->
-          <div class="question-card card p-3">
-            <label class="form-label fw-bold">7. Minum air putih minimal 2 liter/hari</label>
-            <div class="btn-group" role="group">
-              <input type="radio" class="btn-check" name="mAir" id="mAirYa" value="Ya" required>
-              <label class="btn btn-outline-primary" for="mAirYa">Ya</label>
+        <div class="card-body">
+          <div class="header-image">
+            <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress mb-4">
+            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
+          </div>
+
+          <form id="fitnessForm" class="needs-validation" novalidate>
+            <!-- HEADER FORM -->
+            <header class="bg-primary text-white p-2 mb-3 rounded">
+              <h4 class="text-center mb-0"><strong>SURVEY KEBUGARAN</strong></h4>
+            </header>
+
+            <!-- HALAMAN 1 -->
+            <div class="page active" id="page1">
+              <h5 class="mb-3"><i class="fas fa-user form-icon"></i>Data Pribadi (Wajib Isi)</h5>
+              <p class="text-muted mb-4">Silahkan memasukkan data, dan dapatkan Hasil Evaluasi Kebugaran melalui Whatsapp Anda</p>
               
-              <input type="radio" class="btn-check" name="mAir" id="mAirTidak" value="Tidak">
-              <label class="btn btn-outline-primary" for="mAirTidak">Tidak</label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="mNama" class="form-label">Nama Lengkap</label>
+                  <input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mNomorHp" class="form-label">Nomor HP</label>
+                  <input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mEmail" class="form-label">Email (opsional)</label>
+                  <input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mUmur" class="form-label">Umur</label>
+                  <input type="number" id="mUmur" class="form-control" required min="18" max="80">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mJenisKelamin" class="form-label">Jenis Kelamin</label>
+                  <select id="mJenisKelamin" class="form-select" required>
+                    <option value="">Pilih Gender</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mBeratBadan" class="form-label">Berat Badan (kg)</label>
+                  <input type="number" id="mBeratBadan" class="form-control" required min="40" max="150">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label>
+                  <input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label>
+                  <select id="mLingkarPerut" class="form-select" required>
+                    <option value="">Pilih Ukuran Celana</option>
+                    <option value="68">26 = Lingkar 68 cm</option>
+                    <option value="70">27 = Lingkar 70 cm</option>
+                    <!-- Opsi lainnya -->
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label>
+                  <select id="mAktivitasFisik" class="form-select" required>
+                    <option value="">Pilih aktifitas yang dijalani</option>
+                    <option value="Sedikit/Tidak Olahraga">Sedentari : Sedikit/Tidak Olahraga</option>
+                    <!-- Opsi lainnya -->
+                  </select>
+                </div>
+              </div>
+         
+              <!-- PESAN VALIDASI HALAMAN 1 -->
+              <div id="formMessage1" class="mt-3"></div>
+
+              <!-- TOMBOL RESPONSIVE HAMALAMAN 1 -->
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                <button type="button" class="btn btn-secondary btn-custom" onclick="resetForm()">
+                  <i class="fas fa-rotate-left me-2"></i>Reset
+                </button>
+                
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage1()">
+                  <i class="fas fa-arrow-right me-2"></i>Berikutnya
+                </button>
+              </div>
             </div>
-          </div>
-          
-          <!-- Ulangi untuk pertanyaan lainnya -->
-          
-          <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-secondary" onclick="navigate(2, 1)">Sebelumnya</button>
-            <button type="button" class="btn btn-primary-custom" onclick="validatePage2()">Submit</button>
-          </div>
+
+            <!-- HALAMAN 2 -->
+            <div class="page" id="page2">
+              <h5 class="mb-3"><i class="fas fa-clipboard-check form-icon"></i>Jawab pertanyaan ini sesuai yang anda rasakan (Wajib Isi)</h5>
+
+              <!-- Pertanyaan Grid -->
+              <div class="row g-3">
+                <!-- Pertanyaan 1 -->
+                <div class="col-md-6">
+                  <label class="form-label">1. Sarapan Setiap Pagi</label><br>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanYa" value="Ya" required>
+                    <label class="form-check-label" for="mSarapanYa">Ya</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanTidak" value="Tidak">
+                    <label class="form-check-label" for="mSarapanTidak">Tidak</label>
+                  </div>
+                </div>
+
+                <!-- Pertanyaan 2 -->
+                <div class="col-md-6">
+                  <label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mMenu" id="mMenuYa" value="Ya" required>
+                    <label class="form-check-label" for="mMenuYa">Ya</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="mMenu" id="mMenuTidak" value="Tidak">
+                    <label class="form-check-label" for="mMenuTidak">Tidak</label>
+                  </div>
+                </div>
+
+                <!-- Pertanyaan lainnya dalam format yang sama -->
+                <!-- ... -->
+              </div>
+
+              <!-- PESAN VALIDASI HALAMAN 2 -->
+              <div id="formMessage2" class="mt-3"></div>
+
+              <!-- TOMBOL RESPONSIVE HALAMAN 2 -->
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                <button type="button" class="btn btn-secondary btn-custom" onclick="navigate(2, 1)">
+                  <i class="fas fa-arrow-left me-2"></i>Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage2()">
+                  <i class="fas fa-paper-plane me-2"></i>Submit
+                </button>
+              </div>
+            </div>
+
+            <!-- HALAMAN 3 -->
+            <div class="page" id="page3">
+              <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi Kebugaran</h5>
+
+              <div id="loadingSpinner" class="text-center my-3">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Memproses data...</p>
+              </div>
+
+              <div id="hasilAnalisa" style="display: none;"></div>
+
+              <!-- PESAN VALIDASI HALAMAN 3 -->
+              <div id="formMessage3" class="mt-3"></div>
+
+              <!-- TOMBOL RESPONSIVE HALAMAN 3 -->
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                <button type="button" id="btnReset" class="btn btn-secondary btn-custom" onclick="resetForm()">  
+                  <i class="fas fa-rotate-left me-2"></i>Reset Form
+                </button>
+                <button type="button" id="btnKirim" class="btn btn-primary btn-custom" onclick="kirimData()">
+                  <i class="fas fa-share-square me-2"></i>Kirim
+                </button>
+              </div>
+
+              <div id="pesan-kirim" class="mt-3 text-center fw-semibold"></div>
+            </div>
+          </form>
         </div>
         
-        <!-- Page 3 -->
-        <div class="page" id="page3">
-          <!-- Hasil Survey -->
-          <div id="hasilAnalisa" class="card p-3 mb-4"></div>
-          
-          <div class="d-flex justify-content-between mt-4">
-            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-            <button type="button" class="btn btn-primary-custom" onclick="kirimData()">Kirim</button>
-          </div>
-        </div>
-      </form>
-      
-      <!-- Footer -->
-      <footer class="footer-custom p-3 mt-4 rounded">
-        <div class="row">
-          <div class="col-md-6 text-center text-md-start">
-            <a href="https://bit.ly/BERATIDEALKU" class="text-white text-decoration-none">
-              Copyright © 2025, beratidealku - All rights reserved
+        <!-- Footer -->
+        <div class="card-footer bg-dark text-white">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <a href="https://www.beratidealku.com" class="text-white text-decoration-none mb-2 mb-md-0">
+              WETools Versi 2.0 Copyright © 2025, beratidealku - All rights reserved
             </a>
-          </div>
-          <div class="col-md-6 text-center text-md-end">
             <a href="https://bit.ly/LokasiKlubKita" class="text-white text-decoration-none">
               <i class="fas fa-map-marker-alt me-1"></i> Lokasi Map NC - klubKITA 
             </a>
           </div>
         </div>
-      </footer>
+      </div>
     </div>
   </div>
+</div>
 
-  <!-- Bootstrap JS Bundle with Popper -->
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<!--
-<script src="js/core.min.js"></script>
-<script src="js/script.js"></script>
--->
-<script src="js/jsWETools.js"></script>
+<script src="/js/jsWETools.js"></script>
 </body>
 </html>
