@@ -754,7 +754,7 @@ function submitForm() {
   }, 1500);
 
   // Jika menggunakan Google Apps Script, gunakan ini:
-  /*
+  
   google.script.run.withSuccessHandler(function(response) {
     document.getElementById("loadingSpinner").style.display = "none";
     document.getElementById("hasilAnalisa").style.display = "block";
@@ -768,7 +768,7 @@ function submitForm() {
     document.getElementById("btnReset").style.display = "block";
     document.getElementById("btnKirim").style.display = "block";
   }).simpanData(data);
-  */
+  
 }
 
 // Untuk mereset form
@@ -822,7 +822,7 @@ function kirimData() {
   }, 2000);
 
   // Jika menggunakan Google Apps Script, gunakan ini:
-  /*
+  
   google.script.run.withSuccessHandler(function(res) {
     pesan.innerHTML = `<div class="alert alert-success">${res}</div>`;
     bKirim.innerHTML = `<i class="fas fa-check-circle me-2"></i> Terkirim`;
@@ -834,7 +834,7 @@ function kirimData() {
     bKirim.disabled = false;
     bReset.disabled = false;
   }).prosesKirim(window.DATA_FINAL_ANALISA);
-  */
+  
 }    
 </script>
 
