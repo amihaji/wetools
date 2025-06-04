@@ -111,6 +111,7 @@
  }
 }
 </style>
+<script src="https://apis.google.com/js/api.js"></script>
 </head>
 
 <body>
@@ -684,6 +685,13 @@ function validatePage2() {
 }
 
 function submitForm() {
+  // Pastikan google.script.run tersedia
+  if (typeof google === 'undefined' || !google.script || !google.script.run) {
+    console.error("Google Apps Script client API tidak tersedia");
+    showMessage(2, "Error: Aplikasi tidak terhubung dengan server", "error");
+    return;
+  }
+    
   const data = {
     mNama:           document.getElementById("mNama").value,
     mNomorHp:        document.getElementById("mNomorHp").value,
