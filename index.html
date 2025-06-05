@@ -603,72 +603,6 @@ function showMessage(page, text, type) {
 }
 
 // Untuk validasi halaman1
-function BACKUP_validatePage1() {
-  console.log("Validating page 1...");
-  
-  const nama   = document.getElementById("mNama").value.trim();
-  const hp     = document.getElementById("mNomorHp").value.trim();
-  const email  = document.getElementById("mEmail").value.trim();
-  const umur   = +document.getElementById("mUmur").value;
-  const berat  = +document.getElementById("mBeratBadan").value;
-  const tinggi = +document.getElementById("mTinggiBadan").value;
- 
-  // Validasi nama
-  if (nama.length < 3 || nama.length > 40) {
-    showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-    document.getElementById("mNama").focus();
-    return false;
-  }
-  
-  // Validasi nomor HP
-  if (!/^[0-9]{10,14}$/.test(hp)) {
-    showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
-    document.getElementById("mNomorHp").focus();
-    return false;
-  }
-  
-  // Validasi email
-  if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
-    showMessage(1, "Format email tidak valid", "error");
-    document.getElementById("mEmail").focus();
-    return false;
-  }
-  
-  // Validasi umur
-  if (umur < 18 || umur > 80 || isNaN(umur)) {
-    showMessage(1, "Umur harus antara 18-80 tahun", "error");
-    document.getElementById("mUmur").focus();
-    return false;
-  }
-  
-  // Validasi berat badan
-  if (berat < 40 || berat > 150 || isNaN(berat)) {
-    showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
-    document.getElementById("mBeratBadan").focus();
-    return false;
-  }
-  
-  // Validasi tinggi badan
-  if (tinggi < 100 || tinggi > 190 || isNaN(tinggi)) {
-    showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
-    document.getElementById("mTinggiBadan").focus();
-    return false;
-  }
-   
-  const lingkarPerut   = document.getElementById("mLingkarPerut").value;
-  const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
-
-  if (!lingkarPerut || !aktivitasFisik) {
-    showMessage(1, "Harap lengkapi semua field", "error");
-    return false;
-  }
-
-  // Jika semua validasi lolos, pindah ke halaman 2
-  navigate(1, 2);
-  return true;
-}
-
-// Untuk validasi halaman1
 function validatePage1() {
   const nama   = document.getElementById("mNama").value.trim();
   const hp     = document.getElementById("mNomorHp").value.trim();
@@ -714,149 +648,6 @@ function validatePage2() {
   submitForm();
 }
 
-// Untuk validasi halaman2
-function BACKUP_validatePage2() {
-  console.log("Validating page 2...");
-  
-  const required = [
-    "mSarapan", "mMenu", "mNgantuk", "mLelah", "mLambung", 
-    "mLapar", "mAir", "mKonsumsi", "mBab", "mKeram", 
-    "mTidur", "mOlahraga", "mBak", "mKerutan", 
-    "mSulit", "mBBNaik", "mRokok", "mAlkohol"
-  ];
-
-  let isValid = true;
-  let firstMissingField = null;
-
-  for (let id of required) {
-    if (!document.querySelector(`input[name="${id}"]:checked`)) {
-      if (!firstMissingField) firstMissingField = id;
-      isValid = false;
-    }
-  }
-
-  if (!isValid) {
-    showMessage(2, "Harap jawab semua pertanyaan", "error");
-    if (firstMissingField) {
-      document.querySelector(`input[name="${firstMissingField}"]`).focus();
-    }
-    return false;
-  }
-  
-  submitForm();
-  return true;
-}
-
-// Untuk mereset form
-function BACKUP_resetForm() {
-  console.log("Resetting form...");
-  
-  document.getElementById("fitnessForm").reset();
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page1").classList.add("active");
-  updateProgressBar(1);
-  
-  // Clear all messages
-  for (let i = 1; i <= 3; i++) {
-    clearMessage(i);
-  }
-  
-  document.getElementById("hasilAnalisa").innerHTML = "";
-  document.getElementById("hasilAnalisa").style.display = "none";
-  document.getElementById("loadingSpinner").style.display = "none";
-  
-  document.getElementById("btnKirim").innerHTML = `<i class="fas fa-share-square me-2"></i> Kirim`;
-  document.getElementById("btnKirim").style.display = "block";
-  document.getElementById("btnReset").style.display = "block";
-  document.getElementById("btnKirim").disabled = false;
-  document.getElementById("btnReset").disabled = false;
- 
-  // Tampilkan pesan reset
-  showMessage(1, "Form berhasil direset", "success");
-  document.getElementById("mNama").focus();
-}
-
-// Untuk penanganan tombol kirim data
-function BACKUP_kirimData() {
-  console.log("Mengirim data...");
-  
-  const bKirim = document.getElementById("btnKirim");
-  const bReset = document.getElementById("btnReset");
-  const pesan = document.getElementById("pesan-kirim");
-
-  bReset.disabled = true;
-  bKirim.disabled = true;
-  bKirim.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Mengirim...`;
-  pesan.innerHTML = "";
-
-  // Simulasi pengiriman (untuk testing)
-  setTimeout(function() {
-    pesan.innerHTML = `<div class="alert alert-success">Data berhasil dikirim!</div>`;
-    bKirim.innerHTML = `<i class="fas fa-check-circle me-2"></i> Terkirim`;
-    bKirim.disabled = true;
-    bReset.disabled = false;
-  }, 2000);
-}    
-
-
-// Ganti URL ini dengan URL deployment Anda
-async function HASIL_submitForm() {
-  const data = {
-    mNama:           document.getElementById("mNama").value,
-    mNomorHp:        document.getElementById("mNomorHp").value,
-    mEmail:          document.getElementById("mEmail").value,
-    mUmur:           document.getElementById("mUmur").value,
-    mJenisKelamin:   document.getElementById("mJenisKelamin").value,
-    mBeratBadan:     document.getElementById("mBeratBadan").value,
-    mTinggiBadan:    document.getElementById("mTinggiBadan").value,
-    mLingkarPerut:   document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    // Data pertanyaan
-    mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
-    mAir:      document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab:      document.querySelector('input[name="mBab"]:checked').value,
-    mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak:      document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxefpsZ8LtgDyEVW4U4LePbg8biD-IkeTfmub0Kz6T7ypBC2avXpq6MMsRcYtLJFHHL/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      mode: 'no-cors' // Penting untuk GitHub Pages
-    });
-    
-    // Mode no-cors tidak mengembalikan response, tapi data tetap terkirim
-    document.getElementById("hasilAnalisa").innerHTML = `
-      <div class="alert alert-success">
-        Data berhasil dikirim! Silakan cek spreadsheet.
-      </div>
-    `;
-  } catch (error) {
-    document.getElementById("hasilAnalisa").innerHTML = `
-      <div class="alert alert-danger">
-        Terjadi kesalahan: ${error.message}
-      </div>
-    `;
-  }
-}
-
 // Untuk proses penyimpanan
 async function submitForm() {
   const data = {
@@ -893,7 +684,7 @@ async function submitForm() {
   };
 
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxefpsZ8LtgDyEVW4U4LePbg8biD-IkeTfmub0Kz6T7ypBC2avXpq6MMsRcYtLJFHHL/exec', {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbxdKEtWtav4FQN8LpGw_Iwg0r_1RCuFabsSlEhiuo5olTP5t6YY-7xWKd-DJ_WHPt8AFg/exec', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1032,8 +823,6 @@ function kirimData() {
   //}).prosesKirim(finalData, htmlOutput);
   }).prosesKirim(finalData);
 }
-
-
 </script>
 
 </body>
