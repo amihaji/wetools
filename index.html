@@ -684,7 +684,7 @@ async function submitForm() {
 
   // 2. Tampilkan loading spinner
   document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display = "none";
+  document.getElementById("hasilAnalisa").style.display   = "none";
 
   try {
     // 3. Kirim data ke Google Script
@@ -697,12 +697,40 @@ async function submitForm() {
       }
     );
 
+    // Simpan data ke variabel global agar tombol Kirim bisa akses
+    window.DATA_FINAL_ANALISA = data;
+
+    // Navigasi ke halaman hasil
+    navigate(2, 3);
+
     // 4. Terima HTML hasil evaluasi dari Google Script
     const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
     
     // 5. Tampilkan di Halaman 3
-    document.getElementById("hasilAnalisa").innerHTML     = hasilHTML;
-    document.getElementById("hasilAnalisa").style.display = "block";
+    
+    //document.getElementById("hasilAnalisa").innerHTML     = hasilHTML;
+    //document.getElementById("hasilAnalisa").style.display = "block";
+    //document.getElementById("hasilAnalisa").innerHTML     = response;
+
+    // Sembunyikan tombol, tampilkan spinner
+    document.getElementById("btnReset").style.display       = "none";         
+    document.getElementById("btnKirim").style.display       = "none";
+    document.getElementById("hasilAnalisa").style.display   = "none";
+    document.getElementById("loadingSpinner").style.display = "block";
+  
+    // Kirim data ke Apps Script, tampilkan hasil analisa
+    google.script.run.withSuccessHandler(function(response) {
+      document.getElementById("loadingSpinner").style.display = "none";
+      document.getElementById("hasilAnalisa").style.display   = "block";
+      document.getElementById("hasilAnalisa").innerHTML       = response;
+  
+      // Tampilkan kembali tombol setelah selesai
+      document.getElementById("btnReset").style.display = "block";
+      document.getElementById("btnKirim").style.display = "block";
+
+      showMessage(2, "Data berhasil disimpan!", "success");
+
+    }).simpanData(data);
 
   } catch (error) {
     console.error("Gagal mengirim data:", error);
