@@ -689,7 +689,7 @@ async function submitForm() {
   try {
     // 3. Kirim data ke Google Script
     const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbwQPz90J_7QLEnjIb-C-nlqwaLm6IGX__jYF009PE6coiTHDDY2WzHvzoBOoUaHiENn/exec',
+      'https://script.google.com/macros/s/AKfycbzncgBSf_B2bZRNPnYu3jeMFByiiaOlUp_8tS-UwQ8TzMkwyFs6ku0rzwB9c2t2zAOTtA/exec',
       {
         method: 'POST',
         body: JSON.stringify(data),
@@ -701,7 +701,7 @@ async function submitForm() {
     const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
     
     // 5. Tampilkan di Halaman 3
-    document.getElementById("hasilAnalisa").innerHTML = hasilHTML;
+    document.getElementById("hasilAnalisa").innerHTML     = hasilHTML;
     document.getElementById("hasilAnalisa").style.display = "block";
 
   } catch (error) {
@@ -714,87 +714,6 @@ async function submitForm() {
   } finally {
     // 6. Sembunyikan loading spinner
     document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
-
-// Untuk proses penyimpanan
-async function BACKUPsubmitForm() {
-  const data = {
-    // Menyimpan data pribadi
-    mNama:           document.getElementById("mNama").value,
-    mNomorHp:        document.getElementById("mNomorHp").value,
-    mEmail:          document.getElementById("mEmail").value,
-    mUmur:           parseInt(document.getElementById("mUmur").value),
-    mJenisKelamin:   document.getElementById("mJenisKelamin").value,
-    mBeratBadan:     parseFloat(document.getElementById("mBeratBadan").value),
-    mTinggiBadan:    parseFloat(document.getElementById("mTinggiBadan").value),
-    mLingkarPerut:   parseFloat(document.getElementById("mLingkarPerut").value),
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-
-    // Menyimpan data pertanyaan
-    mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
-    mAir:      document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab:      document.querySelector('input[name="mBab"]:checked').value,
-    mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak:      document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxdKEtWtav4FQN8LpGw_Iwg0r_1RCuFabsSlEhiuo5olTP5t6YY-7xWKd-DJ_WHPt8AFg/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-      mode: 'no-cors' // Penting untuk GitHub Pages
-    });
-    
-    // Mode no-cors tidak mengembalikan response, tapi data tetap terkirim
-    window.DATA_FINAL_ANALISA = data;
-
-    // Navigasi ke halaman hasil
-    navigate(2, 3);
-
-    // Sembunyikan tombol, tampilkan spinner
-    document.getElementById("btnReset").style.display       = "none";         
-    document.getElementById("btnKirim").style.display       = "none";
-    document.getElementById("hasilAnalisa").style.display   = "none";
-    document.getElementById("loadingSpinner").style.display = "block";
-
-    // Kirim data ke Apps Script, tampilkan hasil analisa
-    google.script.run.withSuccessHandler(function(response) {
-      document.getElementById("loadingSpinner").style.display = "none";
-      document.getElementById("hasilAnalisa").style.display   = "block";
-      document.getElementById("hasilAnalisa").innerHTML       = response;
-
-      // Tampilkan kembali tombol setelah selesai
-      document.getElementById("btnReset").style.display = "block";
-      document.getElementById("btnKirim").style.display = "block";
-
-      showMessage(2, "Data berhasil disimpan!", "success");
-
-    }).simpanData(data);
-
-
-  } catch (error) {
-    document.getElementById("hasilAnalisa").innerHTML = `
-      <div class="alert alert-danger">
-        Terjadi kesalahan: ${error.message}
-      </div>
-    `;
   }
 }
 
