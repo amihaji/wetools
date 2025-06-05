@@ -681,7 +681,7 @@ async function submitForm() {
   try {
     // 3. Kirim data ke Google Script
     const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbxC103VBrClizwePGVKYylBRCCfwt0tZ76k3h6m5Mo6kR2AHn0iSdr_cV0BmzTLftN8SQ/exec',
+      'https://script.google.com/macros/s/AKfycbw7u7iX89n9jCdD43e2R4_x25efoRZE6nbz5mQ6OEdIj6oK6b_MBb7AMduSD5RlE1_niw/exec',
       {
         method: 'POST',
         body: JSON.stringify(data),
@@ -703,18 +703,17 @@ async function submitForm() {
     document.getElementById("btnReset").style.display       = "none";         
     document.getElementById("btnKirim").style.display       = "none";
     document.getElementById("hasilAnalisa").style.display   = "none";
-  
-  
+    
     // Kirim data ke Apps Script, tampilkan hasil analisa
     // 5. Tampilkan di Halaman 3
     google.script.run.withSuccessHandler(function(response) {
         document.getElementById("loadingSpinner").style.display = "none";
-        //document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
+        document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
         document.getElementById("hasilAnalisa").style.display   = "block";
         document.getElementById("hasilAnalisa").innerHTML       = response;
         // Tampilkan kembali tombol setelah selesai
-        document.getElementById("btnReset").style.display = "block";
-        document.getElementById("btnKirim").style.display = "block";
+        document.getElementById("btnReset").style.display       = "block";
+        document.getElementById("btnKirim").style.display       = "block";
   
     }).simpanData(data);
 
