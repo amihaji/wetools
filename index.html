@@ -110,6 +110,21 @@
    margin-bottom: 10px;
  }
 }
+
+/* Loading spinner */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .spinner-border {
+    width: 2rem;
+    height: 2rem;
+  }
+}
 </style>
 <script src="https://apis.google.com/js/api.js"></script>
 </head>
@@ -801,7 +816,7 @@ function kirimData() {
   }, 2000);
 }    
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwvz0VZeobKWAQPokjgdyOvXkj4TJOzy_2eQoxbT-tkaLEoIC6igEzR2cTkWWJ8WMYytA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwoY4jYkdd9AhKImiFhsF75IZqEPYBxLIarOdg-cKhTDpd3kJGaFzr4EyORYXXRJAnQAw/exec';
 async function sendDataToGAS(data) {
   // Coba metode JSONP dulu
   try {
@@ -886,8 +901,91 @@ function formSubmitRequest(data) {
   };
 }
 
+function submitForm() {
+  const formData = {
+    mNama:           document.getElementById("mNama").value,
+    mNomorHp:        document.getElementById("mNomorHp").value,
+    mEmail:          document.getElementById("mEmail").value,
+    mUmur:           document.getElementById("mUmur").value,
+    mJenisKelamin:   document.getElementById("mJenisKelamin").value,
+    mBeratBadan:     document.getElementById("mBeratBadan").value,
+    mTinggiBadan:    document.getElementById("mTinggiBadan").value,
+    mLingkarPerut:   document.getElementById("mLingkarPerut").value,
+    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+
+    // Data pertanyaan
+    mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
+    mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
+    mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
+    mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
+    mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
+    mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
+    mAir:      document.querySelector('input[name="mAir"]:checked').value,
+    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+    mBab:      document.querySelector('input[name="mBab"]:checked').value,
+    mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
+    mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
+    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+    mBak:      document.querySelector('input[name="mBak"]:checked').value,
+    mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
+    mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
+    mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
+    mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
+    mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
+  };
+
+  // Tampilkan loading
+  const loadingDiv = document.getElementById("loadingSpinner");
+  loadingDiv.style.display = "block";
+  loadingDiv.innerHTML = `
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p>Mengirim data...</p>
+  `;
+
+  // Buat form tersembunyi untuk submit
+  const form = document.createElement('form');
+  form.method = 'GET';
+  form.action = 'https://script.google.com/macros/s/AKfycbwoY4jYkdd9AhKImiFhsF75IZqEPYBxLIarOdg-cKhTDpd3kJGaFzr4EyORYXXRJAnQAw/exec';
+  form.target = '_blank';
+  
+  // Tambahkan parameter
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'formData';
+  input.value = JSON.stringify(formData);
+  form.appendChild(input);
+  
+  // Buat iframe untuk menampilkan respons
+  const iframe = document.createElement('iframe');
+  iframe.name = 'responseFrame';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  
+  form.target = 'responseFrame';
+  document.body.appendChild(form);
+  form.submit();
+  
+  // Event listener untuk mengetahui ketika popup tertutup
+  const checkInterval = setInterval(() => {
+    if (iframe.contentWindow.closed) {
+      clearInterval(checkInterval);
+      loadingDiv.style.display = "none";
+      
+      // Tampilkan hasil di halaman utama
+      document.getElementById("hasilAnalisa").innerHTML = `
+        <div class="alert alert-success mt-3">
+          Data berhasil dikirim! Silakan tutup jendela popup jika masih terbuka.
+        </div>
+      `;
+      document.getElementById("hasilAnalisa").style.display = "block";
+    }
+  }, 500);
+}
+
 // Modifikasi fungsi submitForm()
-async function submitForm() {
+async function backup_submitForm() {
       const data = {
         // Kumpulkan semua data dari form
         mNama:           document.getElementById("mNama").value,
