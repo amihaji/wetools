@@ -801,37 +801,93 @@ function kirimData() {
   }, 2000);
 }    
 
-// Konfigurasi GAS
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxx_1Ns3WMY9VF_vzYiD3KDO8T1FGBz9fIm9bgbAKTPekTrk4MIPxr2NvZVEHgN-_q5dg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+async function sendDataToGAS(data) {
+  // Coba metode JSONP dulu
+  try {
+    return await jsonpRequest(data);
+  } catch (jsonpError) {
+    console.log("JSONP failed, trying fallback...");
+    // Fallback ke metode form submission
+    return formSubmitRequest(data);
+  }
+}
+
+function jsonpRequest(data) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'gas_callback_' + Math.round(100000 * Math.random());
+    const script = document.createElement('script');
     
-    // Fungsi untuk mengirim data ke Google Apps Script
-    async function sendDataToGAS(data) {
-      try {
-        const response = await fetch(GAS_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: 'simpanData',
-            data: data
-          }),
-          redirect: 'follow'
-        });
-        
-        const result = await response.json();
-        return result;
-      } catch (error) {
-        console.error('Error:', error);
-        return {
-          status: 'error',
-          message: error.message
-        };
+    window[callbackName] = function(response) {
+      cleanup();
+      if (response.status === 'success') {
+        resolve(response);
+      } else {
+        reject(response);
+      }
+    };
+    
+    const params = {
+      callback: callbackName,
+      action: 'simpanData',
+      data: JSON.stringify(data)
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+      .join('&');
+    
+    script.src = `${GAS_URL}?${queryString}`;
+    document.body.appendChild(script);
+    
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('Network error'));
+    };
+    
+    // Timeout setelah 10 detik
+    setTimeout(() => {
+      cleanup();
+      reject(new Error('Request timeout'));
+    }, 10000);
+    
+    function cleanup() {
+      delete window[callbackName];
+      if (script.parentNode) {
+        document.body.removeChild(script);
       }
     }
+  });
+}
 
-    // Modifikasi fungsi submitForm()
-    async function submitForm() {
+function formSubmitRequest(data) {
+  const form = document.createElement('form');
+  form.method = 'GET';
+  form.action = GAS_URL;
+  form.target = 'gasResponse';
+  
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+  
+  const iframe = document.createElement('iframe');
+  iframe.name = 'gasResponse';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  
+  document.body.appendChild(form);
+  form.submit();
+  
+  return {
+    status: 'redirect',
+    message: 'Data sedang diproses...'
+  };
+}
+
+// Modifikasi fungsi submitForm()
+async function submitForm() {
       const data = {
         // Kumpulkan semua data dari form
         mNama:           document.getElementById("mNama").value,
@@ -890,7 +946,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxx_1Ns3WMY9VF_vzYiD3KD
       } finally {
         document.getElementById("loadingSpinner").style.display = "none";
       }
-    }
+}
 </script>
 
 </body>
