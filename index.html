@@ -681,7 +681,7 @@ async function submitForm() {
   try {
     // 3. Kirim data ke Google Script
    const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbz8AW9P_v4oYAgF8lhSU9ZVawtg76S2OMV0PttlIPwtqgPY-pq8j5fUNoeXO0KND7OlvQ/exec',
+      'https://script.google.com/macros/s/AKfycbz-_5KYvQ9ybgvHeRvzQomGms_EOJs2zl7BBcU2krcJVTxwTJjPwq5yMBzPA0IuGBG0TQ/exec',
       {
         method: 'POST',
         body: JSON.stringify(data),
@@ -694,15 +694,12 @@ async function submitForm() {
     document.getElementById("hasilAnalisa").style.display   = "none";
     document.getElementById("btnReset").style.display       = "none";
     document.getElementById("btnKirim").style.display       = "none";
-    // Simpan data ke variabel global agar tombol Kirim bisa akses
-     //window.DATA_FINAL_ANALISA = data;
-
-    // Navigasi ke halaman hasil
-    navigate(2, 3);
-
+   
     // 4. Terima HTML hasil evaluasi dari Google Script
     const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
- 
+    document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
+    navigate(2, 3);
+
     // Sembunyikan tombol, tampilkan spinner
     document.getElementById("loadingSpinner").style.display = "block";
     document.getElementById("btnReset").style.display       = "none";         
@@ -713,7 +710,7 @@ async function submitForm() {
     // 5. Tampilkan di Halaman 3
     google.script.run.withSuccessHandler(function(response) {
         document.getElementById("loadingSpinner").style.display = "none";
-        document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
+       
         document.getElementById("hasilAnalisa").style.display   = "block";
         document.getElementById("hasilAnalisa").innerHTML       = response;
         // Tampilkan kembali tombol setelah selesai
