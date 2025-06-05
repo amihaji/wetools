@@ -545,11 +545,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Fungsi inisialisasi saat dokumen siap
-document.addEventListener('DOMContentLoaded', function() {
-  console.log("Document ready, initializing WETools...");
-  
-  // Inisialisasi halaman pertama
+// Fungsi baru untuk load Google API
+function loadGoogleAPI() {
+  return new Promise((resolve) => {
+    gapi.load('client', () => {
+      gapi.client.init({})
+        .then(resolve)
+        .catch(console.error);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadGoogleAPI();
   navigate(null, 1);
 });
 
@@ -639,7 +647,7 @@ function validatePage2() {
   submitForm();
 }
 
-async function submitForm() {
+async function BACKUP_submitForm() {
   // 1. Kumpulkan data dari Halaman 1 & 2
   const data = {
     mNama:           document.getElementById("mNama").value,
@@ -732,7 +740,7 @@ async function submitForm() {
   }
 }
 
-async function BACKUP_submitForm() {
+async function submitForm() {
   // 1. Kumpulkan data
   const data = {
     mNama:           document.getElementById("mNama").value,
@@ -771,8 +779,11 @@ async function BACKUP_submitForm() {
   document.getElementById("hasilAnalisa").style.display   = "none";
   document.getElementById("btnReset").style.display       = "none";
   document.getElementById("btnKirim").style.display       = "none";
+  const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
+
 
   try {
+    await loadGoogleAPI(); // Pastikan API sudah load
     // 3. Kirim ke Google Script menggunakan google.script.run
     google.script.run
       .withSuccessHandler(function(hasilHTML) {
@@ -784,7 +795,7 @@ async function BACKUP_submitForm() {
         document.getElementById("btnKirim").style.display       = "block";
         
         // Simpan data untuk tombol Kirim nanti
-        window.DATA_FINAL_ANALISA = data;
+        //window.DATA_FINAL_ANALISA = data;
         
         // Pindah ke halaman 3 setelah hasil siap
         navigate(2, 3);
