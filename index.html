@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Untuk navigasi halaman  
-function navigate(from, to) {
+function BACKUP_navigate(from, to) {
   console.log(`Navigating from ${from} to ${to}`);
   
   if (from) {
@@ -565,6 +565,14 @@ function navigate(from, to) {
   const toPage = document.getElementById("page" + to);
   if (toPage) toPage.classList.add("active");
   
+  updateProgressBar(to);
+  clearMessage(to);
+}
+
+// Untuk navigasi halaman  
+function navigate(from, to) {
+  document.getElementById("page" + from).classList.remove("active");
+  document.getElementById("page" + to).classList.add("active");
   updateProgressBar(to);
   clearMessage(to);
 }
@@ -595,7 +603,7 @@ function showMessage(page, text, type) {
 }
 
 // Untuk validasi halaman1
-function validatePage1() {
+function BACKUP_validatePage1() {
   console.log("Validating page 1...");
   
   const nama   = document.getElementById("mNama").value.trim();
@@ -658,6 +666,40 @@ function validatePage1() {
   // Jika semua validasi lolos, pindah ke halaman 2
   navigate(1, 2);
   return true;
+}
+
+// Untuk validasi halaman1
+function validatePage1() {
+  const nama   = document.getElementById("mNama").value.trim();
+  const hp     = document.getElementById("mNomorHp").value.trim();
+  const email  = document.getElementById("mEmail").value.trim();
+  const umur   = +document.getElementById("mUmur").value;
+  const berat  = +document.getElementById("mBeratBadan").value;
+  const tinggi = +document.getElementById("mTinggiBadan").value;
+ 
+  if (nama.length < 3 || nama.length > 40) 
+     return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
+  if (!/^[0-9]{10,14}$/.test(hp)) 
+     return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
+  if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
+     return showMessage(1, "Salah input email", "error");
+  if (umur < 18 || umur > 80) 
+     return showMessage(1, "Umur harus antara 18-80 thn", "error");
+  if (berat < 40 || berat > 150) 
+     return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
+  if (tinggi < 100 || tinggi > 190) 
+     return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
+   
+  const lingkarPerut   = document.getElementById("mLingkarPerut").value;
+  const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
+
+  if (!lingkarPerut || !aktivitasFisik) {
+    showMessage(1, "Inputan di isi dengan lengkap", "error");
+    return false;
+  }
+
+  // Kalau semua validasi lolos, pindah ke halaman 2
+  navigate(1, 2);
 }
 
 // Untuk validasi halaman2
@@ -819,35 +861,35 @@ async function HASIL_submitForm() {
 async function submitForm() {
   const data = {
     // Menyimpan data pribadi
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value,
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: parseInt(document.getElementById("mUmur").value),
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: parseFloat(document.getElementById("mBeratBadan").value),
-    mTinggiBadan: parseFloat(document.getElementById("mTinggiBadan").value),
-    mLingkarPerut: parseFloat(document.getElementById("mLingkarPerut").value),
+    mNama:           document.getElementById("mNama").value,
+    mNomorHp:        document.getElementById("mNomorHp").value,
+    mEmail:          document.getElementById("mEmail").value,
+    mUmur:           parseInt(document.getElementById("mUmur").value),
+    mJenisKelamin:   document.getElementById("mJenisKelamin").value,
+    mBeratBadan:     parseFloat(document.getElementById("mBeratBadan").value),
+    mTinggiBadan:    parseFloat(document.getElementById("mTinggiBadan").value),
+    mLingkarPerut:   parseFloat(document.getElementById("mLingkarPerut").value),
     mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
 
     // Menyimpan data pertanyaan
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
+    mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
+    mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
+    mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
+    mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
+    mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
+    mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
+    mAir:      document.querySelector('input[name="mAir"]:checked').value,
     mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+    mBab:      document.querySelector('input[name="mBab"]:checked').value,
+    mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
+    mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
     mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+    mBak:      document.querySelector('input[name="mBak"]:checked').value,
+    mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
+    mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
+    mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
+    mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
+    mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
   };
 
   try {
