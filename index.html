@@ -554,22 +554,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Untuk navigasi halaman  
-function BACKUP_navigate(from, to) {
-  console.log(`Navigating from ${from} to ${to}`);
-  
-  if (from) {
-    const fromPage = document.getElementById("page" + from);
-    if (fromPage) fromPage.classList.remove("active");
-  }
-  
-  const toPage = document.getElementById("page" + to);
-  if (toPage) toPage.classList.add("active");
-  
-  updateProgressBar(to);
-  clearMessage(to);
-}
-
-// Untuk navigasi halaman  
 function navigate(from, to) {
   document.getElementById("page" + from).classList.remove("active");
   document.getElementById("page" + to).classList.add("active");
