@@ -698,20 +698,14 @@ async function submitForm() {
     );
 
     // Simpan data ke variabel global agar tombol Kirim bisa akses
-    window.DATA_FINAL_ANALISA = data;
+    // window.DATA_FINAL_ANALISA = data;
 
     // Navigasi ke halaman hasil
     navigate(2, 3);
 
     // 4. Terima HTML hasil evaluasi dari Google Script
     const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
-    
-    // 5. Tampilkan di Halaman 3
-    
-    //document.getElementById("hasilAnalisa").innerHTML     = hasilHTML;
-    //document.getElementById("hasilAnalisa").style.display = "block";
-    //document.getElementById("hasilAnalisa").innerHTML     = response;
-
+ 
     // Sembunyikan tombol, tampilkan spinner
     document.getElementById("btnReset").style.display       = "none";         
     document.getElementById("btnKirim").style.display       = "none";
@@ -719,8 +713,10 @@ async function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
   
     // Kirim data ke Apps Script, tampilkan hasil analisa
+    // 5. Tampilkan di Halaman 3
     google.script.run.withSuccessHandler(function(response) {
       document.getElementById("loadingSpinner").style.display = "none";
+      document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
       document.getElementById("hasilAnalisa").style.display   = "block";
       document.getElementById("hasilAnalisa").innerHTML       = response;
   
