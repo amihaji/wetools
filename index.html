@@ -698,7 +698,7 @@ async function submitForm() {
     );
 
     // Simpan data ke variabel global agar tombol Kirim bisa akses
-    // window.DATA_FINAL_ANALISA = data;
+    window.DATA_FINAL_ANALISA = data;
 
     // Navigasi ke halaman hasil
     navigate(2, 3);
@@ -716,7 +716,7 @@ async function submitForm() {
     // 5. Tampilkan di Halaman 3
     google.script.run.withSuccessHandler(function(response) {
       document.getElementById("loadingSpinner").style.display = "none";
-      document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
+      //document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
       document.getElementById("hasilAnalisa").style.display   = "block";
       document.getElementById("hasilAnalisa").innerHTML       = response;
   
