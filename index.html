@@ -553,14 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
   navigate(null, 1);
 });
 
-// Untuk navigasi halaman  
-function BACKUP_navigate(from, to) {
-  document.getElementById("page" + from).classList.remove("active");
-  document.getElementById("page" + to).classList.add("active");
-  updateProgressBar(to);
-  clearMessage(to);
-}
-
 function navigate(from, to) {
   // Hanya hilangkan class 'active' jika from tidak null
   if (from !== null) {
@@ -683,8 +675,8 @@ async function submitForm() {
   };
 
   // 2. Tampilkan loading spinner
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display   = "none";
+  //document.getElementById("loadingSpinner").style.display = "block";
+  //document.getElementById("hasilAnalisa").style.display   = "none";
 
   try {
     // 3. Kirim data ke Google Script
@@ -698,7 +690,7 @@ async function submitForm() {
     );
 
     // Simpan data ke variabel global agar tombol Kirim bisa akses
-    window.DATA_FINAL_ANALISA = data;
+     //window.DATA_FINAL_ANALISA = data;
 
     // Navigasi ke halaman hasil
     navigate(2, 3);
@@ -707,25 +699,23 @@ async function submitForm() {
     const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
  
     // Sembunyikan tombol, tampilkan spinner
+    document.getElementById("loadingSpinner").style.display = "block";
     document.getElementById("btnReset").style.display       = "none";         
     document.getElementById("btnKirim").style.display       = "none";
     document.getElementById("hasilAnalisa").style.display   = "none";
-    document.getElementById("loadingSpinner").style.display = "block";
+  
   
     // Kirim data ke Apps Script, tampilkan hasil analisa
     // 5. Tampilkan di Halaman 3
     google.script.run.withSuccessHandler(function(response) {
-      document.getElementById("loadingSpinner").style.display = "none";
-      //document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
-      document.getElementById("hasilAnalisa").style.display   = "block";
-      document.getElementById("hasilAnalisa").innerHTML       = response;
+        document.getElementById("loadingSpinner").style.display = "none";
+        //document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
+        document.getElementById("hasilAnalisa").style.display   = "block";
+        document.getElementById("hasilAnalisa").innerHTML       = response;
+        // Tampilkan kembali tombol setelah selesai
+        document.getElementById("btnReset").style.display = "block";
+        document.getElementById("btnKirim").style.display = "block";
   
-      // Tampilkan kembali tombol setelah selesai
-      document.getElementById("btnReset").style.display = "block";
-      document.getElementById("btnKirim").style.display = "block";
-
-      showMessage(2, "Data berhasil disimpan!", "success");
-
     }).simpanData(data);
 
   } catch (error) {
