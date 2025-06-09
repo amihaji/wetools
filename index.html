@@ -673,7 +673,7 @@ function validatePage2() {
 }
 
 // Untuk proses penyimpanan
-function submitForm() {
+function BAcKUP_submitForm() {
   const data = {
     // Menyimpan data pribadi
     mNama:           document.getElementById("mNama").value,
@@ -733,6 +733,58 @@ function submitForm() {
 
   }).simpanData(data);
 }
+function submitForm() {
+      const data = {
+        // Menyimpan data pribadi
+        mNama: document.getElementById("mNama").value,
+        mNomorHp: document.getElementById("mNomorHp").value,
+        mEmail: document.getElementById("mEmail").value,
+        mUmur: parseInt(document.getElementById("mUmur").value),
+        mJenisKelamin: document.getElementById("mJenisKelamin").value,
+        mBeratBadan: parseFloat(document.getElementById("mBeratBadan").value),
+        mTinggiBadan: parseFloat(document.getElementById("mTinggiBadan").value),
+        mLingkarPerut: parseFloat(document.getElementById("mLingkarPerut").value),
+        mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+
+        // Menyimpan data pertanyaan
+        mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
+        mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
+        mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
+        mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
+        mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
+        mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
+        mAir:      document.querySelector('input[name="mAir"]:checked').value,
+        mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+        mBab:      document.querySelector('input[name="mBab"]:checked').value,
+        mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
+        mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
+        mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+        mBak:      document.querySelector('input[name="mBak"]:checked').value,
+        mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
+        mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
+        mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
+        mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
+        mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
+       
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbwZF6qRsWFRgwZVMuiuZ8O3-cmuEmu9tAvCmSreX4c33fdWLJo7mfOTOTT3jlRMBpSl_g/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.status === "success") {
+          document.getElementById("formMessage").innerHTML = "<span class='text-success'>" + response.message + "</span>";
+        } else {
+          document.getElementById("formMessage").innerText = response.message;
+        }
+      })
+      .catch(error => {
+        document.getElementById("formMessage").innerText = "Gagal mengirim data: " + error.message;
+      });
+  }
 
 // Untuk mereset form
 function resetForm() {
