@@ -1,10 +1,34 @@
+<!---------------------------------------------------------------
+Aplikasi Survey Kebugaran - WETools Versi 4.0 GitHUB
+
+Dibuat dengan menggunakan : 
+- HTML Bootstrap versi 5.0
+- CSS dan JScript
+- Google Script Aplication
+
+Terdiri atas beberapa file :
+- Database : Sheet "SurveyData"
+- index.html (program utama) di ditempat di GitHUB
+- code.gs (program server side)
+- evaluasi.html (untuk menampilkan hasil evaluasi di layar TIDAK ditampilkan)
+- templatePDF.html (untuk menampilkan hasil ke bentuk file PDF)
+
+Fitur Aplikasi:
+- Form Input Survey Kebugaran
+- Hasil menghasilkan file pdf
+- File pdf dapat dikirim ke email dan wa
+- Penambahan Inputan untuk Data Sponsor/Pengundang
+- Hasil Survey TIDAK Tampil ke layar
+- Nama Sponsor dan HP Sponsor disimpan di sheet kolom "AO" dan "AP"
+- Tampilan lebih Responsive
+------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base target="_top">
-  <title>Survey Kebugaran - WETools Versi 2</title>
+  <title>Survey Kebugaran - WETools Versi 4</title>
   
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +37,8 @@
   <!-- Custom CSS -->
   <!-- <link rel="stylesheet" href="assets/css/styleWETools.css"> -->
 <style>
-    body {
+
+body {
   background-image: url('https://lh3.googleusercontent.com/d/1xkWUSf4IUFav2aLaSfzmSIch8ywwagc7');
   background-size: cover;
   background-repeat: no-repeat;
@@ -647,102 +672,10 @@ function validatePage2() {
   submitForm();
 }
 
-async function BACKUP_submitForm() {
-  // 1. Kumpulkan data dari Halaman 1 & 2
+// Untuk proses penyimpanan
+async function submitForm() {
   const data = {
-    mNama:           document.getElementById("mNama").value,
-    mNomorHp:        document.getElementById("mNomorHp").value,
-    mEmail:          document.getElementById("mEmail").value,
-    mUmur:           parseInt(document.getElementById("mUmur").value),
-    mJenisKelamin:   document.getElementById("mJenisKelamin").value,
-    mBeratBadan:     parseFloat(document.getElementById("mBeratBadan").value),
-    mTinggiBadan:    parseFloat(document.getElementById("mTinggiBadan").value),
-    mLingkarPerut:   parseFloat(document.getElementById("mLingkarPerut").value),
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-
-    // Menyimpan data pertanyaan
-    mSarapan:  document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu:     document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk:  document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah:    document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung:  document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar:    document.querySelector('input[name="mLapar"]:checked').value,
-    mAir:      document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab:      document.querySelector('input[name="mBab"]:checked').value,
-    mKeram:    document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur:    document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak:      document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan:  document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit:    document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik:   document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok:    document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
-    
-  };
-
-  // 2. Tampilkan loading spinner
-  //document.getElementById("loadingSpinner").style.display = "block";
-  //document.getElementById("hasilAnalisa").style.display   = "none";
-
-  try {
-    // 3. Kirim data ke Google Script
-   const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbz-_5KYvQ9ybgvHeRvzQomGms_EOJs2zl7BBcU2krcJVTxwTJjPwq5yMBzPA0IuGBG0TQ/exec',
-      {
-        method: 'POST',
-        body: JSON.stringify(data),
-        mode: 'no-cors'
-      }
-    );
-
-    // 2. Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    document.getElementById("hasilAnalisa").style.display   = "none";
-    document.getElementById("btnReset").style.display       = "none";
-    document.getElementById("btnKirim").style.display       = "none";
-   
-    // 4. Terima HTML hasil evaluasi dari Google Script
-    const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
-    document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
-    navigate(2, 3);
-
-    // Sembunyikan tombol, tampilkan spinner
-    document.getElementById("loadingSpinner").style.display = "block";
-    document.getElementById("btnReset").style.display       = "none";         
-    document.getElementById("btnKirim").style.display       = "none";
-    document.getElementById("hasilAnalisa").style.display   = "none";
-    
-    // Kirim data ke Apps Script, tampilkan hasil analisa
-    // 5. Tampilkan di Halaman 3
-    google.script.run.withSuccessHandler(function(response) {
-        document.getElementById("loadingSpinner").style.display = "none";
-       
-        document.getElementById("hasilAnalisa").style.display   = "block";
-        document.getElementById("hasilAnalisa").innerHTML       = response;
-        // Tampilkan kembali tombol setelah selesai
-        document.getElementById("btnReset").style.display       = "block";
-        document.getElementById("btnKirim").style.display       = "block";
-  
-    });
-
-  } catch (error) {
-    console.error("Gagal mengirim data:", error);
-    document.getElementById("hasilAnalisa").innerHTML = `
-      <div class="alert alert-danger">
-        Gagal memproses data: ${error.message}
-      </div>
-    `;
-  } finally {
-    // 6. Sembunyikan loading spinner
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
-
-async function CADANGAN_submitForm() {
-  // 1. Kumpulkan data
-  const data = {
+    // Menyimpan data pribadi
     mNama:           document.getElementById("mNama").value,
     mNomorHp:        document.getElementById("mNomorHp").value,
     mEmail:          document.getElementById("mEmail").value,
@@ -774,53 +707,129 @@ async function CADANGAN_submitForm() {
     mAlkohol:  document.querySelector('input[name="mAlkohol"]:checked').value
   };
 
-  // 2. Tampilkan loading
+  // Simpan data ke variabel global agar tombol Kirim bisa akses
+  window.DATA_FINAL_ANALISA = data;
+
+  // Navigasi ke halaman 3 setelah sukses
+  navigate(2, 3);
+
+  // Tampilkan loading spinner
   document.getElementById("loadingSpinner").style.display = "block";
   document.getElementById("hasilAnalisa").style.display   = "none";
-  document.getElementById("btnReset").style.display       = "none";
   document.getElementById("btnKirim").style.display       = "none";
-  const hasilHTML = await response.text(); // Baca respon sebagai teks HTML
 
-
-  try {
-    await loadGoogleAPI(); // Pastikan API sudah load
-    // 3. Kirim ke Google Script menggunakan google.script.run
-    google.script.run
-      .withSuccessHandler(function(hasilHTML) {
-        // 5. Tampilkan hasil di halaman 3
-        document.getElementById("loadingSpinner").style.display = "none";
-        document.getElementById("hasilAnalisa").innerHTML       = hasilHTML;
-        document.getElementById("hasilAnalisa").style.display   = "block";
-        document.getElementById("btnReset").style.display       = "block";
-        document.getElementById("btnKirim").style.display       = "block";
-        
-        // Simpan data untuk tombol Kirim nanti
-        //window.DATA_FINAL_ANALISA = data;
-        
-        // Pindah ke halaman 3 setelah hasil siap
-        navigate(2, 3);
-      })
-      .withFailureHandler(function(error) {
-        document.getElementById("loadingSpinner").style.display = "none";
-        document.getElementById("hasilAnalisa").innerHTML = `
-          <div class="alert alert-danger">
-            Gagal memproses: ${error.message}
-          </div>
-        `;
-      })
-      .simpanData(data); // Pastikan ini memanggil fungsi di code.gs
-
-  } catch (error) {
+  // Kirim data dan tunggu respons, lalu tampilkan halaman 3
+  google.script.run.withSuccessHandler(function(responseHTML) {
+    // Tampilkan isi halaman 3
     document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").innerHTML = `
-      <div class="alert alert-danger">
-        Error: ${error.message}
-      </div>
-    `;
-  }
+    document.getElementById("hasilAnalisa").style.display   = "block";
+    document.getElementById("hasilAnalisa").innerHTML       = responseHTML;
+    
+    // Tampilkan kembali tombol setelah selesai
+    document.getElementById("btnKirim").style.display = "block";
+    document.getElementById("btnKirim").innerHTML     = `<i class="bi bi-send-check"></i> KIRIM`;  
+   
+    showMessage(2, "Data berhasil disimpan!", "success");
+
+  }).simpanData(data);
 }
 
-async function submitForm() {
+// Untuk mereset form
+function resetForm() {
+  document.getElementById("fitnessForm").reset();
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page1").classList.add("active");
+  updateProgressBar(1);
+  ["1", "2", "3"].forEach(n => clearMessage(n));
+  
+  document.getElementById("page1").style.fontFamily       = "Segoe UI, Tahoma, Geneva, Verdana, sans-serif";
+  document.getElementById("page1").style.fontSize         = "1rem";
+ 
+  document.getElementById("hasilAnalisa").innerHTML       = "";
+  document.getElementById("hasilAnalisa").style.display   = "none";
+  document.getElementById("loadingSpinner").style.display = "block";
+  
+  document.getElementById("btnKirim").innerHTML           = `<i class="bi bi-send-check"></i> Kirim`; 
+  document.getElementById("btnKirim").style.display       = "block";
+  document.getElementById("btnReset").style.display       = "block";
+
+  document.getElementById("btnKirim").disabled            = false;   // Tombol Kirim Aktif
+  document.getElementById("btnReset").disabled            = false;   // Tombol Reset Aktif 
+ 
+  // Tampilkan pesan reset
+  showMessage(1, "Form berhasil direset", "success");
+}
+
+// Untuk penanganan tombol kirim data
+function kirimData() {
+  const bKirim = document.getElementById("btnKirim");
+  const pesan  = document.getElementById("pesan-kirim");
+
+  if (bKirim) {
+    bKirim.disabled  = true;
+    bKirim.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Proses kirim...`;
+  }
+  pesan.innerHTML      = "";
+  const sponsorField   = document.getElementById("mSponsor");
+  const hpSponsorField = document.getElementById("mHpSponsor");
+  const mSponsor       = sponsorField ? sponsorField.value.trim() : "";
+  const mHpSponsor     = hpSponsorField ? hpSponsorField.value.trim() : "";
+
+  // Gabungkan data akhir yang ada di halaman 1,2 dan 3
+  const finalData  = {...window.DATA_FINAL_ANALISA, mSponsor: mSponsor,mHpSponsor: mHpSponsor};
+  const htmlOutput = document.documentElement.innerHTML;
+
+  // validasi untuk pengecekan Nama sponsor minimal 3 huruf
+  if (mSponsor !== "" && mSponsor.length < 3) {
+    pesan.innerHTML  = `<span class="text-danger">Nama sponsor minimal 3 huruf</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nama sponsor hanya boleh huruf dan spasi
+  if (mSponsor !== "" && !/^[a-zA-Z\s]+$/.test(mSponsor)) {
+    pesan.innerHTML  = `<span class="text-danger">Nama sponsor hanya boleh huruf dan spasi</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nomor HP sponsor wajib diisi jika nama sponsor diisi
+  if (mSponsor !== "" && mHpSponsor === "") {
+    pesan.innerHTML  = `<span class="text-danger">Nomor HP sponsor wajib diisi jika nama sponsor diisi</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nomor HP sponsor harus 10-14 digit angka
+  if (mHpSponsor !== "" && !/^[0-9]{10,14}$/.test(mHpSponsor)) {
+    pesan.innerHTML  = `<span class="text-danger">Nomor HP sponsor harus 10-14 digit angka</span>`;
+    bKirim.disabled  = false;  // Tombol Kirim On 
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+
+  google.script.run.withSuccessHandler(function (res) {
+    pesan.innerHTML = `<span class="text-primary">${res}</span>`;
+    if (bKirim) {
+      bKirim.innerHTML = `<i class="bi bi-check2-circle"></i> Berhasil Terkirim`;
+      bKirim.disabled  = false;
+    }
+   
+    // Tunda 3 detik lalu reset form dan kembali ke halaman awal
+    setTimeout(() => {
+      resetForm();
+    }, 3000);
+
+  }).withFailureHandler(function (err) {
+    pesan.innerHTML = `<span class="text-danger">Gagal: ${err.message}</span>`;
+    if (bKirim) {
+      bKirim.disabled  = false;
+      bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    }
+  }).prosesKirim(finalData, htmlOutput);
+}
+
+async function BACKUP_submitForm() {
   const data = { 
     mNama:           document.getElementById("mNama").value,
     mNomorHp:        document.getElementById("mNomorHp").value,
@@ -866,9 +875,8 @@ async function submitForm() {
   }
 }
 
-
 // Untuk mereset form
-function resetForm() {
+function BACKUP_resetForm() {
   document.getElementById("fitnessForm").reset();
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page1").classList.add("active");
@@ -891,7 +899,7 @@ function resetForm() {
 }
 
 // Untuk penanganan tombol kirim data
-function kirimData() {
+function BACKUP_kirimData() {
   const bKirim     = document.getElementById("btnKirim");
   const bReset     = document.getElementById("btnReset");
   const pesan      = document.getElementById("pesan-kirim");
@@ -961,6 +969,7 @@ function kirimData() {
   //}).prosesKirim(finalData, htmlOutput);
   }).prosesKirim(finalData);
 }
+
 </script>
 
 </body>
