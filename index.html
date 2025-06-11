@@ -529,17 +529,48 @@ body {
               </div>
 
               <div id="hasilAnalisa" style="display: none;"></div>
+              <div id="loadingSpinner" style="display:none"></div>
+              
+              <div id="hasilAnalisa">
+              <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
+                <div class="border p-3 rounded bg-light mb-4">
+                  <h6><i class="fas fa-user form-icon"></i>Data Sponsor</h6>
+                  <p><h7>Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</h7></p>
+                    <div class="mb-3">
+                      <label class="form-label">Nama Sponsor</label>
+                      <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor / pengundang" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+                    </div>
 
-              <!-- PESAN VALIDASI HALAMAN 3 -->
+                    <div class="mb-3">
+                      <label class="form-label">HP Sponsor</label>
+                      <input type="tel" id="mHpSponsor" class="form-control" placeholder="Input No WA tanpa diawali angka 0, untuk kirim hasil ke WA" pattern="[0-9]{10,14}">
+                    </div>
+                </div>
+
+                <div class="border p-3 rounded bg-light mb-4;">
+                  <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
+                  <h6 style="text-align: center; color:#cc0000;">
+                    Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+                    <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM"</strong>
+                  </h6>
+                  <h6 style="text-align: center;">
+                    Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis
+                  </h6>
+                </div>  
+              </div>
+
               <div id="formMessage3" class="mt-3"></div>
-
               <!-- TOMBOL RESPONSIVE HALAMAN 3 -->
               <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                
+                <!--
                 <button type="button" id="btnReset" class="btn btn-secondary btn-custom" onclick="resetForm()">  
                   <i class="fas fa-rotate-left me-2"></i>Reset Form
                 </button>
+                -->
+                
                 <button type="button" id="btnKirim" class="btn btn-primary btn-custom" onclick="kirimData()">
-                  <i class="fas fa-share-square me-2"></i>Kirim
+                  <i class="fas fa-share-square me-2"></i>KIRIM
                 </button>
               </div>
 
@@ -599,6 +630,12 @@ function navigate(from, to) {
   updateProgressBar(to);
   clearMessage(to);
 }
+
+function BACKUP_navigate(from, to) {
+  document.getElementById("page" + from).style.display = "none";
+  document.getElementById("page" + to).style.display = "block";
+}
+
 
 // Untuk progress bar
 function updateProgressBar(page) {
@@ -671,7 +708,68 @@ function validatePage2() {
   submitForm();
 }
 
-async function submitForm() {
+function submitForm() {
+  const data = {
+    mNama: document.getElementById("mNama").value,
+    mNomorHp: document.getElementById("mNomorHp").value,
+    mEmail: document.getElementById("mEmail").value,
+    mUmur: document.getElementById("mUmur").value,
+    mJenisKelamin: document.getElementById("mJenisKelamin").value,
+    mBeratBadan: document.getElementById("mBeratBadan").value,
+    mTinggiBadan: document.getElementById("mTinggiBadan").value,
+    mLingkarPerut: document.getElementById("mLingkarPerut").value,
+    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+    mAir: document.querySelector('input[name="mAir"]:checked').value,
+    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+    mBab: document.querySelector('input[name="mBab"]:checked').value,
+    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+    mBak: document.querySelector('input[name="mBak"]:checked').value,
+    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+  };
+
+  const params = new URLSearchParams();
+  for (const key in data) {
+    params.append(key, data[key]);
+  }
+
+  // Tampilkan spinner
+  document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("hasilAnalisa").style.display = "none";
+
+  fetch("https://script.google.com/macros/s/AKfycbxxxxxxx/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  })
+  .then(res => res.text())
+  .then(responseText => {
+    navigate(2, 3); // Pindah ke halaman 3
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").innerHTML = responseText;
+    document.getElementById("hasilAnalisa").style.display = "block";
+    document.getElementById("btnKirim").style.display = "block";
+  })
+  .catch(error => {
+    console.error("Gagal kirim:", error);
+    alert("Gagal mengirim data!");
+  });
+}
+
+async function backup_submitForm() {
   const formData = {
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
@@ -733,73 +831,6 @@ async function submitForm() {
     document.getElementById("formMessage2").innerText = "Gagal mengirim data: " + error.message;
   }
 }
-
-
-function BACKUP_submitForm() {
-  const formData = {
-    // Ambil data seperti biasa
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value,
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  // Buat parameter URL
-  const params = new URLSearchParams();
-  for (const key in formData) {
-    params.append(key, formData[key]);
-  }
-
-  // Tampilkan spinner, sembunyikan hasil sementara
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display = "none";
-
-  fetch("https://script.google.com/macros/s/AKfycbz0hrcQl5Ln2uJ4R9KLl9YvkBHQDxSSDXouapmJVCMxuIq_l9fNv8cr0oM9blEk2bQw9A/exec", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.text())
-  .then(responseHTML => {
-    // ✅ Pindah ke halaman 3
-    navigate(2, 3);
-    document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").innerHTML = responseHTML;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("btnKirim").style.display = "block";
-    document.getElementById("btnKirim").innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
-  })
-  .catch(error => {
-    console.error("Gagal kirim:", error);
-    document.getElementById("formMessage2").innerText = "Gagal mengirim data: " + error.message;
-  });
-}
-
 
 // Untuk mereset form
 function resetForm() {
