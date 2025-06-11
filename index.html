@@ -713,30 +713,28 @@ function submitForm() {
   }
 
   // Kirim data ke Google Apps Script untuk di simpan di google sheet 
-  fetch("https://script.google.com/macros/s/AKfycbzW_rr-rzCAHfQpGEfYMa2wmdCf7ZxUy3gWSsYdyF7ZY_cF4I7QBPz1yBWdhWGe61Bm/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbxnitnl9Havcgf5mepagIBqQUzUYdpJnZeFXcEXrIemohHGBjJly75BzN7-5UOTVj2Y2A/exec", {
     method: "POST",
     body: params,  // ⚠️ URLSearchParams
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"  // ⚠️ Wajib
     }
-  
   })
   
   .then(res => {
-    console.log("Status code:", res.status);  // Cek console log
+    console.log("Status code:", res.status);
     return res.text();
   })
+  
+  .then(responseText => {
+    console.log("Respons:", responseText);  
 
-  .then(response => {
-    console.log("Berhasil kirim:", response);
-   
     // pindah ke halaman 3 jika sukses
     navigate(2, 3);  
-
     // Tampilkan isi halaman 3
     document.getElementById("loadingSpinner").style.display = "none";
     document.getElementById("hasilAnalisa").style.display   = "block";
-    document.getElementById("hasilAnalisa").innerHTML       = response;
+    document.getElementById("hasilAnalisa").innerHTML       = responseText;
       
     // Tampilkan kembali tombol setelah selesai
     document.getElementById("btnKirim").style.display = "block";
