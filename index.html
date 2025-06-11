@@ -673,11 +673,7 @@ function validatePage2() {
 
 // Untuk mengirim data inputan google script
 function submitForm() {
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display   = "none";
-  document.getElementById("btnKirim").style.display       = "none";
-
-  const formData = {
+   const formData = {
     // Menyimpan data pribadi
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
@@ -722,12 +718,18 @@ function submitForm() {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"  // ⚠️ Wajib
     }
+  
   })
-
+  
   .then(res => {
     console.log("Status code:", res.status);  // Cek console log
     return res.text();
   })
+
+  //document.getElementById("loadingSpinner").style.display = "block";
+  //document.getElementById("hasilAnalisa").style.display   = "none";
+  //document.getElementById("btnKirim").style.display       = "none";
+
   .then(response => {
     console.log("Berhasil kirim:", response);
     navigate(2, 3);  // pindah ke halaman 3 jika sukses
