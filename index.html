@@ -671,8 +671,12 @@ function validatePage2() {
   submitForm();
 }
 
-// Untuk mengirim data inputan
+// Untuk mengirim data inputan google script
 function submitForm() {
+  document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("hasilAnalisa").style.display   = "none";
+  document.getElementById("btnKirim").style.display       = "none";
+
   const formData = {
     // Menyimpan data pribadi
     mNama: document.getElementById("mNama").value,
@@ -711,23 +715,47 @@ function submitForm() {
     params.append(key, formData[key]);
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbxPz7biMnakRrQYFzrV1rnYGqVlJn6wnfqxq5PauVkze-1yoa8dsF0gQecTMUt-wWoH/exec", {
+  // Kirim data ke Google Apps Script untuk di simpan di google sheet 
+  fetch("https://script.google.com/macros/s/AKfycbwLObW3MQFsOOucsWQhIeRGp1YU2RCH-iWpJBo7v5ttBwovZGBqdWVytRuqxzRK8d-U/exec", {
     method: "POST",
     body: params,  // ⚠️ URLSearchParams
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"  // ⚠️ Wajib
     }
   })
-  .then(res => res.text())
+
+  .then(res => {
+    console.log("Status code:", res.status);  // Cek console log
+    return res.text();
+  })
   .then(response => {
     console.log("Berhasil kirim:", response);
-    // Tambahkan kode untuk pindah ke halaman 3 di sini jika perlu
-  })
+    navigate(2, 3);  // pindah ke halaman 3 jika sukses
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").style.display   = "block";
+    document.getElementById("hasilAnalisa").innerHTML       = responseHTML;
+      
+    // Tampilkan kembali tombol setelah selesai
+    document.getElementById("btnKirim").style.display = "block";
+    document.getElementById("btnKirim").innerHTML     = `<i class="bi bi-send-check"></i> KIRIM`;  
+    
+    showMessage(2, "Data berhasil disimpan!", "success"); 
+    })
   .catch(error => {
     console.error("Gagal kirim:", error);
+    document.getElementById("formMessage2").innerText = "Gagal mengirim data: " + error.message;
   });
+
 }
 
+//== ====
+  // Navigasi ke halaman 3 setelah sukses
+  navigate(2, 3);
+  
+
+ 
+
+//==
 
 // Untuk mereset form
 function resetForm() {
