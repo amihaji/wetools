@@ -705,6 +705,7 @@ function submitForm() {
     mRokok: document.querySelector('input[name="mRokok"]:checked').value,
     mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
   };
+  document.getElementById("loadingSpinner").style.display = "block";
 
   const params = new URLSearchParams();
   for (const key in formData) {
