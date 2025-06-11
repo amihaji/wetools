@@ -741,7 +741,7 @@ function submitForm() {
     params.append(key, data[key]);
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbyHu4LKaRfO8KDzgCN23psxYIO5jcCyHeDsx1wgHlsZPSNnZ9IXmYzMsbIPSBp2tUekmA/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbz0-_N8h6SPbqjdazenef5wrsjyERC2kknhBAQ33g0NvpZ-ZloMvIWV9Le7wEmj8c-xwQ/exec", {
     method: "POST",
     body: params,
     headers: {
@@ -790,6 +790,42 @@ function resetForm() {
 
 // Untuk penanganan tombol kirim data
 function kirimData() {
+  const mSponsor   = document.getElementById("mSponsor").value.trim();
+  const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
+
+  const data = {
+    mSponsor: mSponsor || "Hesty Husain",
+    mHpSponsor: mHpSponsor || "81241318600"
+  };
+
+  // Tampilkan spinner
+  document.getElementById("btnKirim").innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+  document.getElementById("btnKirim").disabled = true;
+
+  const params = new URLSearchParams();
+  for (const key in data) {
+    params.append(key, data[key]);
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbz0-_N8h6SPbqjdazenef5wrsjyERC2kknhBAQ33g0NvpZ-ZloMvIWV9Le7wEmj8c-xwQ/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  })
+  .then(res => res.text())
+  .then(response => {
+    console.log("Kirim WA/Email berhasil:", response);
+    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-send-check"></i> Terkirim!';
+  })
+  .catch(err => {
+    console.error("Gagal kirim hasil:", err);
+    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-x-circle"></i> Gagal!';
+  });
+}
+
+function BACKUP_kirimData() {
   const bKirim = document.getElementById("btnKirim");
   const pesan  = document.getElementById("pesan-kirim");
 
