@@ -598,6 +598,7 @@ body {
 
 <script>
 // Fungsi baru untuk load Google API
+/*
 function loadGoogleAPI() {
   return new Promise((resolve) => {
     gapi.load('client', () => {
@@ -612,7 +613,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadGoogleAPI();
   navigate(null, 1);
 });
+*/
 
+// Fungsi untuk menampilkan halaman
 function navigate(from, to) {
   // Hanya hilangkan class 'active' jika from tidak null
   if (from !== null) {
