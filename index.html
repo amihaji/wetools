@@ -672,66 +672,6 @@ function validatePage2() {
 }
 
 // Untuk mengirim data inputan
-function BACKUP_submitForm() {
-  const data = {
-    // Menyimpan data pribadi
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value,
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: parseInt(document.getElementById("mUmur").value),
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: parseFloat(document.getElementById("mBeratBadan").value),
-    mTinggiBadan: parseFloat(document.getElementById("mTinggiBadan").value),
-    mLingkarPerut: parseFloat(document.getElementById("mLingkarPerut").value),
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-
-    // Menyimpan data pertanyaan
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  // Tampilkan spinner dan sembunyikan hasil
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display = "none";
-  document.getElementById("btnKirim").style.display = "none";
-
-  fetch("https://script.google.com/macros/s/AKfycby78ZeRRtmfNncwSe-p-PO5b2iBl4rDuQM8xjrU0d4XmmslBlYSz44MtJXULdckQesP/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  })
-
-  .then(res => res.text())
-  .then(responseHTML => {
-    // Pindah ke halaman 3
-    navigate(2, 3);
-    document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").innerHTML = responseHTML;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("btnKirim").style.display = "block";
-    document.getElementById("btnKirim").innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
-  })
-  .catch(error => {
-    document.getElementById("formMessage3").innerText = "Gagal mengirim data: " + error.message;
-  });
-}
-
 function submitForm() {
   const formData = {
     // Menyimpan data pribadi
@@ -771,7 +711,7 @@ function submitForm() {
     params.append(key, formData[key]);
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbzBozUKX_zdUxitpyQUF8y3CuJWaqhXMp69Jmz3mzJ00NFkL-EoLwSVmHDQHdivxF33/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbxPz7biMnakRrQYFzrV1rnYGqVlJn6wnfqxq5PauVkze-1yoa8dsF0gQecTMUt-wWoH/exec", {
     method: "POST",
     body: params,  // ⚠️ URLSearchParams
     headers: {
