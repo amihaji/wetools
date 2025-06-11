@@ -671,8 +671,73 @@ function validatePage2() {
   submitForm();
 }
 
-// Untuk mengirim data inputan google script
 function submitForm() {
+  const formData = {
+    // Ambil data seperti biasa
+    mNama: document.getElementById("mNama").value,
+    mNomorHp: document.getElementById("mNomorHp").value,
+    mEmail: document.getElementById("mEmail").value,
+    mUmur: document.getElementById("mUmur").value,
+    mJenisKelamin: document.getElementById("mJenisKelamin").value,
+    mBeratBadan: document.getElementById("mBeratBadan").value,
+    mTinggiBadan: document.getElementById("mTinggiBadan").value,
+    mLingkarPerut: document.getElementById("mLingkarPerut").value,
+    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+    mAir: document.querySelector('input[name="mAir"]:checked').value,
+    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+    mBab: document.querySelector('input[name="mBab"]:checked').value,
+    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+    mBak: document.querySelector('input[name="mBak"]:checked').value,
+    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+  };
+
+  // Buat parameter URL
+  const params = new URLSearchParams();
+  for (const key in formData) {
+    params.append(key, formData[key]);
+  }
+
+  // Tampilkan spinner, sembunyikan hasil sementara
+  document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("hasilAnalisa").style.display = "none";
+
+  fetch("https://script.google.com/macros/s/AKfycbxdy_yvklsvQ42ZNMeFFb8u5858GLkTPKh3PWi-bYEzwZH1rUaRcc45yyutA4h9S3dIqw/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  })
+  .then(res => res.text())
+  .then(responseHTML => {
+    // ✅ Pindah ke halaman 3
+    navigate(2, 3);
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").innerHTML = responseHTML;
+    document.getElementById("hasilAnalisa").style.display = "block";
+    document.getElementById("btnKirim").style.display = "block";
+    document.getElementById("btnKirim").innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+  })
+  .catch(error => {
+    console.error("Gagal kirim:", error);
+    document.getElementById("formMessage2").innerText = "Gagal mengirim data: " + error.message;
+  });
+}
+
+// Untuk mengirim data inputan google script
+function backup_submitForm() {
    const formData = {
     // Menyimpan data pribadi
     mNama: document.getElementById("mNama").value,
