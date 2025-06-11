@@ -825,6 +825,73 @@ function kirimData() {
   });
 }
 
+function BACKUP_kirimData() {
+  const bKirim = document.getElementById("btnKirim");
+  const pesan  = document.getElementById("pesan-kirim");
+
+  if (bKirim) {
+    bKirim.disabled  = true;
+    bKirim.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Proses kirim...`;
+  }
+  pesan.innerHTML      = "";
+  const sponsorField   = document.getElementById("mSponsor");
+  const hpSponsorField = document.getElementById("mHpSponsor");
+  const mSponsor       = sponsorField ? sponsorField.value.trim() : "";
+  const mHpSponsor     = hpSponsorField ? hpSponsorField.value.trim() : "";
+
+  // Gabungkan data akhir yang ada di halaman 1,2 dan 3
+  const finalData  = {...window.DATA_FINAL_ANALISA, mSponsor: mSponsor,mHpSponsor: mHpSponsor};
+  const htmlOutput = document.documentElement.innerHTML;
+
+  // validasi untuk pengecekan Nama sponsor minimal 3 huruf
+  if (mSponsor !== "" && mSponsor.length < 3) {
+    pesan.innerHTML  = `<span class="text-danger">Nama sponsor minimal 3 huruf</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nama sponsor hanya boleh huruf dan spasi
+  if (mSponsor !== "" && !/^[a-zA-Z\s]+$/.test(mSponsor)) {
+    pesan.innerHTML  = `<span class="text-danger">Nama sponsor hanya boleh huruf dan spasi</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nomor HP sponsor wajib diisi jika nama sponsor diisi
+  if (mSponsor !== "" && mHpSponsor === "") {
+    pesan.innerHTML  = `<span class="text-danger">Nomor HP sponsor wajib diisi jika nama sponsor diisi</span>`;
+    bKirim.disabled  = false;   // Tombol Kirim On
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+  // validasi untuk pengecekan Nomor HP sponsor harus 10-14 digit angka
+  if (mHpSponsor !== "" && !/^[0-9]{10,14}$/.test(mHpSponsor)) {
+    pesan.innerHTML  = `<span class="text-danger">Nomor HP sponsor harus 10-14 digit angka</span>`;
+    bKirim.disabled  = false;  // Tombol Kirim On 
+    bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    return;
+  }
+
+  google.script.run.withSuccessHandler(function (res) {
+    pesan.innerHTML = `<span class="text-primary">${res}</span>`;
+    if (bKirim) {
+      bKirim.innerHTML = `<i class="bi bi-check2-circle"></i> Berhasil Terkirim`;
+      bKirim.disabled  = false;
+    }
+   
+    // Tunda 3 detik lalu reset form dan kembali ke halaman awal
+    setTimeout(() => {
+      resetForm();
+    }, 3000);
+
+  }).withFailureHandler(function (err) {
+    pesan.innerHTML = `<span class="text-danger">Gagal: ${err.message}</span>`;
+    if (bKirim) {
+      bKirim.disabled  = false;
+      bKirim.innerHTML = `<i class="bi bi-send-check"></i> KIRIM`;
+    }
+  }).prosesKirim(finalData, htmlOutput);
+}
 </script>
 
 </body>
