@@ -707,7 +707,76 @@ function validatePage2() {
   submitForm();
 }
 
+// Fungsi submitForm yang diperbaiki
 function submitForm() {
+  const data = {
+    mNama: document.getElementById("mNama").value,
+    mNomorHp: document.getElementById("mNomorHp").value,
+    mEmail: document.getElementById("mEmail").value,
+    mUmur: document.getElementById("mUmur").value,
+    mJenisKelamin: document.getElementById("mJenisKelamin").value,
+    mBeratBadan: document.getElementById("mBeratBadan").value,
+    mTinggiBadan: document.getElementById("mTinggiBadan").value,
+    mLingkarPerut: document.getElementById("mLingkarPerut").value,
+    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+    mAir: document.querySelector('input[name="mAir"]:checked').value,
+    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+    mBab: document.querySelector('input[name="mBab"]:checked').value,
+    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+    mBak: document.querySelector('input[name="mBak"]:checked').value,
+    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+  };
+
+  const params = new URLSearchParams();
+  for (const key in data) {
+    params.append(key, data[key]);
+  }
+
+  // URL GAS baru dari Langkah 1
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbx8UpI9OujTOUygwsmxDBCj1EJn34EzdDQy3DEFAfeMB6h2vobJ4Us21I2J-lrqKVDR/exec";
+
+  // Gunakan proxy untuk bypass CORS
+  const PROXY_URL = "https://cors-anywhere.herokuapp.com/";
+  
+  document.getElementById("loadingSpinner").style.display = "block";
+
+  // Kirim via proxy
+  fetch(PROXY_URL + GAS_URL, {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Requested-With": "XMLHttpRequest" // Header penting untuk proxy
+    }
+  })
+  .then(res => res.text())
+  .then(html => {
+    navigate(2, 3);
+    document.getElementById("hasilAnalisa").innerHTML = html;
+    document.getElementById("hasilAnalisa").style.display = "block";
+    document.getElementById("loadingSpinner").style.display = "none";
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    showMessage(2, "Gagal mengirim data. Coba lagi nanti.", "error");
+    document.getElementById("loadingSpinner").style.display = "none";
+  });
+}
+
+
+function BACKUP_submitForm() {
   const data = {
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
@@ -767,62 +836,6 @@ function submitForm() {
   });
 }
 
-function BACKUP_submitForm() {
-  const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value,
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  const params = new URLSearchParams();
-  for (const key in data) {
-    params.append(key, data[key]);
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbxKFQ2IUVr0l1kZ3Agase1ma62X05pU9z3OSYysQ686TSASybhPyqHOZtl_VjVQ5qO1/exec", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-
-  .then(res => res.text())
-  .then(responseText => {
-    navigate(2, 3); // Pindah ke halaman 3
-    document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("btnKirim").style.display = "block";
-  })
-  .catch(error => {
-    console.error("Gagal kirim:", error);
-    alert("Gagal mengirim data!");
-  });
-}
 
 // Untuk mereset form
 function resetForm() {
@@ -869,7 +882,7 @@ function kirimData() {
     params.append(key, data[key]);
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbxKFQ2IUVr0l1kZ3Agase1ma62X05pU9z3OSYysQ686TSASybhPyqHOZtl_VjVQ5qO1/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbx8UpI9OujTOUygwsmxDBCj1EJn34EzdDQy3DEFAfeMB6h2vobJ4Us21I2J-lrqKVDR/exec", {
     method: "POST",
     body: params,
     headers: {
