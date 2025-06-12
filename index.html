@@ -760,7 +760,7 @@ function submitForm() {
   document.getElementById("hasilAnalisa").style.display = "none";
 
   // Web App URL dari Google Apps Script Anda
-  const webAppURL = "https://script.google.com/macros/s/AKfycbzqIhPdnQJgKUcmuuAOKyme31o6AidPPEcRxb_ukwqNVD5oe34w-hImSyboGkwHfKI/exec";
+  const webAppURL = "https://script.google.com/macros/s/AKfycbwhVSArgOVbfPY-cPkhKUCLDBJ0RKWRsK3fQIGvKheqUi0LCnJ3ZG6X7TWqflI-VpQQ/exec";
 
   navigate(2, 3);
   document.getElementById("hasilAnalisa").innerHTML = `<iframe src="${webAppURL}?${params.toString()}" loading="lazy"></iframe>`;
@@ -775,7 +775,7 @@ function kirimData() {
   params.append("mSponsor", mSponsor);
   params.append("mHpSponsor", mHpSponsor);
 
-  fetch("https://script.google.com/macros/s/AKfycbzqIhPdnQJgKUcmuuAOKyme31o6AidPPEcRxb_ukwqNVD5oe34w-hImSyboGkwHfKI/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwhVSArgOVbfPY-cPkhKUCLDBJ0RKWRsK3fQIGvKheqUi0LCnJ3ZG6X7TWqflI-VpQQ/exec", {
     method: "POST",
     body: params,
     headers: {
