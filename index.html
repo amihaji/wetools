@@ -696,7 +696,8 @@ function validatePage2() {
 }
 
 async function submitForm() {
-  if (!gapiLoaded) {
+  //if (!gapiLoaded) {
+    if (!initGAPI) {
     alert("Sistem sedang memuat, coba lagi dalam 5 detik");
     return;
   }
