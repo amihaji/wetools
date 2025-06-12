@@ -599,42 +599,20 @@ body {
 <script>
 // Fungsi baru untuk load Google API
 
-function loadGoogleAPI() {
-  return new Promise((resolve) => {
-    gapi.load('client', () => {
-      gapi.client.init({})
-        .then(resolve)
-        .catch(console.error);
-    });
-  });
-}
+//function loadGoogleAPI() {
+//  return new Promise((resolve) => {
+//    gapi.load('client', () => {
+//      gapi.client.init({})
+//        .then(resolve)
+//        .catch(console.error);
+//    });
+//  });
+//}
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadGoogleAPI();
-  navigate(null, 1);
-});
-
-// Fungsi untuk menampilkan halaman
-function navigate(from, to) {
-  // Hanya hilangkan class 'active' jika from tidak null
-  if (from !== null) {
-    const fromElement = document.getElementById("page" + from);
-    if (fromElement) fromElement.classList.remove("active");
-  }
-  
-  // Tambahkan class 'active' ke halaman tujuan
-  const toElement = document.getElementById("page" + to);
-  if (toElement) toElement.classList.add("active");
-  
-  updateProgressBar(to);
-  clearMessage(to);
-}
-
-function BACKUP_navigate(from, to) {
-  document.getElementById("page" + from).style.display = "none";
-  document.getElementById("page" + to).style.display = "block";
-}
-
+//document.addEventListener('DOMContentLoaded', async () => {
+//  await loadGoogleAPI();
+//  navigate(null, 1);
+//});
 
 // Untuk progress bar
 function updateProgressBar(page) {
@@ -707,7 +685,7 @@ function validatePage2() {
   submitForm();
 }
 
-function submitForm() {
+function backup_submitForm() {
   const data = {
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
@@ -752,77 +730,68 @@ function submitForm() {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   })
-  .then(res => res.text())
-  .then(html => {
-    navigate(2, 3); // Pindah ke halaman 3
-    document.getElementById("hasilAnalisa").innerHTML = html;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("btnKirim").style.display = "block";
-    document.getElementById("loadingSpinner").style.display = "none";
-  })
-  .catch(err => {
-    console.error("❌ Gagal kirim:", err);
-    document.getElementById("formMessage2").innerText = "Gagal mengirim data.";
-    document.getElementById("loadingSpinner").style.display = "none";
-  });
-}
 
-function BACKUP_submitForm() {
-  const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value,
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  const params = new URLSearchParams();
-  for (const key in data) {
-    params.append(key, data[key]);
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbzxo_vkQhjlhrSwrg2z3Xn3c0k42nHEe6Y58GchOukFcn_g7eIbSUaazSjwloIEovc/exec", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-
-  .then(res => res.text())
   .then(responseText => {
-    navigate(2, 3); // Pindah ke halaman 3
-    document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("btnKirim").style.display = "block";
-  })
-  .catch(error => {
-    console.error("Gagal kirim:", error);
-    alert("Gagal mengirim data!");
+    // Simpan hasil di localStorage
+    localStorage.setItem("evaluasiHTML", responseText);
+
+    // Arahkan ke halaman evaluasi.html (bisa dari GitHub)
+    window.location.href = "evaluasi.html";
   });
 }
+
+    function navigate(from, to) {
+      document.querySelector(`#page${from}`)?.classList.remove("active");
+      document.querySelector(`#page${to}`)?.classList.add("active");
+      document.querySelector("form#fitnessForm")?.classList.remove("active");
+      if (to === 1) document.querySelector("form#fitnessForm")?.classList.add("active");
+    }
+
+    function submitForm() {
+      const form = document.getElementById("fitnessForm");
+      const formData = new FormData(form);
+
+      const params = new URLSearchParams();
+      for (const [key, value] of formData.entries()) {
+        params.append(key, value);
+      }
+
+      document.getElementById("loadingSpinner").style.display = "block";
+      document.getElementById("hasilAnalisa").style.display = "none";
+
+      // Web App URL dari Google Apps Script Anda
+      const webAppURL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
+
+      navigate(2, 3);
+      document.getElementById("hasilAnalisa").innerHTML = `<iframe src="${webAppURL}?${params.toString()}" loading="lazy"></iframe>`;
+      document.getElementById("loadingSpinner").style.display = "none";
+    }
+
+    function kirimData() {
+      const mSponsor = document.getElementById("mSponsor").value.trim();
+      const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
+
+      const params = new URLSearchParams();
+      params.append("mSponsor", mSponsor);
+      params.append("mHpSponsor", mHpSponsor);
+
+      fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+        method: "POST",
+        body: params,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert("✅ Data berhasil dikirim.");
+        document.getElementById("btnKirim").innerHTML = '<i class="bi bi-send-check"></i> Terkirim!';
+      })
+      .catch(error => {
+        alert("❌ Gagal mengirim data.");
+        console.error(error);
+      });
+    }
 
 // Untuk mereset form
 function resetForm() {
@@ -850,42 +819,8 @@ function resetForm() {
   showMessage(1, "Form berhasil direset", "success");
 }
 
-// Untuk penanganan tombol kirim data
-function kirimData() {
-  const mSponsor   = document.getElementById("mSponsor").value.trim();
-  const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
 
-  const data = {
-    mSponsor: mSponsor || "Hesty Husain",
-    mHpSponsor: mHpSponsor || "81241318600"
-  };
 
-  // Tampilkan spinner
-  document.getElementById("btnKirim").innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-  document.getElementById("btnKirim").disabled = true;
-
-  const params = new URLSearchParams();
-  for (const key in data) {
-    params.append(key, data[key]);
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbwATrY1wfmTlhQgvKKoWhoZOs0Hc19F3tQkF28hY7818KZXKy5TUi-HPiWwF_adp6Nu/exec", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.text())
-  .then(response => {
-    console.log("Kirim WA/Email berhasil:", response);
-    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-send-check"></i> Terkirim!';
-  })
-  .catch(err => {
-    console.error("Gagal kirim hasil:", err);
-    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-x-circle"></i> Gagal!';
-  });
-}
 </script>
 </body>
 </html>
