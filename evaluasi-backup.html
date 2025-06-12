@@ -126,6 +126,16 @@
         const skor       = hasil.skor;
         const totalTanya = 18;
         const persen     = ((skor / totalTanya) * 100).toFixed(1) + "%";
-      </script>
+
+        // Ambil dari localStorage dan tampilkan
+        const hasilHTML = localStorage.getItem("evaluasiHTML");
+        if (hasilHTML) {
+            document.body.innerHTML = hasilHTML;
+            localStorage.removeItem("evaluasiHTML"); // bersihkan jika perlu
+        } else {
+            document.body.innerHTML = "<h4>Data tidak ditemukan. Silakan isi form terlebih dahulu.</h4>";
+        }
+
+</script>  
 </body>
 </html>

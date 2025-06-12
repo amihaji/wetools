@@ -2,140 +2,114 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
-  <base target="_top">
-  <title>Survey Kebugaran - WETools Versi 2</title>
-  <!-- Bootstrap 5 CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/css/style.css">
-  <title>Survey Kebugaran - WETools Versi 2</title>   
+  <title>Hasil Evaluasi</title>
   <style>
-      body {
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 14px;
-        padding: 20px;
-      }
-      table td, table th {
-        vertical-align: middle;
-      }
-      h5, h6 {
-        color: #0d6efd;
-      }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f2f2f2;
+      color: #333;
+    }
+    h2 {
+      color: #2a8b8b;
+    }
+    .hasil-box {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: auto;
+    }
+    .hasil-box p {
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+    .label {
+      font-weight: bold;
+    }
+    .btn-kirim {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn-kirim:hover {
+      background-color: #218838;
+    }
   </style>
 </head>
 <body>
-      <!-- TABEL 1: DATA PRIBADI -->
-      <table class="table table-bordered">
-        <tbody>
-          <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b><?= tanggal ?></b></td></tr>
-          <tr><td>Nama</td><td><?= nama ?></td></tr>
-          <tr><td>No. HP</td><td><?= hp ?></td></tr>
-          <tr><td>Email</td><td><?= email ?></td></tr>
-          <tr><td>Umur</td><td><?= umur ?> tahun</td></tr>
-          <tr><td>Jenis Kelamin</td><td><?= jk ?></td></tr>
-          <tr><td>Berat Badan</td><td><?= berat ?> kg</td></tr>
-          <tr><td>Tinggi Badan</td><td><?= tinggi ?> cm</td></tr>
-          <tr><td>Lingkar Perut</td><td><?= lingkar ?> cm</td></tr>
-          <tr><td>Aktivitas Fisik</td><td><?= aktivitas ?></td></tr>
-        </tbody>
-      </table>
 
-      <!-- TABEL 2: STATUS FUNGSIONAL -->
-      <h6 class="mt-4">Status Fungsional</h6>
-      <table class="table table-bordered">
-        <tr>
-          <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-          <th style="background-color:#4d94ff; text-align: center; width:15%;">Jawaban</th>
-        </tr>
-        <tbody>
-          <? for (let i = 0; i < fungsional.length; i++) { ?>
-            <tr>
-              <td><?= fungsional[i].label ?></td>
-              <td style="text-align: center;"><?= fungsional[i].jawaban ?></td>
-            </tr>
-          <? } ?>
-        </tbody>
-      </table>
+  <div class="hasil-box">
+    <h2>Hasil Evaluasi Kesehatan Anda</h2>
 
-      <!-- TABEL 3: EVALUASI PARAMETER -->
-      <h6 class="mt-4">Evaluasi Parameter</h6>
-      <table class="table table-bordered">
-        <tr>
-          <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-          <th style="background-color:#4d94ff; width:5%; text-align: center;">Hasil</th>
-          <th style="background-color:#4d94ff; width:15%;text-align: center;">Referensi</th>
-          <th style="background-color:#4d94ff; width:5%; text-align: center;">Satuan</th>
-          <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-        </tr>
-        <tbody>
-          <? for (let i = 0; i < evaluasi.length; i++) { ?>
-            <tr>
-              <td><?= evaluasi[i].param ?></td>
-              <td style="text-align: center;"><?= evaluasi[i].hasil ?></td>
-              <td style="text-align: center;"><?= evaluasi[i].ideal ?></td>
-              <td style="text-align: center;"><?= evaluasi[i].satuan ?></td>
-              <td style="white-space:pre-line"><?= evaluasi[i].penjelasan ?></td>
-            </tr>
-          <? } ?>
-        </tbody>
-      </table>
+    <p><span class="label">Nama:</span> <?= mNama ?></p>
+    <p><span class="label">Nomor HP:</span> <?= mNomorHp ?></p>
+    <p><span class="label">Email:</span> <?= mEmail ?></p>
 
-      <!-- TABEL 4: SKOR, KESIMPULAN & REKOMENDASI -->
-      <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
-      <table class="table table-bordered">
-        <tbody>
-          <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
-            <td style="width:85%;">
-              <!-- TIDAK DIAKTIFKAN Skor anda : <strong><?= skor ?></strong> atau <strong><?= persen ?></strong> dari total pertanyaan -->
-              Persentase kebugaran anda : <strong><?= persen ?></strong>
-            </td> 
-          </tr>
-          <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-            <td style="width:85%;"><?= kesimpulan ?></td>
-          </tr>
-          <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-            <td style="width:85%;"><?= rekomendasi ?></td>
-          </tr>
-        </tbody>
-      </table>
+    <hr>
 
-      
-      <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
-      <div class="border p-3 rounded bg-light mb-4">
-        <h6><i class="fas fa-user form-icon"></i>Data Sponsor</h6>
-        <p><h7>Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</h7></p>
-        <div class="mb-3">
-            <label class="form-label">Nama Sponsor</label>
-            <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor / pengundang" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-        </div>
+    <p><span class="label">Berat Ideal:</span> <?= bbIdeal ?> kg</p>
+    <p><span class="label">IMT:</span> <?= imt ?> (Indeks Massa Tubuh)</p>
+    <p><span class="label">Lemak Tubuh:</span> <?= lemakTubuh ?>%</p>
+    <p><span class="label">Lemak Perut:</span> <?= lemakPerut ?> cm</p>
+    <p><span class="label">Massa Otot:</span> <?= massaOtot ?> kg</p>
+    <p><span class="label">BMR:</span> <?= bmr ?> kkal</p>
+    <p><span class="label">Kebutuhan Kalori:</span> <?= kalori ?> kkal/hari</p>
+    <p><span class="label">Kebutuhan Protein:</span> <?= protein ?> gram/hari</p>
 
-        <div class="mb-3">
-          <label class="form-label">HP Sponsor</label>
-          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Input No WA tanpa diawali angka 0, untuk kirim hasil ke WA" pattern="[0-9]{10,14}">
-        </div>
-      </div>
-  
-      <div style="text-align: center;">Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis.</div>
+    <hr>
 
-      <script>
-        // Deklarasi Untuk melakukan perhitungan persentase dari nilai skor
-        const hasil      = calculateSkor(data); // atau dari parameter `data.skor`
-        const skor       = hasil.skor;
-        const totalTanya = 18;
-        const persen     = ((skor / totalTanya) * 100).toFixed(1) + "%";
+    <p><span class="label">Kesimpulan:</span><br><?= kesimpulan ?></p>
+    <p><span class="label">Rekomendasi:</span><br><?= rekomendasi ?></p>
 
-        // Ambil dari localStorage dan tampilkan
-        const hasilHTML = localStorage.getItem("evaluasiHTML");
-        if (hasilHTML) {
-            document.body.innerHTML = hasilHTML;
-            localStorage.removeItem("evaluasiHTML"); // bersihkan jika perlu
-        } else {
-            document.body.innerHTML = "<h4>Data tidak ditemukan. Silakan isi form terlebih dahulu.</h4>";
-        }
+    <hr>
 
-</script>  
+    <h3>Silakan isi data Sponsor Anda:</h3>
+    <p><label for="mSponsor">Nama Sponsor:</label><br>
+    <input type="text" id="mSponsor" style="width:100%;padding:6px" placeholder="Contoh: Hesty Husain"></p>
+
+    <p><label for="mHpSponsor">Nomor HP Sponsor:</label><br>
+    <input type="text" id="mHpSponsor" style="width:100%;padding:6px" placeholder="Contoh: 81241318600"></p>
+
+    <button class="btn-kirim" onclick="kirimData()">KIRIM</button>
+  </div>
+
+  <script>
+    function kirimData() {
+      const mSponsor = document.getElementById("mSponsor").value.trim();
+      const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
+
+      if (!mSponsor || !mHpSponsor) {
+        alert("Mohon lengkapi Nama Sponsor dan Nomor HP Sponsor.");
+        return;
+      }
+
+      const params = new URLSearchParams();
+      params.append("mSponsor", mSponsor);
+      params.append("mHpSponsor", mHpSponsor);
+
+      fetch("https://script.google.com/macros/s/AKfycbzqIhPdnQJgKUcmuuAOKyme31o6AidPPEcRxb_ukwqNVD5oe34w-hImSyboGkwHfKI/exec", {
+        method: "POST",
+        body: params,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      })
+      .then(res => res.text())
+      .then(txt => {
+        alert("✅ Data sponsor berhasil dikirim.");
+      })
+      .catch(err => {
+        console.error("❌ Gagal kirim:", err);
+        alert("Gagal mengirim data sponsor.");
+      });
+    }
+  </script>
+
 </body>
 </html>
