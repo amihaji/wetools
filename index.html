@@ -863,8 +863,38 @@ function resetForm() {
   showMessage(1, "Form berhasil direset", "success");
 }
 
-// Untuk penanganan tombol kirim data
 function kirimData() {
+  const data = {
+    mSponsor: document.getElementById("mSponsor").value.trim(),
+    mHpSponsor: document.getElementById("mHpSponsor").value.trim()
+  };
+
+  const params = new URLSearchParams();
+  for (const key in data) params.append(key, data[key]);
+
+  // Gunakan proxy CORS
+  fetch("https://cors-anywhere.herokuapp.com/" + 
+        "https://script.google.com/macros/s/AKfycbx8UpI9OujTOUygwsmxDBCj1EJn34EzdDQy3DEFAfeMB6h2vobJ4Us21I2J-lrqKVDR/exec", {
+    method: "POST",
+    body: params,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "X-Requested-With": "XMLHttpRequest" // Header penting untuk proxy
+    }
+  })
+  .then(res => res.text())
+  .then(response => {
+    console.log("Berhasil dikirim:", response);
+    document.getElementById("btnKirim").innerHTML = '<i class="fas fa-check"></i> Terkirim!';
+  })
+  .catch(err => {
+    console.error("Gagal:", err);
+    document.getElementById("btnKirim").innerHTML = '<i class="fas fa-times"></i> Gagal!';
+  });
+}
+
+// Untuk penanganan tombol kirim data
+function BACKUP_kirimData() {
   const mSponsor   = document.getElementById("mSponsor").value.trim();
   const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
 
