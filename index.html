@@ -803,7 +803,7 @@ async function submitForm() {
     // Tampilkan loading dll.
 
     const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbySEeVyts_c1xYkMiwfpCp6uOKsvjZ7Ey6I7GQ8sJO5HDQ7LlYQuTZ7ByrGr-geJ7IXQg/exec",
+      "https://script.google.com/macros/s/AKfycbwATrY1wfmTlhQgvKKoWhoZOs0Hc19F3tQkF28hY7818KZXKy5TUi-HPiWwF_adp6Nu/exec",
       {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -877,7 +877,7 @@ function kirimData() {
     params.append(key, data[key]);
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbySEeVyts_c1xYkMiwfpCp6uOKsvjZ7Ey6I7GQ8sJO5HDQ7LlYQuTZ7ByrGr-geJ7IXQg/exec", {
+  fetch("https://script.google.com/macros/s/AKfycbwATrY1wfmTlhQgvKKoWhoZOs0Hc19F3tQkF28hY7818KZXKy5TUi-HPiWwF_adp6Nu/exec", {
     method: "POST",
     body: params,
     headers: {
