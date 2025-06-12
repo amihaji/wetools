@@ -595,19 +595,18 @@ body {
 <!-- JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
 
 <script>
-// Fungsi baru untuk load Google API
-
-function loadGoogleAPI() {
-  return new Promise((resolve) => {
-    gapi.load('client', () => {
-      gapi.client.init({})
-        .then(resolve)
-        .catch(console.error);
-    });
+// Inisialisasi Google API
+function initGAPI() {
+  gapi.load('client', () => {
+  gapi.client.init({})
+      .then(() => console.log("GAPI ready"))
+      .catch(err => console.error("GAPI error:", err));
   });
 }
+window.onload = initGAPI;
 
 document.addEventListener('DOMContentLoaded', async () => {
   await loadGoogleAPI();
@@ -707,8 +706,8 @@ function validatePage2() {
   submitForm();
 }
 
-// Fungsi submitForm yang diperbaiki
 function submitForm() {
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbw5go-FQ5Mb5EVwC9nEEuLUW1nO_xN1FzAWBynX0zh1K2FiqpkcNoHnEJM47EWnfQKw/exec"; 
   const data = {
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
@@ -739,28 +738,17 @@ function submitForm() {
     mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
   };
 
-  const params = new URLSearchParams();
-  for (const key in data) {
-    params.append(key, data[key]);
-  }
-
-  // URL GAS baru dari Langkah 1
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwBuM8AavMbeAn2N3ESz8f5Zr5LSExHeWAdv_YvoUzqtJebQA6VU7Uu5ETwIKiVdtoF/exec";
-  const PROXY_URL = "https://corsproxy.io/?"; // Alternatif proxy gratis
-
-  fetch(PROXY_URL + encodeURIComponent(GAS_URL), {
-    method: "POST",
-    body: new URLSearchParams(data),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.text())
-  .then(html => {
-    document.getElementById("hasilAnalisa").innerHTML = html;
-    document.getElementById("hasilAnalisa").style.display = "block";
-  })
-  .catch(err => console.error("Error:", err));
+  // Kirim via Google Apps Script
+  google.script.run
+    .withSuccessHandler(html => {
+      document.getElementById("hasilAnalisa").innerHTML = html;
+      document.getElementById("hasilAnalisa").style.display = "block";
+    })
+    .withFailureHandler(err => {
+      console.error("Error:", err);
+      alert("Gagal mengirim data. Coba lagi nanti.");
+    })
+    .doPost(data); // Panggil doPost() di GAS
 }
 
 // Untuk mereset form
@@ -793,8 +781,7 @@ function kirimData() {
   const sponsorName = document.getElementById("mSponsor")?.value || "Default Sponsor";
   const sponsorPhone = document.getElementById("mHpSponsor")?.value || "812345678";
 
-  fetch("https://corsproxy.io/?" + encodeURIComponent(
-    "https://script.google.com/macros/s/AKfycbwBuM8AavMbeAn2N3ESz8f5Zr5LSExHeWAdv_YvoUzqtJebQA6VU7Uu5ETwIKiVdtoF/exec"), {
+  fetch("https://script.google.com/macros/s/AKfycbw5go-FQ5Mb5EVwC9nEEuLUW1nO_xN1FzAWBynX0zh1K2FiqpkcNoHnEJM47EWnfQKw/exec", {
     method: "POST",
     body: new URLSearchParams({
       mSponsor: sponsorName,
@@ -807,43 +794,6 @@ function kirimData() {
   .then(res => res.text())
   .then(() => alert("Data terkirim!"))
   .catch(err => console.error("Gagal kirim:", err));
-}
-
-// Untuk penanganan tombol kirim data
-function BACKUP_kirimData() {
-  const mSponsor   = document.getElementById("mSponsor").value.trim();
-  const mHpSponsor = document.getElementById("mHpSponsor").value.trim();
-
-  const data = {
-    mSponsor: mSponsor || "Hesty Husain",
-    mHpSponsor: mHpSponsor || "81241318600"
-  };
-
-  // Tampilkan spinner
-  document.getElementById("btnKirim").innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-  document.getElementById("btnKirim").disabled = true;
-
-  const params = new URLSearchParams();
-  for (const key in data) {
-    params.append(key, data[key]);
-  }
-
-  fetch("https://script.google.com/macros/s/AKfycbx8UpI9OujTOUygwsmxDBCj1EJn34EzdDQy3DEFAfeMB6h2vobJ4Us21I2J-lrqKVDR/exec", {
-    method: "POST",
-    body: params,
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.text())
-  .then(response => {
-    console.log("Kirim WA/Email berhasil:", response);
-    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-send-check"></i> Terkirim!';
-  })
-  .catch(err => {
-    console.error("Gagal kirim hasil:", err);
-    document.getElementById("btnKirim").innerHTML = '<i class="bi bi-x-circle"></i> Gagal!';
-  });
 }
 </script>
 </body>
