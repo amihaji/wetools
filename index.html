@@ -608,11 +608,6 @@ function initGAPI() {
 }
 window.onload = initGAPI;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadGoogleAPI();
-  navigate(null, 1);
-});
-
 // Fungsi untuk menampilkan halaman
 function navigate(from, to) {
   // Hanya hilangkan class 'active' jika from tidak null
@@ -628,12 +623,6 @@ function navigate(from, to) {
   updateProgressBar(to);
   clearMessage(to);
 }
-
-function BACKUP_navigate(from, to) {
-  document.getElementById("page" + from).style.display = "none";
-  document.getElementById("page" + to).style.display = "block";
-}
-
 
 // Untuk progress bar
 function updateProgressBar(page) {
