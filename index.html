@@ -679,6 +679,27 @@ function validatePage2() {
 }
 
 async function submitForm() {
+  const GAS_URL = "https://script.google.com/macros/s/AKfycby364YMJXt97Gx0-HucqBGOgSxFfX5jgdR1LC3GNUpwrMkYHyWxrFhaDJmS2A8ldcp9/exec";
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams(formData)
+    });
+    
+    const hasilHTML = await response.text();
+    document.getElementById("hasilAnalisa").innerHTML = hasilHTML;
+    document.getElementById("hasilAnalisa").style.display = "block";
+    
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Gagal mengirim data. Silakan coba lagi.");
+  }
+}
+
+async function BACKUP_submitForm() {
 //function submitForm() {
   // Ganti dengan URL deployment GAS
   const GAS_URL = "https://script.google.com/macros/s/AKfycbx93k4_nrvhQponDKxCZKTrMsqmEYQEkgKmyLC8p2-CFnpHwlseeBb8aCS1jcPYeO0o/exec"; 
@@ -767,7 +788,29 @@ function resetForm() {
 }
 
 function kirimData() {
-  const GAS_URL      = "https://script.google.com/macros/s/AKfycbx93k4_nrvhQponDKxCZKTrMsqmEYQEkgKmyLC8p2-CFnpHwlseeBb8aCS1jcPYeO0o/exec"; 
+  const GAS_URL     = "https://script.google.com/macros/s/AKfycby364YMJXt97Gx0-HucqBGOgSxFfX5jgdR1LC3GNUpwrMkYHyWxrFhaDJmS2A8ldcp9/exec"; 
+  const sponsorData = {
+    action: "prosesKirim",
+    mSponsor: document.getElementById("mSponsor").value,
+    mHpSponsor: document.getElementById("mHpSponsor").value
+  };
+  
+  fetch(GAS_URL, {
+    method: "POST",
+    body: new URLSearchParams(sponsorData)
+  })
+  .then(response => {
+    if (!response.ok) throw new Error("Gagal mengirim");
+    alert("Hasil survey berhasil dikirim!");
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("Gagal mengirim hasil. Silakan coba lagi.");
+  });
+}
+
+function BACKUP_kirimData() {
+  const GAS_URL      = "https://script.google.com/macros/s/AKfycbwIVo-bVZuAYWbwUOA9Fn95iaUxekg4fkdbCeEaXCQ6GR1LTmJEz897JOFWxthjUInb/exec"; 
   const sponsorName  = document.getElementById("mSponsor")?.value || "Hesty Husain";
   const sponsorPhone = document.getElementById("mHpSponsor")?.value || "81241318600";
   
