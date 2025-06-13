@@ -559,13 +559,6 @@ body {
               <div id="formMessage3" class="mt-3"></div>
               <!-- TOMBOL RESPONSIVE HALAMAN 3 -->
               <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                
-                <!--
-                <button type="button" id="btnReset" class="btn btn-secondary btn-custom" onclick="resetForm()">  
-                  <i class="fas fa-rotate-left me-2"></i>Reset Form
-                </button>
-                -->
-                
                 <button type="button" id="btnKirim" class="btn btn-primary btn-custom" onclick="kirimData()">
                   <i class="fas fa-share-square me-2"></i>KIRIM
                 </button>
@@ -598,17 +591,6 @@ body {
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
-// Inisialisasi Google API
-function backup_initGAPI() {
-  gapi.load('client', () => {
-  gapi.client.init({})
-      .then(() => console.log("GAPI ready"))
-      .catch(err => console.error("GAPI error:", err));
-  });
-}
-// window.onload = initGAPI;
-
-
 // Fungsi untuk menampilkan halaman
 function navigate(from, to) {
   // Hanya hilangkan class 'active' jika from tidak null
@@ -696,9 +678,10 @@ function validatePage2() {
   submitForm();
 }
 
-function submitForm() {
+async function submitForm() {
+//function submitForm() {
   // Ganti dengan URL deployment GAS
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbyUOMASNdibirB3p3ytTgdnh492PpZaoSuKeKEXVqXOsY680DRDSyeyM7AkyeW92y13/exec"; 
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbyluRVXzq4uIko7aYYEODIv2XaNNiDLCAIMIaYWTd6-KhD2BnswYpEZz8oHtZe4O2fL/exec"; 
     
   // Kumpulkan semua data form
   const data = {
@@ -757,65 +740,6 @@ function submitForm() {
   });
 }
 
-async function BACKUP_submitForm() {
-  //if (!gapiLoaded) {
-    if (!initGAPI) {
-    alert("Sistem sedang memuat, coba lagi dalam 5 detik");
-    return;
-  }
-
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwQyQMh_wZixcfDfdsXKyFKyM_CA32kIvUW08OFPgfSiPVtc8sJmXZPyGeM9_5yEqVE/exec";
-  const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value, 
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  try {
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(data),
-      mode: "no-cors" // Mode khusus untuk bypass CORS
-    });
-
-    // Handle response (meski mode no-cors tidak bisa baca response)
-    navigate(2, 3);
-    document.getElementById("hasilAnalisa").innerHTML = 
-      "<p>Data berhasil dikirim! Hasil akan dikirim via WhatsApp/Email.</p>";
-    
-  } catch (err) {
-    console.error("Error:", err);
-    alert("Data terkirim! Jika tidak menerima hasil, hubungi admin.");
-  }
-}
-
 // Untuk mereset form
 function resetForm() {
   document.getElementById("fitnessForm").reset();
@@ -843,7 +767,7 @@ function resetForm() {
 }
 
 function kirimData() {
-  const GAS_URL      = "https://script.google.com/macros/s/AKfycbyUOMASNdibirB3p3ytTgdnh492PpZaoSuKeKEXVqXOsY680DRDSyeyM7AkyeW92y13/exec"; 
+  const GAS_URL      = "https://script.google.com/macros/s/AKfycbyluRVXzq4uIko7aYYEODIv2XaNNiDLCAIMIaYWTd6-KhD2BnswYpEZz8oHtZe4O2fL/exec"; 
   const sponsorName  = document.getElementById("mSponsor")?.value || "Hesty Husain";
   const sponsorPhone = document.getElementById("mHpSponsor")?.value || "81241318600";
   
@@ -874,25 +798,6 @@ function kirimData() {
     btnKirim.disabled = false;
     alert("Gagal mengirim. Silakan coba lagi.");
   });
-}
-
-function BACKUP_kirimData() {
-  const sponsorName = document.getElementById("mSponsor")?.value || "Default Sponsor";
-  const sponsorPhone = document.getElementById("mHpSponsor")?.value || "812345678";
-
-  fetch("https://script.google.com/macros/s/AKfycbwQyQMh_wZixcfDfdsXKyFKyM_CA32kIvUW08OFPgfSiPVtc8sJmXZPyGeM9_5yEqVE/exec", {
-    method: "POST",
-    body: new URLSearchParams({
-      mSponsor: sponsorName,
-      mHpSponsor: sponsorPhone
-    }),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
-  })
-  .then(res => res.text())
-  .then(() => alert("Data terkirim!"))
-  .catch(err => console.error("Gagal kirim:", err));
 }
 </script>
 </body>
