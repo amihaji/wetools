@@ -721,8 +721,11 @@ async function submitForm() {
     });
     
     const hasilHTML = await response.text();
+    // Tampilkan hasil evaluasi
     document.getElementById("hasilAnalisa").innerHTML = hasilHTML;
     document.getElementById("hasilAnalisa").style.display = "block";
+    document.getElementById("loadingSpinner").style.display = "none";
+    navigate(2, 3); // Pindah ke halaman 3
     
   } catch (error) {
     console.error("Error:", error);
