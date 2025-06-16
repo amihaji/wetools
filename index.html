@@ -591,291 +591,223 @@ body {
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
-// Fungsi untuk menampilkan halaman
-function navigate(from, to) {
-  // Hanya hilangkan class 'active' jika from tidak null
-  if (from !== null) {
-    const fromElement = document.getElementById("page" + from);
-    if (fromElement) fromElement.classList.remove("active");
+  // Fungsi untuk menampilkan halaman
+  function navigate(from, to) {
+    if (from !== null) {
+      const fromElement = document.getElementById("page" + from);
+      if (fromElement) fromElement.classList.remove("active");
+    }
+    
+    const toElement = document.getElementById("page" + to);
+    if (toElement) toElement.classList.add("active");
+    
+    updateProgressBar(to);
+    clearMessage(to);
   }
   
-  // Tambahkan class 'active' ke halaman tujuan
-  const toElement = document.getElementById("page" + to);
-  if (toElement) toElement.classList.add("active");
-  
-  updateProgressBar(to);
-  clearMessage(to);
-}
-
-// Untuk progress bar
-function updateProgressBar(page) {
-  const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
-  const progressBar = document.getElementById("progressBar");
-  if (progressBar) {
-    progressBar.style.width = percent + "%";
-    progressBar.setAttribute('aria-valuenow', percent);
-  }
-}
-
-// Untuk menghapus pesan
-function clearMessage(page) {
-  const msg = document.getElementById("formMessage" + page);
-  if (msg) msg.innerHTML = "";
-}
-
-// Menampilkan pesan
-function showMessage(page, text, type) {
-  const msgBox = document.getElementById("formMessage" + page);
-  if (msgBox) {
-    msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
-    msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-}
-
-// Untuk validasi halaman1
-function validatePage1() {
-  const nama   = document.getElementById("mNama").value.trim();
-  const hp     = document.getElementById("mNomorHp").value.trim();
-  const email  = document.getElementById("mEmail").value.trim();
-  const umur   = +document.getElementById("mUmur").value;
-  const berat  = +document.getElementById("mBeratBadan").value;
-  const tinggi = +document.getElementById("mTinggiBadan").value;
- 
-  if (nama.length < 3 || nama.length > 40) 
-     return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-  if (!/^[0-9]{10,14}$/.test(hp)) 
-     return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
-  if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
-     return showMessage(1, "Salah input email", "error");
-  if (umur < 18 || umur > 80) 
-     return showMessage(1, "Umur harus antara 18-80 thn", "error");
-  if (berat < 40 || berat > 150) 
-     return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
-  if (tinggi < 100 || tinggi > 190) 
-     return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
-   
-  const lingkarPerut   = document.getElementById("mLingkarPerut").value;
-  const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
-
-  if (!lingkarPerut || !aktivitasFisik) {
-    showMessage(1, "Inputan di isi dengan lengkap", "error");
-    return false;
-  }
-
-  // Kalau semua validasi lolos, pindah ke halaman 2
-  navigate(1, 2);
-}
-
-// Untuk validasi halaman2
-function validatePage2() {
-  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-
-  for (let id of required) {
-    if (!document.querySelector(`input[name="${id}"]:checked`)) {
-      return showMessage(2, "Inputan di isi dengan lengkap", "error");
+  // Untuk progress bar
+  function updateProgressBar(page) {
+    const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
+    const progressBar = document.getElementById("progressBar");
+    if (progressBar) {
+      progressBar.style.width = percent + "%";
+      progressBar.setAttribute('aria-valuenow', percent);
     }
   }
-  submitForm();
-}
-
-async function submitForm() {
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxcoP5vwShA_-zDt-THM0wX1yJ2YqhDDoY4k0DFOLxyk88FzQiiFjShUSaeCpZ9uwX1/exec";
-   // Kumpulkan semua data form
-   const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value, 
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  try {
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(data)
-    });
-    
-    const hasilHTML = await response.text();
-    // Tampilkan hasil evaluasi
-    document.getElementById("hasilAnalisa").innerHTML = hasilHTML;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("loadingSpinner").style.display = "none";
-    navigate(2, 3); // Pindah ke halaman 3
-    
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Gagal mengirim data. Silakan coba lagi.");
+  
+  // Untuk menghapus pesan
+  function clearMessage(page) {
+    const msg = document.getElementById("formMessage" + page);
+    if (msg) msg.innerHTML = "";
   }
-}
-
-async function BACKUP_submitForm() {
-//function submitForm() {
-  // Ganti dengan URL deployment GAS
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbx93k4_nrvhQponDKxCZKTrMsqmEYQEkgKmyLC8p2-CFnpHwlseeBb8aCS1jcPYeO0o/exec"; 
+  
+  // Menampilkan pesan
+  function showMessage(page, text, type) {
+    const msgBox = document.getElementById("formMessage" + page);
+    if (msgBox) {
+      msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
+      msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+  
+  // Untuk validasi halaman1
+  function validatePage1() {
+    const nama = document.getElementById("mNama").value.trim();
+    const hp = document.getElementById("mNomorHp").value.trim();
+    const email = document.getElementById("mEmail").value.trim();
+    const umur = +document.getElementById("mUmur").value;
+    const berat = +document.getElementById("mBeratBadan").value;
+    const tinggi = +document.getElementById("mTinggiBadan").value;
+   
+    if (nama.length < 3 || nama.length > 40) 
+       return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
+    if (!/^[0-9]{10,14}$/.test(hp)) 
+       return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
+    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
+       return showMessage(1, "Salah input email", "error");
+    if (umur < 18 || umur > 80) 
+       return showMessage(1, "Umur harus antara 18-80 thn", "error");
+    if (berat < 40 || berat > 150) 
+       return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
+    if (tinggi < 100 || tinggi > 190) 
+       return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
+     
+    const lingkarPerut = document.getElementById("mLingkarPerut").value;
+    const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
+  
+    if (!lingkarPerut || !aktivitasFisik) {
+      showMessage(1, "Inputan di isi dengan lengkap", "error");
+      return false;
+    }
+  
+    // Kalau semua validasi lolos, pindah ke halaman 2
+    navigate(1, 2);
+  }
+  
+  // Untuk validasi halaman2
+  function validatePage2() {
+    const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+  
+    for (let id of required) {
+      if (!document.querySelector(`input[name="${id}"]:checked`)) {
+        return showMessage(2, "Inputan di isi dengan lengkap", "error");
+      }
+    }
+    submitForm();
+  }
+  
+  async function submitForm() {
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzBdtcLSccRlA1YR4bN3Mi9qXvoUAHsetrJdgf1BI-kLnyxLPCsVzw7I_hRxJ4qI-Ts/exec";
     
-  // Kumpulkan semua data form
-  const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value, 
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
-
-  // Tampilkan loading
-  document.getElementById("loadingSpinner").style.display = "block";
-
-  // Kirim data ke Google Apps Script
-  fetch(GAS_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams(data)
-  })
-  .then(res => res.text())
-  .then(html => {
-    // Tampilkan hasil evaluasi
-    document.getElementById("hasilAnalisa").innerHTML = html;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("loadingSpinner").style.display = "none";
-    navigate(2, 3); // Pindah ke halaman 3
-  })
-  .catch(err => {
-    console.error("Error:", err);
-    document.getElementById("loadingSpinner").style.display = "none";
-    alert("Gagal mengirim data. Silakan coba lagi.");
-  });
-}
-
-// Untuk mereset form
-function resetForm() {
-  document.getElementById("fitnessForm").reset();
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page1").classList.add("active");
-  updateProgressBar(1);
-  ["1", "2", "3"].forEach(n => clearMessage(n));
+    // Kumpulkan semua data form
+    const data = {
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value, 
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+    };
   
-  document.getElementById("page1").style.fontFamily       = "Segoe UI, Tahoma, Geneva, Verdana, sans-serif";
-  document.getElementById("page1").style.fontSize         = "1rem";
- 
-  document.getElementById("hasilAnalisa").innerHTML       = "";
-  document.getElementById("hasilAnalisa").style.display   = "none";
-  document.getElementById("loadingSpinner").style.display = "block";
+    try {
+      // Tampilkan loading spinner
+      document.getElementById("loadingSpinner").style.display = "block";
+      
+      const response = await fetch(GAS_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(data)
+      });
+      
+      if (!response.ok) {
+        throw new Error("Gagal mengirim data ke server");
+      }
+      
+      const hasilHTML = await response.text();
+      
+      // Sembunyikan loading spinner
+      document.getElementById("loadingSpinner").style.display = "none";
+      
+      // Tampilkan hasil evaluasi
+      const hasilAnalisa = document.getElementById("hasilAnalisa");
+      hasilAnalisa.innerHTML = hasilHTML;
+      hasilAnalisa.style.display = "block";
+      
+      // Pindah ke halaman 3
+      navigate(2, 3);
+      
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("loadingSpinner").style.display = "none";
+      showMessage(2, "Gagal mengirim data. Silakan coba lagi.", "error");
+    }
+  }
   
-  document.getElementById("btnKirim").innerHTML           = `<i class="bi bi-send-check"></i> Kirim`; 
-  document.getElementById("btnKirim").style.display       = "block";
-  document.getElementById("btnReset").style.display       = "block";
-
-  document.getElementById("btnKirim").disabled            = false;   // Tombol Kirim Aktif
-  document.getElementById("btnReset").disabled            = false;   // Tombol Reset Aktif 
- 
-  // Tampilkan pesan reset
-  showMessage(1, "Form berhasil direset", "success");
-}
-
-function kirimData() {
-  const GAS_URL     = "https://script.google.com/macros/s/AKfycbxcoP5vwShA_-zDt-THM0wX1yJ2YqhDDoY4k0DFOLxyk88FzQiiFjShUSaeCpZ9uwX1/exec"; 
-  const sponsorData = {
-    action: "prosesKirim",
-    mSponsor: document.getElementById("mSponsor").value,
-    mHpSponsor: document.getElementById("mHpSponsor").value
-  };
-  
-  fetch(GAS_URL, {
-    method: "POST",
-    body: new URLSearchParams(sponsorData)
-  })
-  .then(response => {
-    if (!response.ok) throw new Error("Gagal mengirim");
-    alert("Hasil survey berhasil dikirim!");
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    alert("Gagal mengirim hasil. Silakan coba lagi.");
-  });
-}
-
-function BACKUP_kirimData() {
-  const GAS_URL      = "https://script.google.com/macros/s/AKfycbwIVo-bVZuAYWbwUOA9Fn95iaUxekg4fkdbCeEaXCQ6GR1LTmJEz897JOFWxthjUInb/exec"; 
-  const sponsorName  = document.getElementById("mSponsor")?.value || "Hesty Husain";
-  const sponsorPhone = document.getElementById("mHpSponsor")?.value || "81241318600";
-  
-  // Ubah tampilan tombol saat proses kirim
-  const btnKirim = document.getElementById("btnKirim");
-  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-  btnKirim.disabled = true;
-
-  // Kirim data sponsor ke GAS
-  fetch(GAS_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      action: "prosesKirim",
-      mSponsor: sponsorName,
-      mHpSponsor: sponsorPhone
-    })
-  })
-  .then(res => {
-    btnKirim.innerHTML = '<i class="fas fa-check"></i> Terkirim!';
-    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
-  })
-  .catch(err => {
-    console.error("Gagal kirim:", err);
-    btnKirim.innerHTML = '<i class="fas fa-share-square"></i> KIRIM';
+  // Untuk mereset form
+  function resetForm() {
+    document.getElementById("fitnessForm").reset();
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page1").classList.add("active");
+    updateProgressBar(1);
+    ["1", "2", "3"].forEach(n => clearMessage(n));
+    
+    document.getElementById("hasilAnalisa").innerHTML = "";
+    document.getElementById("hasilAnalisa").style.display = "none";
+    document.getElementById("loadingSpinner").style.display = "block";
+    
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
     btnKirim.disabled = false;
-    alert("Gagal mengirim. Silakan coba lagi.");
-  });
-}
-</script>
+    
+    document.getElementById("pesan-kirim").innerHTML = "";
+    
+    // Tampilkan pesan reset
+    showMessage(1, "Form berhasil direset", "success");
+  }
+  
+  function kirimData() {
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzBdtcLSccRlA1YR4bN3Mi9qXvoUAHsetrJdgf1BI-kLnyxLPCsVzw7I_hRxJ4qI-Ts/exec"; 
+    
+    // Dapatkan data sponsor
+    const mSponsor = document.getElementById("mSponsor")?.value || "";
+    const mHpSponsor = document.getElementById("mHpSponsor")?.value || "";
+    
+    const sponsorData = {
+      action: "prosesKirim",
+      mSponsor: mSponsor,
+      mHpSponsor: mHpSponsor
+    };
+    
+    // Tampilkan loading di tombol Kirim
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+    btnKirim.disabled = true;
+    
+    fetch(GAS_URL, {
+      method: "POST",
+      body: new URLSearchParams(sponsorData)
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Gagal mengirim");
+      return response.text();
+    })
+    .then(result => {
+      document.getElementById("pesan-kirim").innerHTML = 
+        '<div class="alert alert-success">Hasil survey berhasil dikirim ke WA/Email Anda!</div>';
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      document.getElementById("pesan-kirim").innerHTML = 
+        '<div class="alert alert-danger">Gagal mengirim hasil. Silakan coba lagi.</div>';
+    })
+    .finally(() => {
+      btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
+      btnKirim.disabled = false;
+    });
+  }
+  </script>
 </body>
 </html>
