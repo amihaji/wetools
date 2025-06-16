@@ -676,8 +676,44 @@ body {
     submitForm();
   }
   
-  // Fungsi untuk submit form
   async function submitForm() {
+  try {
+    // [Kode pengumpulan data form tetap sama]
+    
+    const response = await fetch('https://script.google.com/macros/s/AKfycbz2fcAcqnfXBvUHf4g_4EHvQp4xfYIJmysF8mm5Ki0Dm8_GqmilOJtCr-nLKo4-w09N/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(formData)
+    });
+    
+    const result = await response.json();
+    
+    if (result.status !== "success") {
+      throw new Error(result.message || "Gagal memproses data");
+    }
+    
+    // Debugging: Cek data yang diterima
+    console.log("Data dari server:", result.data);
+    
+    if (!result.data || !result.data.fungsional || !result.data.evaluasi) {
+      throw new Error("Data hasil tidak lengkap dari server");
+    }
+    
+    tampilkanHasilEvaluasi(result.data);
+    navigate(2, 3);
+    
+  } catch (error) {
+    console.error("Error submitForm:", error);
+    showMessage(2, `Gagal: ${error.message}`, "error");
+  } finally {
+    document.getElementById("loadingSpinner").style.display = "none";
+  }
+}
+
+  // Fungsi untuk submit form
+  async function BACKUP_submitForm() {
     try {
       // Kumpulkan semua data form
       const formData = {
@@ -714,7 +750,7 @@ body {
       document.getElementById("loadingSpinner").style.display = "block";
       
       // Kirim data ke Google Apps Script
-      const response = await fetch("https://script.google.com/macros/s/AKfycbzlMQrfbTJq-Ym-bNVX1tIp45Y4zvSK76xfTYq4EIEyKiwe9MbEd8Kt7rSzgxgW4Ts3/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwIuA2loFjLKDOJZfyQXIxVYNK0Jbjf_wXScBr302ceRCKBdNu0wVKAx_DBS6_pr8b2/exec", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -744,123 +780,181 @@ body {
     }
   }
 
-  // Fungsi untuk menampilkan hasil evaluasi
   function tampilkanHasilEvaluasi(data) {
-    const hasilAnalisa = document.getElementById("hasilAnalisa");
-    
-    hasilAnalisa.innerHTML = `
-      <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-          <h4><i class="fas fa-chart-line me-2"></i>HASIL EVALUASI KEBUGARAN</h4>
-        </div>
-        <div class="card-body">
-          <!-- TABEL 1: DATA PRIBADI -->
-          <table class="table table-bordered">
-            <tbody>
-              <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${data.tanggal}</b></td></tr>
-              <tr><td>Nama</td><td>${data.nama}</td></tr>
-              <tr><td>No. HP</td><td>${data.hp}</td></tr>
-              <tr><td>Email</td><td>${data.email || '-'}</td></tr>
-              <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
-              <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
-              <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
-              <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
-              <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
-              <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
-            </tbody>
-          </table>
-
-          <!-- TABEL 2: STATUS FUNGSIONAL -->
-          <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
-          <table class="table table-bordered">
-            <tr>
-              <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-              <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th>
-            </tr>
-            <tbody>
-              ${data.fungsional.map(item => `
-                <tr>
-                  <td>${item.label}</td>
-                  <td style="text-align:center;">${item.jawaban}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <!-- TABEL 3: EVALUASI PARAMETER -->
-          <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
-          <table class="table table-bordered">
-            <tr>
-              <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-              <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-              <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-              <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-              <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-            </tr>
-            <tbody>
-              ${data.evaluasi.map(item => `
-                <tr>
-                  <td>${item.param}</td>
-                  <td style="text-align:center;">${item.hasil}</td>
-                  <td style="text-align:center;">${item.ideal}</td>
-                  <td style="text-align:center;">${item.satuan}</td>
-                  <td style="white-space:pre-line">${item.penjelasan}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <!-- TABEL 4: KESIMPULAN & REKOMENDASI -->
-          <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Kesimpulan & Rekomendasi</h5>
-          <table class="table table-bordered">
-            <tbody>
-              <tr>
-                <th style="background-color:#4d94ff; width:15%;">Skor</th>
-                <td style="width:85%;">
-                  Persentase kebugaran anda: <strong>${data.persen}</strong>
-                </td>
-              </tr>
-              <tr>
-                <th style="background-color:#4d94ff; width:15%;">Kesimpulan</th>
-                <td style="width:85%;">${data.kesimpulan}</td>
-              </tr>
-              <tr>
-                <th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-                <td style="width:85%;">${data.rekomendasi}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <!-- FORM SPONSOR -->
-          <div class="border p-3 rounded bg-light mb-4">
-            <h6><i class="fas fa-user me-2"></i>Data Sponsor</h6>
-            <p class="text-muted">Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</p>
-            <div class="mb-3">
-              <label class="form-label">Nama Sponsor</label>
-              <input type="text" id="mSponsor" class="form-control" 
-                    placeholder="Masukkan Nama Sponsor" 
-                    oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">HP Sponsor</label>
-              <input type="tel" id="mHpSponsor" class="form-control" 
-                    placeholder="Nomor WA tanpa angka 0" 
-                    pattern="[0-9]{10,14}">
-            </div>
-          </div>
-
-          <div class="text-center text-muted">
-            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Tampilkan bagian hasil analisa
-    hasilAnalisa.style.display = "block";
+  // Pastikan elemen hasilAnalisa ada
+  const hasilAnalisa = document.getElementById("hasilAnalisa");
+  if (!hasilAnalisa) {
+    console.error("Element hasilAnalisa tidak ditemukan");
+    return;
   }
 
-  // Fungsi untuk kirim data
+  // Validasi data yang diterima
+  if (!data || typeof data !== 'object') {
+    hasilAnalisa.innerHTML = `
+      <div class="alert alert-danger">
+        Data hasil tidak valid. Silakan coba lagi atau hubungi admin.
+      </div>
+    `;
+    return;
+  }
+
+  // Siapkan data default untuk menghindari error
+  const safeData = {
+    tanggal: data.tanggal || "Tidak tersedia",
+    nama: data.nama || "Tidak tersedia",
+    hp: data.hp || "Tidak tersedia",
+    email: data.email || "Tidak tersedia",
+    umur: data.umur || "Tidak tersedia",
+    jk: data.jk || "Tidak tersedia",
+    berat: data.berat || "Tidak tersedia",
+    tinggi: data.tinggi || "Tidak tersedia",
+    lingkar: data.lingkar || "Tidak tersedia",
+    aktivitas: data.aktivitas || "Tidak tersedia",
+    fungsional: data.fungsional || [],
+    evaluasi: data.evaluasi || [],
+    persen: data.persen || "0%",
+    kesimpulan: data.kesimpulan || "Tidak tersedia",
+    rekomendasi: data.rekomendasi || "Tidak tersedia"
+  };
+
+  // Fungsi untuk generate tabel fungsional
+  const generateTabelFungsional = () => {
+    if (!safeData.fungsional || safeData.fungsional.length === 0) {
+      return `
+        <div class="alert alert-warning">
+          Data status fungsional tidak tersedia
+        </div>
+      `;
+    }
+
+    return `
+      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${safeData.fungsional.map((item, index) => `
+            <tr>
+              <td>${item.label || `Pertanyaan ${index + 1}`}</td>
+              <td style="text-align:center;">${item.jawaban || "Tidak diisi"}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  };
+
+  // Fungsi untuk generate tabel evaluasi
+  const generateTabelEvaluasi = () => {
+    if (!safeData.evaluasi || safeData.evaluasi.length === 0) {
+      return `
+        <div class="alert alert-warning">
+          Data evaluasi parameter tidak tersedia
+        </div>
+      `;
+    }
+
+    return `
+      <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+            <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+            <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+            <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+            <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${safeData.evaluasi.map((item, index) => `
+            <tr>
+              <td>${item.param || `Parameter ${index + 1}`}</td>
+              <td style="text-align:center;">${item.hasil || "-"}</td>
+              <td style="text-align:center;">${item.ideal || "-"}</td>
+              <td style="text-align:center;">${item.satuan || "-"}</td>
+              <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  };
+
+  // Generate HTML lengkap
+  hasilAnalisa.innerHTML = `
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h4><i class="fas fa-chart-line me-2"></i>HASIL EVALUASI KEBUGARAN</h4>
+      </div>
+      <div class="card-body">
+        <!-- Data Pribadi -->
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td></tr>
+            <tr><td>Nama</td><td>${safeData.nama}</td></tr>
+            <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
+            <tr><td>Email</td><td>${safeData.email}</td></tr>
+            <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
+            <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
+            <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
+            <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
+            <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
+            <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Tabel Fungsional -->
+        ${generateTabelFungsional()}
+
+        <!-- Tabel Evaluasi -->
+        ${generateTabelEvaluasi()}
+
+        <!-- Kesimpulan & Rekomendasi -->
+        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan</h5>
+        <div class="alert alert-info">${safeData.kesimpulan}</div>
+
+        <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Rekomendasi</h5>
+        <div class="alert alert-warning">${safeData.rekomendasi}</div>
+
+        <!-- Skor -->
+        <div class="text-center mt-4">
+          <h5>Persentase Kebugaran Anda: <span class="badge bg-primary">${safeData.persen}</span></h5>
+        </div>
+
+        <!-- Form Sponsor -->
+        <div class="border p-3 rounded bg-light mt-4">
+          <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
+          <div class="mb-3">
+            <label class="form-label">Nama Sponsor</label>
+            <input type="text" id="mSponsor" class="form-control" 
+                  placeholder="Masukkan Nama Sponsor" 
+                  oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">HP Sponsor</label>
+            <input type="tel" id="mHpSponsor" class="form-control" 
+                  placeholder="Nomor WA tanpa angka 0" 
+                  pattern="[0-9]{10,14}">
+          </div>
+        </div>
+
+        <div class="text-center text-muted mt-3">
+          <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Tampilkan bagian hasil analisa
+  hasilAnalisa.style.display = "block";
+}
+  
+ // Fungsi untuk kirim data
   async function kirimData() {
     try {
       const btnKirim = document.getElementById("btnKirim");
@@ -874,7 +968,7 @@ body {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbzlMQrfbTJq-Ym-bNVX1tIp45Y4zvSK76xfTYq4EIEyKiwe9MbEd8Kt7rSzgxgW4Ts3/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbz2fcAcqnfXBvUHf4g_4EHvQp4xfYIJmysF8mm5Ki0Dm8_GqmilOJtCr-nLKo4-w09N/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
