@@ -699,6 +699,87 @@ function validatePage2() {
 
 async function submitForm() {
   try {
+    // Kumpulkan data form
+    const formData = { 
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value,
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+     };
+
+    // Tampilkan loading
+    document.getElementById("loadingSpinner").style.display = "block";
+    
+    // Gunakan teknik khusus untuk mengatasi CORS
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzbQbqRvUbvDylJHeJO_5xAfUT3kG4Fij92iDG2XPtZrRBnly72eEtd1ucBi6eG21lxFQ/exec';
+    
+    // Kirim menggunakan XHR tradisional
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', scriptURL);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        try {
+          const result = JSON.parse(xhr.responseText);
+          if (result.status === "success") {
+            tampilkanHasilEvaluasi(result.data);
+            navigate(2, 3);
+          } else {
+            throw new Error(result.message || "Gagal memproses data");
+          }
+        } catch (e) {
+          showMessage(2, "Error parsing response: " + e.message, "error");
+        }
+      } else {
+        showMessage(2, "HTTP error: " + xhr.status, "error");
+      }
+      document.getElementById("loadingSpinner").style.display = "none";
+    };
+    
+    xhr.onerror = function() {
+      showMessage(2, "Network error", "error");
+      document.getElementById("loadingSpinner").style.display = "none";
+    };
+    
+    const encodedData = Object.keys(formData)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formData[key]))
+      .join('&');
+    
+    xhr.send(encodedData);
+    
+  } catch (error) {
+    console.error("Error submitForm:", error);
+    showMessage(2, `Gagal: ${error.message}`, "error");
+    document.getElementById("loadingSpinner").style.display = "none";
+  }
+}
+
+async function BACKUP_submitForm() {
+  try {
     const formData = {
       mNama: document.getElementById("mNama").value,
       mNomorHp: document.getElementById("mNomorHp").value,
@@ -758,81 +839,6 @@ async function submitForm() {
     }
     
     tampilkanHasilEvaluasi(result.data);
-    navigate(2, 3);
-    
-  } catch (error) {
-    console.error("Error submitForm:", error);
-    showMessage(2, `Gagal: ${error.message}`, "error");
-  } finally {
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
-
-// Perbaiki fungsi submitForm
-async function BACKUP_submitForm() {
-  try {
-    // Kumpulkan semua data form
-    const formData = {
-      mNama: document.getElementById("mNama").value,
-      mNomorHp: document.getElementById("mNomorHp").value,
-      mEmail: document.getElementById("mEmail").value,
-      mUmur: document.getElementById("mUmur").value,
-      mJenisKelamin: document.getElementById("mJenisKelamin").value,
-      mBeratBadan: document.getElementById("mBeratBadan").value,
-      mTinggiBadan: document.getElementById("mTinggiBadan").value,
-      mLingkarPerut: document.getElementById("mLingkarPerut").value,
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-      mAir: document.querySelector('input[name="mAir"]:checked').value,
-      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-      mBab: document.querySelector('input[name="mBab"]:checked').value,
-      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-      mBak: document.querySelector('input[name="mBak"]:checked').value,
-      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-    };
-
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-      
-    // Gunakan proxy untuk menghindari masalah CORS
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-    const scriptURL = proxyUrl + 'https://script.google.com/macros/s/AKfycbzHhak3ncLZFtqrUJmrVWcLWY6gbUW5k_7aGAv61taw0OZ6tXlWFo4QOAlZ0vDVahTFUA/exec';
-    
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams(formData)
-    });
-
-
-    // Handle response
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const result = await response.json();
-    
-    if (result.status !== "success") {
-      throw new Error(result.message || "Gagal memproses data");
-    }
-    
-    // Tampilkan hasil evaluasi
-    tampilkanHasilEvaluasi(result.data);
-    
-    // Pindah ke halaman 3
     navigate(2, 3);
     
   } catch (error) {
@@ -1031,7 +1037,7 @@ async function BACKUP_submitForm() {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycby-QsmpmUd3j9pHIRIllsew_SDYWRaqqSdM2eALmGyyHkZL-aMJfam5-cmlJklVFZQmoA/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbzbQbqRvUbvDylJHeJO_5xAfUT3kG4Fij92iDG2XPtZrRBnly72eEtd1ucBi6eG21lxFQ/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
