@@ -150,9 +150,10 @@ body {
         <div class="header-image">
           <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
         </div>       
-        <div class="card-body">
+        <div class="card-body" style="max-width: 900px">
           <div class="card-header bg-primary text-white text-center">
             <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
+            <p>&nbsp</p>
           </div>
 
           <!-- Progress Bar -->
@@ -522,9 +523,12 @@ body {
                 <div class="spinner-border text-primary" role="status"></div>
                 <p class="mt-2">Memproses data...</p>
               </div>
-
+           
+              <!--
               <div id="hasilAnalisa" style="display: none;">
-                  <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
+              -->
+              <div id="hasilAnalisa"></div>  
+                <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
                   <div class="border p-3 rounded bg-light mb-4">
                     <h6><i class="fas fa-user form-icon"></i>Data Sponsor</h6>
                     <p><h7>Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</h7></p>
@@ -722,7 +726,7 @@ function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
     
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxNI_pB3UGHSyAkKl_lIEALNYxtFJB77UziYRxDnN20N_fdqHB5v7bmjfqLa0gQcwbKIw/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzGEQ4NSjMuRFJfdg_rNQM329FkIEp_qoK2RcrlEjPltIyEL5cV9mEuJP1Pn0JOPGgQ0A/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -877,10 +881,6 @@ function tampilkanHasilEvaluasi(data) {
 
   // Generate HTML lengkap
   hasilAnalisa.innerHTML = `
-    <!-- <div class="card mb-4"> -->
-      <div class="card-header bg-primary text-white">
-        <h4><i class="fas fa-chart-line me-2"></i>HASIL EVALUASI KEBUGARAN</h4>
-      </div>
       <div class="card-body">
         <!-- Data Pribadi -->
         <table class="table table-bordered">
@@ -917,7 +917,7 @@ function tampilkanHasilEvaluasi(data) {
         </div>
 
         <!-- Form Sponsor -->
-        <!--
+        <!-- TIDAK DITAMPILKAN
         <div class="border p-3 rounded bg-light mt-4">
           <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
           <div class="mb-3">
@@ -944,8 +944,7 @@ function tampilkanHasilEvaluasi(data) {
           <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
       </div>
-      -->
-    <!-- </div> -->
+       --->
   `;
 
   // Tampilkan bagian hasil analisa
@@ -969,7 +968,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxNI_pB3UGHSyAkKl_lIEALNYxtFJB77UziYRxDnN20N_fdqHB5v7bmjfqLa0gQcwbKIw/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbzGEQ4NSjMuRFJfdg_rNQM329FkIEp_qoK2RcrlEjPltIyEL5cV9mEuJP1Pn0JOPGgQ0A/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
