@@ -733,7 +733,7 @@ async function submitForm() {
     // Tampilkan loading
     document.getElementById("loadingSpinner").style.display = "block";
     
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbypD3_V4tCZBAFm_2lsRUFIQ0W-IPr9I_T0C6pIL3LbvJZWQbgChczz-BhM9Vh5JuYY/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbym4Zqfkw8q567DYgva8ljU3tKUhgRQPrabb5yRxEiEEyeAF1nbJG77Vx3vknaCNZHEPQ/exec';
     
     // Kirim data menggunakan fetch dengan mode 'no-cors'
     const response = await fetch(scriptURL, {
@@ -1051,7 +1051,7 @@ async function BACKUP_submitForm() {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbypD3_V4tCZBAFm_2lsRUFIQ0W-IPr9I_T0C6pIL3LbvJZWQbgChczz-BhM9Vh5JuYY/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbym4Zqfkw8q567DYgva8ljU3tKUhgRQPrabb5yRxEiEEyeAF1nbJG77Vx3vknaCNZHEPQ/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
