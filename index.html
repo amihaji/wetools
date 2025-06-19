@@ -730,7 +730,7 @@ function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
     
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxJqFHwlvO3DPIjOdblY57zDoeoJSUbsuSEGc07-G4LAKiWTnWZhb-Ww2d47yS-vB4bEQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyEN9AqfQsUFGcB6ADx3t6SpWGLLIujZTpFGUSi1p0_5tiTQ-e1SL8CCz-PMRKDUgi8tQ/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -975,7 +975,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxJqFHwlvO3DPIjOdblY57zDoeoJSUbsuSEGc07-G4LAKiWTnWZhb-Ww2d47yS-vB4bEQ/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbyEN9AqfQsUFGcB6ADx3t6SpWGLLIujZTpFGUSi1p0_5tiTQ-e1SL8CCz-PMRKDUgi8tQ/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
