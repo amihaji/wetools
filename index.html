@@ -733,41 +733,55 @@ function submitForm() {
     // Tampilkan loading
     document.getElementById("loadingSpinner").style.display = "block";
     
-    // Buat fungsi callback unik
+    // 1. DEKLARASI SCRIPT URL (GANTI DENGAN URL DEPLOYMENT ANDA)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwJQzCO3hlde2TwOigfj3Z3ic-E8VKeUzX35WaP3BlT47j18Uk0HdKGUv4N3ZngQY85hw/exec';
+    
+    // 2. Buat nama callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
     
-    // Tambahkan callback ke data
+    // 3. Tambahkan parameter callback ke data
     formData.callback = callbackName;
     
-    // Bangun URL dengan parameter
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzJFKBcPQxjPuWq3Cd2Zi4Ss1hQbTYER5zRpvwUsrLJQJwbNLH9HM7bgcax759e_NJZvA/exec';
+    // 4. Bangun URL dengan parameter query
     const params = Object.keys(formData)
       .map(key => key + '=' + encodeURIComponent(formData[key]))
       .join('&');
     
+    // 5. GABUNGKAN SCRIPT URL DENGAN PARAMETER
     const url = scriptURL + '?' + params;
     
-    // Buat script element
+    // 6. Buat elemen script
     const script = document.createElement('script');
     script.src = url;
     
-    // Setup callback handler
+    // 7. Setup callback handler
     window[callbackName] = function(response) {
       // Hapus script dan callback
       document.body.removeChild(script);
       delete window[callbackName];
       
-      if (response.status === "success") {
-        tampilkanHasilEvaluasi(response.data);
-        navigate(2, 3);
-      } else {
-        showMessage(2, response.message || "Gagal memproses data", "error");
+      // Tambahkan penanganan error dari server
+      if (response.status === "error" || response.error) {
+        const errorMsg = response.message || response.error || "Gagal memproses data";
+        showMessage(2, errorMsg, "error");
+      } 
+      else if (response.status === "success") {
+        // Pastikan data evaluasi ada sebelum menampilkan
+        if (response.data && response.data.evaluasi) {
+          tampilkanHasilEvaluasi(response.data);
+          navigate(2, 3);
+        } else {
+          showMessage(2, "Data hasil tidak lengkap", "error");
+        }
+      } 
+      else {
+        showMessage(2, "Format response tidak dikenal", "error");
       }
       
       document.getElementById("loadingSpinner").style.display = "none";
     };
     
-    // Tambahkan script ke body
+    // 8. Tambahkan script ke dokumen
     document.body.appendChild(script);
     
   } catch (error) {
@@ -777,80 +791,7 @@ function submitForm() {
   }
 }
 
-async function BACKUP_submitForm() {
-  try {
-    // Kumpulkan data form
-    const formData = {
-      mNama: document.getElementById("mNama").value,
-      mNomorHp: document.getElementById("mNomorHp").value,
-      mEmail: document.getElementById("mEmail").value,
-      mUmur: document.getElementById("mUmur").value,
-      mJenisKelamin: document.getElementById("mJenisKelamin").value,
-      mBeratBadan: document.getElementById("mBeratBadan").value,
-      mTinggiBadan: document.getElementById("mTinggiBadan").value,
-      mLingkarPerut: document.getElementById("mLingkarPerut").value,
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-      mAir: document.querySelector('input[name="mAir"]:checked').value,
-      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-      mBab: document.querySelector('input[name="mBab"]:checked').value,
-      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-      mBak: document.querySelector('input[name="mBak"]:checked').value,
-      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-    };
-
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    
-    // Alternatif proxy 1
-    //const proxyUrl = 'https://api.codetabs.com/v1/proxy/?quest=';
-
-    // Alternatif proxy 2
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-
-    // Gunakan proxy untuk menghindari CORS
-    //const proxyUrl  = 'https://corsproxy.io/?';
-    const scriptURL = proxyUrl + encodeURIComponent('https://script.google.com/macros/s/AKfycbyluVdCHmeLSFGh4phLbkHMxep_uCR8nOfIV8wTztXIVfvFPtJGjndJCyf8S2qNpyoObA/exec');
-    
-    // Kirim data menggunakan fetch
-    const response = await fetch(scriptURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams(formData)
-    });
-    
-    // Handle response
-    const result = await response.json();
-    
-    if (result.status === "success") {
-      tampilkanHasilEvaluasi(result.data);
-      navigate(2, 3);
-    } else {
-      throw new Error(result.message || "Gagal memproses data");
-    }
-    
-  } catch (error) {
-    console.error("Error submitForm:", error);
-    showMessage(2, `Gagal: ${error.message}`, "error");
-  } finally {
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
-
-  function tampilkanHasilEvaluasi(data) {
+function tampilkanHasilEvaluasi(data) {
   // Pastikan elemen hasilAnalisa ada
   const hasilAnalisa = document.getElementById("hasilAnalisa");
   if (!hasilAnalisa) {
@@ -859,12 +800,13 @@ async function BACKUP_submitForm() {
   }
 
   // Validasi data yang diterima
-  if (!data || typeof data !== 'object') {
+  if (!data || typeof data !== 'object' || data.error) {
     hasilAnalisa.innerHTML = `
       <div class="alert alert-danger">
-        Data hasil tidak valid. Silakan coba lagi atau hubungi admin.
+        ${data?.error || "Data hasil tidak valid. Silakan coba lagi atau hubungi admin."}
       </div>
     `;
+    hasilAnalisa.style.display = "block";
     return;
   }
 
@@ -889,7 +831,7 @@ async function BACKUP_submitForm() {
 
   // Fungsi untuk generate tabel fungsional
   const generateTabelFungsional = () => {
-    if (!safeData.fungsional || safeData.fungsional.length === 0) {
+    if (safeData.fungsional.length === 0) {
       return `
         <div class="alert alert-warning">
           Data status fungsional tidak tersedia
@@ -920,7 +862,7 @@ async function BACKUP_submitForm() {
 
   // Fungsi untuk generate tabel evaluasi
   const generateTabelEvaluasi = () => {
-    if (!safeData.evaluasi || safeData.evaluasi.length === 0) {
+    if (safeData.evaluasi.length === 0) {
       return `
         <div class="alert alert-warning">
           Data evaluasi parameter tidak tersedia
@@ -1013,6 +955,12 @@ async function BACKUP_submitForm() {
           </div>
         </div>
 
+        <div class="d-grid gap-2 mt-3">
+          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+          </button>
+        </div>
+
         <div class="text-center text-muted mt-3">
           <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
@@ -1022,6 +970,9 @@ async function BACKUP_submitForm() {
 
   // Tampilkan bagian hasil analisa
   hasilAnalisa.style.display = "block";
+  
+  // Simpan data terakhir untuk proses kirim
+  window.dataTerakhir = data;
 }
   
  // Fungsi untuk kirim data
@@ -1038,7 +989,7 @@ async function BACKUP_submitForm() {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbzJFKBcPQxjPuWq3Cd2Zi4Ss1hQbTYER5zRpvwUsrLJQJwbNLH9HM7bgcax759e_NJZvA/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwJQzCO3hlde2TwOigfj3Z3ic-E8VKeUzX35WaP3BlT47j18Uk0HdKGUv4N3ZngQY85hw/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
