@@ -28,19 +28,14 @@ Fitur Aplikasi:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base target="_top">
-  <!-- Tambahkan di head HTML Anda -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Survey Kebugaran - WETools Versi 4</title>
-  
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    
 <style>
-
 body {
   background-image: url('https://lh3.googleusercontent.com/d/1xkWUSf4IUFav2aLaSfzmSIch8ywwagc7');
   background-size: cover;
@@ -147,22 +142,19 @@ body {
 }
 </style>
 
-<!-- <script src="https://apis.google.com/js/api.js"></script>  -->
-
 </head>
 <body>
 <div class="container mt-5 mb-5">
   <div class="row justify-content-center">
-      <div class="card mx-auto card shadow" style="max-width:600px">
-        <div class="card-header bg-primary text-white text-center">
-          <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
-        </div>
-        
+      <div class="card mx-auto card shadow">
+        <div class="header-image">
+          <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
+        </div>       
         <div class="card-body">
-          <div class="header-image">
-            <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
+          <div class="card-header bg-primary text-white text-center">
+            <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
           </div>
-          
+
           <!-- Progress Bar -->
           <div class="progress mb-4">
             <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
@@ -730,7 +722,7 @@ function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
     
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyEN9AqfQsUFGcB6ADx3t6SpWGLLIujZTpFGUSi1p0_5tiTQ-e1SL8CCz-PMRKDUgi8tQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyd1E-_q8NFia6-RBP_-HbvUDFG2Josmgh3T0R8ta2pH-w1yPlJSxdxPmVw6MnseSH4vQ/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -885,7 +877,7 @@ function tampilkanHasilEvaluasi(data) {
 
   // Generate HTML lengkap
   hasilAnalisa.innerHTML = `
-    <div class="card mb-4">
+    <!-- <div class="card mb-4"> -->
       <div class="card-header bg-primary text-white">
         <h4><i class="fas fa-chart-line me-2"></i>HASIL EVALUASI KEBUGARAN</h4>
       </div>
@@ -925,6 +917,7 @@ function tampilkanHasilEvaluasi(data) {
         </div>
 
         <!-- Form Sponsor -->
+        <!--
         <div class="border p-3 rounded bg-light mt-4">
           <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
           <div class="mb-3">
@@ -951,7 +944,8 @@ function tampilkanHasilEvaluasi(data) {
           <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
       </div>
-    </div>
+      -->
+    <!-- </div> -->
   `;
 
   // Tampilkan bagian hasil analisa
@@ -975,7 +969,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbyEN9AqfQsUFGcB6ADx3t6SpWGLLIujZTpFGUSi1p0_5tiTQ-e1SL8CCz-PMRKDUgi8tQ/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbyd1E-_q8NFia6-RBP_-HbvUDFG2Josmgh3T0R8ta2pH-w1yPlJSxdxPmVw6MnseSH4vQ/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
