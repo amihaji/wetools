@@ -733,61 +733,49 @@ function submitForm() {
     // Tampilkan loading
     document.getElementById("loadingSpinner").style.display = "block";
     
-    // 1. DEKLARASI SCRIPT URL (GANTI DENGAN URL DEPLOYMENT ANDA)
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwJQzCO3hlde2TwOigfj3Z3ic-E8VKeUzX35WaP3BlT47j18Uk0HdKGUv4N3ZngQY85hw/exec';
+    // 1. DEKLARASI SCRIPT URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzgdq1fVmcO4OlcanwuwVwWJk42JfAWSBn8L206lVoV1CtOpqegcSFuGnxd1GOmZudq-w/exec';
     
-    // 2. Buat nama callback unik
+    // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
     
-    // 3. Tambahkan parameter callback ke data
+    // 3. Tambahkan parameter callback
     formData.callback = callbackName;
     
-    // 4. Bangun URL dengan parameter query
+    // 4. Bangun parameter query
     const params = Object.keys(formData)
-      .map(key => key + '=' + encodeURIComponent(formData[key]))
+      .map(key => `${key}=${encodeURIComponent(formData[key])}`)
       .join('&');
     
-    // 5. GABUNGKAN SCRIPT URL DENGAN PARAMETER
+    // 5. Bangun URL lengkap
     const url = scriptURL + '?' + params;
     
     // 6. Buat elemen script
     const script = document.createElement('script');
     script.src = url;
     
-    // 7. Setup callback handler
+    // 7. Handle response
     window[callbackName] = function(response) {
-      // Hapus script dan callback
+      // Cleanup
       document.body.removeChild(script);
       delete window[callbackName];
       
-      // Tambahkan penanganan error dari server
-      if (response.status === "error" || response.error) {
-        const errorMsg = response.message || response.error || "Gagal memproses data";
-        showMessage(2, errorMsg, "error");
-      } 
-      else if (response.status === "success") {
-        // Pastikan data evaluasi ada sebelum menampilkan
-        if (response.data && response.data.evaluasi) {
-          tampilkanHasilEvaluasi(response.data);
-          navigate(2, 3);
-        } else {
-          showMessage(2, "Data hasil tidak lengkap", "error");
-        }
-      } 
-      else {
-        showMessage(2, "Format response tidak dikenal", "error");
+      // Handle response
+      if (response.status === "success") {
+        tampilkanHasilEvaluasi(response.data);
+        navigate(2, 3);
+      } else {
+        showMessage(2, response.message || "Gagal memproses data", "error");
       }
       
       document.getElementById("loadingSpinner").style.display = "none";
     };
     
-    // 8. Tambahkan script ke dokumen
+    // 8. Tambahkan ke dokumen
     document.body.appendChild(script);
     
   } catch (error) {
-    console.error("Error submitForm:", error);
-    showMessage(2, `Gagal: ${error.message}`, "error");
-    document.getElementById("loadingSpinner").style.display = "none";
+    // Error handling
   }
 }
 
@@ -989,7 +977,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbwJQzCO3hlde2TwOigfj3Z3ic-E8VKeUzX35WaP3BlT47j18Uk0HdKGUv4N3ZngQY85hw/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbzgdq1fVmcO4OlcanwuwVwWJk42JfAWSBn8L206lVoV1CtOpqegcSFuGnxd1GOmZudq-w/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
