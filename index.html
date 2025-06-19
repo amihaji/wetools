@@ -667,26 +667,22 @@ body {
     navigate(1, 2);
   }
   
-  // Untuk validasi halaman2
-  function BACKUP_validatePage2() {
-    const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-  
-    for (let id of required) {
-      if (!document.querySelector(`input[name="${id}"]:checked`)) {
-        return showMessage(2, "Inputan di isi dengan lengkap", "error");
-      }
-    }
-    submitForm();
-  }
 
-// Perbaiki fungsi validatePage2
+// fungsi validatePage2 untuk halaman 2
 function validatePage2() {
   const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
   let isValid = true;
 
   for (let id of required) {
-    if (!document.querySelector(`input[name="${id}"]:checked`)) {
-      showMessage(2, "Harap jawab semua pertanyaan", "error");
+    const inputs = document.querySelectorAll(`input[name="${id}"]`);
+    let answered = false;
+    
+    inputs.forEach(input => {
+      if (input.checked) answered = true;
+    });
+    
+    if (!answered) {
+      showMessage(2, `Harap jawab pertanyaan ${id}`, "error");
       isValid = false;
       break;
     }
@@ -695,7 +691,7 @@ function validatePage2() {
   if (isValid) {
     submitForm();
   }
-}  
+}
 
 function submitForm() {
   try {
@@ -734,7 +730,7 @@ function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
     
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyjpKKj5bD0qylA1Byi-tr8-R05yr3i6wd1G9vqsIiE8R5S7xTx5LoeHETVnTlReGazEg/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxJqFHwlvO3DPIjOdblY57zDoeoJSUbsuSEGc07-G4LAKiWTnWZhb-Ww2d47yS-vB4bEQ/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -773,9 +769,11 @@ function submitForm() {
     
     // 8. Tambahkan ke dokumen
     document.body.appendChild(script);
-    
+ 
   } catch (error) {
-    // Error handling
+    console.error("Error in submitForm:", error);
+    showMessage(2, "Terjadi kesalahan saat memproses data", "error");
+    document.getElementById("loadingSpinner").style.display = "none";
   }
 }
 
@@ -977,7 +975,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbyjpKKj5bD0qylA1Byi-tr8-R05yr3i6wd1G9vqsIiE8R5S7xTx5LoeHETVnTlReGazEg/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxJqFHwlvO3DPIjOdblY57zDoeoJSUbsuSEGc07-G4LAKiWTnWZhb-Ww2d47yS-vB4bEQ/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });
