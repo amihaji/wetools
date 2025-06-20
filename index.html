@@ -947,11 +947,11 @@ function tampilkanHasilEvaluasi(data) {
         <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
         <div class="mb-3">
           <label class="form-label">Nama Sponsor</label>
-          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
         </div>
         <div class="mb-3">
           <label class="form-label">HP Sponsor</label>
-          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa angka 0" pattern="[0-9]{10,14}">
+          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
         </div>
       </div>
 
@@ -1024,8 +1024,8 @@ async function kirimData() {
       </div>
     `;
   } finally {
-    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
-    btnKirim.disabled = false;
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
+    btnKirim.disabled = true;
   }
 }
    
