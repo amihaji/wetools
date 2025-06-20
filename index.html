@@ -895,7 +895,7 @@ function tampilkanHasilEvaluasi(data) {
   // Tampilkan Hasil Evaluasi ke Layar
   hasilAnalisa.innerHTML = `
       <div class="card-body">
-        <!-- Data Pribadi -->
+        <!-- DATA SURVEY -->
         <table class="table table-bordered">
           <tbody>
             <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
@@ -913,13 +913,13 @@ function tampilkanHasilEvaluasi(data) {
           </tbody>
         </table>
 
-        <!-- Tabel Fungsional -->
+        <!-- TABEL FUNGSIONAL -->
         ${generateTabelFungsional()}
 
-        <!-- Tabel Evaluasi -->
+        <!-- TABEL EVALUASI -->
         ${generateTabelEvaluasi()}
 
-        <!-- TABEL 4: SKOR, KESIMPULAN & REKOMENDASI -->
+        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
         <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Kesimpulan & Rekomendasi</h6>
         <!-- <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Kesimpulan & Rekomendasi</h6> -->
 
@@ -938,37 +938,34 @@ function tampilkanHasilEvaluasi(data) {
             </tr>
           </tbody>
         </table>
-
-        <!-- Form Sponsor -->
-        <div class="border p-3 rounded bg-light mt-4">
-          <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
-          <div class="mb-3">
-            <label class="form-label">Nama Sponsor</label>
-            <input type="text" id="mSponsor" class="form-control" 
-                  placeholder="Masukkan Nama Sponsor" 
-                  oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">HP Sponsor</label>
-            <input type="tel" id="mHpSponsor" class="form-control" 
-                  placeholder="Nomor WA tanpa angka 0" 
-                  pattern="[0-9]{10,14}">
-          </div>
-          
-          <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
-          <h6 style="text-align: center; color:#cc0000;">
-              Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
-              <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
-          </h6>
-          <div class="text-center text-muted mt-3">
-            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
-          </div>
+      </div>  
         
-          <div class="d-grid gap-2 mt-3" style="max-width:50%">
-            <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
-              <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
-            </button>
-          </div>
+      <!-- FORM SPONSOR -->
+      <div class="border p-3 rounded bg-light mt-4">
+        <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
+        <div class="mb-3">
+          <label class="form-label">Nama Sponsor</label>
+          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">HP Sponsor</label>
+          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa angka 0" pattern="[0-9]{10,14}">
+        </div>
+          
+        <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
+        <h6 style="text-align: center; color:#cc0000;">
+            Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+            <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
+        </h6>
+        <div class="text-center text-muted mt-3">
+            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        </div>
+        
+        <div class="d-grid gap-2 mt-3" style="max-width:50%; center-block;">
+          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+          </button>
+        </div>
       </div>
   `;
 
