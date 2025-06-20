@@ -49,7 +49,10 @@ body {
 
 .header-image {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .header-image img {
@@ -110,7 +113,9 @@ body {
   background-color: #002266;
   color: white;
   width: 100%;
+  /* align-content: center; */
 }
+
 .btn-kirim:hover {
   background-color: #0b5ed7;
   color: white;             
@@ -261,10 +266,10 @@ body {
 
             <!-- HALAMAN 2 -->
             <div class="page" id="page2">
-              <h5 class="mb-3"><i class="fas fa-clipboard-check form-icon"></i>Jawab pertanyaan ini sesuai yang anda rasakan (Wajib Isi)</h5>
-
+              <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab pertanyaan ini sesuai yang anda rasakan (Wajib Isi)</h5>
               <!-- Pertanyaan Grid -->
               <div class="row g-3">
+              
                 <!-- Pertanyaan 1 -->
                 <div class="col-md-12">
                   <label class="form-label">1. Sarapan Setiap Pagi</label><br>
@@ -519,66 +524,23 @@ body {
             <!-- HALAMAN 3 -->
             <div class="page" id="page3">
               <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi</h5>
-
+                
               <div id="loadingSpinner" class="text-center my-3">
                 <div class="spinner-border text-primary" role="status"></div>
                 <p class="mt-2">Memproses data...</p>
               </div>
-                         
-              <!-- <div id="hasilAnalisa"></div> -->  
-              <div id="hasilAnalisa" style="display: none;">
-                <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
-                  <div class="border p-3 rounded bg-light mb-4">
-                    <h6><i class="fas fa-user form-icon"></i>Data Sponsor</h6>
-                    <p><h7>Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</h7></p>
-                      <div class="mb-3">
-                        <label class="form-label">Nama Sponsor</label>
-                        <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor / pengundang" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-                      </div>
-
-                      <div class="mb-3">
-                        <label class="form-label">HP Sponsor</label>
-                        <input type="tel" id="mHpSponsor" class="form-control" placeholder="Input No WA tanpa diawali angka 0, untuk kirim hasil ke WA" pattern="[0-9]{10,14}">
-                      </div>
-                  </div>
-
-                  <div class="border p-3 rounded bg-light mb-4;">
-                    <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
-                    <h6 style="text-align: center; color:#cc0000;">
-                      Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
-                      <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM"</strong>
-                    </h6>
-                    <h6 style="text-align: center;">
-                      Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis
-                    </h6>
-                  </div>
-              </div>
               
-              <div id="formMessage3" class="mt-3"></div>
-              <!-- TOMBOL RESPONSIVE HALAMAN 3 -->
-              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                <button type="button" id="btnKirim" class="btn btn-primary btn-custom" onclick="kirimData()">
-                  <i class="fas fa-share-square me-2"></i>KIRIM
-                </button>
-              </div>
-
-              <div id="pesan-kirim" class="mt-3 text-center fw-semibold"></div>
+              <!-- Hasil Analisa akan ditampilkan kalau berhasil -->  
+              <div id="hasilAnalisa" style="display: none;">
+                
             </div>
           </form>
         </div>
         
         <!-- Footer -->
-        <div class="card-footer bg-dark text-white">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <a href="https://www.beratidealku.com" class="text-white text-decoration-none md-12 mb-md-0">
-              WETools Versi 2.0 Copyright © 2025, beratidealku - All rights reserved
-            </a>
-            <a href="https://bit.ly/LokasiKlubKita" class="text-white text-decoration-none">
-              <i class="fas fa-map-marker-alt me-1"></i> Lokasi Map NC - klubKITA 
-            </a>
-          </div>
-        </div>
-      
+        <footer class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
+          WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
+        </footer>
     </div>
   </div>
 </div>
@@ -589,7 +551,9 @@ body {
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
+  // ********************************
   // Fungsi untuk menampilkan halaman
+  // ********************************
   function navigate(from, to) {
     if (from !== null) {
       const fromElement = document.getElementById("page" + from);
@@ -603,7 +567,9 @@ body {
     clearMessage(to);
   }
   
+  //********************
   // Untuk progress bar
+  //********************
   function updateProgressBar(page) {
     const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
     const progressBar = document.getElementById("progressBar");
@@ -613,13 +579,17 @@ body {
     }
   }
   
+  //**********************
   // Untuk menghapus pesan
+  //**********************
   function clearMessage(page) {
     const msg = document.getElementById("formMessage" + page);
     if (msg) msg.innerHTML = "";
   }
   
+  //********************
   // Menampilkan pesan
+  //********************
   function showMessage(page, text, type) {
     const msgBox = document.getElementById("formMessage" + page);
     if (msgBox) {
@@ -628,7 +598,9 @@ body {
     }
   }
   
+  //*************************
   // Untuk validasi halaman1
+  //*************************
   function validatePage1() {
     const nama = document.getElementById("mNama").value.trim();
     const hp = document.getElementById("mNomorHp").value.trim();
@@ -662,8 +634,9 @@ body {
     navigate(1, 2);
   }
   
-
+// *************************************
 // fungsi validatePage2 untuk halaman 2
+// *************************************
 function validatePage2() {
   const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
   let isValid = true;
@@ -688,6 +661,9 @@ function validatePage2() {
   }
 }
 
+// ************************************
+// Untuk mengirim data inputan ke sheet
+// ************************************
 function submitForm() {
   try {
     // Kumpulkan data form
@@ -721,11 +697,9 @@ function submitForm() {
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
     };
 
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    
+      
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -745,21 +719,27 @@ function submitForm() {
     const script = document.createElement('script');
     script.src = url;
     
+    // Tampilkan loading
+    document.getElementById("loadingSpinner").style.display = "block";
+    // Tampilkan halaman 3
+    navigate(2, 3);
+    
     // 7. Handle response
     window[callbackName] = function(response) {
       // Cleanup
       document.body.removeChild(script);
       delete window[callbackName];
-      
+    
       // Handle response
       if (response.status === "success") {
+        // Sembuyikan Tampilkan loading
+        document.getElementById("loadingSpinner").style.display = "none";
+        // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
-        navigate(2, 3);
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
+        document.getElementById("loadingSpinner").style.display = "none";
       }
-      
-      document.getElementById("loadingSpinner").style.display = "none";
     };
     
     // 8. Tambahkan ke dokumen
@@ -772,6 +752,9 @@ function submitForm() {
   }
 }
 
+// *****************************************
+// Untuk menampilkan Hasil Evaluasi Ke Layar
+// *****************************************
 function tampilkanHasilEvaluasi(data) {
   // Pastikan elemen hasilAnalisa ada
   const hasilAnalisa = document.getElementById("hasilAnalisa");
@@ -821,7 +804,7 @@ function tampilkanHasilEvaluasi(data) {
     }
 
     return `
-      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
+      <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -878,13 +861,15 @@ function tampilkanHasilEvaluasi(data) {
     `;
   };
 
-  // Generate HTML lengkap
+  // Tampilkan Hasil Evaluasi ke Layar
   hasilAnalisa.innerHTML = `
       <div class="card-body">
-        <!-- Data Pribadi -->
+        <!-- DATA SURVEY -->
         <table class="table table-bordered">
           <tbody>
-            <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td></tr>
+            <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                <td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td>
+            </tr>
             <tr><td>Nama</td><td>${safeData.nama}</td></tr>
             <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
             <tr><td>Email</td><td>${safeData.email}</td></tr>
@@ -897,53 +882,64 @@ function tampilkanHasilEvaluasi(data) {
           </tbody>
         </table>
 
-        <!-- Tabel Fungsional -->
+        <!-- TABEL FUNGSIONAL -->
         ${generateTabelFungsional()}
 
-        <!-- Tabel Evaluasi -->
+        <!-- TABEL EVALUASI -->
         ${generateTabelEvaluasi()}
 
-        <!-- Kesimpulan & Rekomendasi -->
-        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan</h5>
-        <div class="alert alert-info">${safeData.kesimpulan}</div>
-
-        <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Rekomendasi</h5>
-        <div class="alert alert-warning">${safeData.rekomendasi}</div>
-
-        <!-- Skor -->
-        <div class="text-center mt-4">
-          <h5>Persentase Kebugaran Anda: <span class="badge bg-primary">${safeData.persen}</span></h5>
+        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
+        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+              <td style="width:85%;">
+                Persentase kebugaran anda : <strong>${safeData.persen}</strong>
+              </td> 
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                <td style="width:85%;">${safeData.kesimpulan}</td>
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                <td style="width:85%;">${safeData.rekomendasi}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>  
+        
+      <!-- FORM SPONSOR -->
+      <div class="border p-3 rounded bg-light mt-4">
+        <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
+        <div class="mb-3">
+          <label class="form-label">Nama Sponsor</label>
+          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
         </div>
-
-        <!-- Form Sponsor -->
-        <!-- TIDAK DITAMPILKAN
-        <div class="border p-3 rounded bg-light mt-4">
-          <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
-          <div class="mb-3">
-            <label class="form-label">Nama Sponsor</label>
-            <input type="text" id="mSponsor" class="form-control" 
-                  placeholder="Masukkan Nama Sponsor" 
-                  oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">HP Sponsor</label>
-            <input type="tel" id="mHpSponsor" class="form-control" 
-                  placeholder="Nomor WA tanpa angka 0" 
-                  pattern="[0-9]{10,14}">
-          </div>
-        </div>
-
-        <div class="d-grid gap-2 mt-3">
-          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
-            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
-          </button>
-        </div>
-
-        <div class="text-center text-muted mt-3">
-          <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        <div class="mb-3">
+          <label class="form-label">HP Sponsor</label>
+          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
         </div>
       </div>
-       --->
+
+      <!-- Call To Action -->
+      <div class="border p-3 rounded bg-light mt-4">    
+        <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
+        <h6 style="text-align: center; color:#cc0000;">
+            Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+            <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
+        </h6>
+        <div class="text-center text-muted mt-3">
+            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        </div>
+        
+        <div class="d-flex justify-content-center mt-3">
+          <div style="max-width: 50%;">
+            <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+              <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+            </button>
+          </div>
+        </div>
+
+      </div>
   `;
 
   // Tampilkan bagian hasil analisa
@@ -953,70 +949,74 @@ function tampilkanHasilEvaluasi(data) {
   window.dataTerakhir = data;
 }
   
- // Fungsi untuk kirim data
-  async function kirimData() {
-    try {
-      const btnKirim = document.getElementById("btnKirim");
-      btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
-      btnKirim.disabled = true;
-      
-      const sponsorData = {
-        action: "prosesKirim",
-        id: dataTerakhir.id, // Simpan ID data terakhir
-        mSponsor: document.getElementById("mSponsor").value,
-        mHpSponsor: document.getElementById("mHpSponsor").value
-      };
-      
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec", {
-        method: "POST",
-        body: new URLSearchParams(sponsorData)
-      });
-      
-      const result = await response.json();
-      
-      if (result.status !== "success") {
-        throw new Error(result.message || "Gagal mengirim data");
-      }
-      
-      document.getElementById("pesan-kirim").innerHTML = `
-        <div class="alert alert-success">
-          Hasil survey berhasil dikirim ke WA/Email Anda!
-        </div>
-      `;
-      
-    } catch (error) {
-      document.getElementById("pesan-kirim").innerHTML = `
-        <div class="alert alert-danger">
-          Gagal mengirim hasil: ${error.message}
-        </div>
-      `;
-    } finally {
-      btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
-      btnKirim.disabled = false;
-    }
-  }
-    
-  // Untuk mereset form
-  function resetForm() {
-    document.getElementById("fitnessForm").reset();
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById("page1").classList.add("active");
-    updateProgressBar(1);
-    ["1", "2", "3"].forEach(n => clearMessage(n));
-    
-    document.getElementById("hasilAnalisa").innerHTML = "";
-    document.getElementById("hasilAnalisa").style.display = "none";
-    document.getElementById("loadingSpinner").style.display = "block";
-    
+// *************************
+// Fungsi untuk kirim data
+// *************************
+async function kirimData() {
+  try {
     const btnKirim = document.getElementById("btnKirim");
-    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
-    btnKirim.disabled = false;
-    
-    document.getElementById("pesan-kirim").innerHTML = "";
-    
-    // Tampilkan pesan reset
-    showMessage(1, "Form berhasil direset", "success");
+    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+    btnKirim.disabled = true;
+     
+    const sponsorData = {
+      action: "prosesKirim",
+      id: dataTerakhir.id, // Simpan ID data terakhir
+      mSponsor: document.getElementById("mSponsor").value,
+      mHpSponsor: document.getElementById("mHpSponsor").value
+    };
+      
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec", {
+      method: "POST",
+      body: new URLSearchParams(sponsorData)
+    });
+      
+    const result = await response.json();
+      
+    if (result.status !== "success") {
+      throw new Error(result.message || "Gagal mengirim data");
+    }
+      
+    document.getElementById("pesan-kirim").innerHTML = `
+      <div class="alert alert-success">
+        Hasil survey berhasil dikirim ke WA/Email Anda!
+      </div>
+    `;
+      
+  } catch (error) {
+    document.getElementById("pesan-kirim").innerHTML = `
+      <div class="alert alert-danger">
+        Gagal mengirim hasil: ${error.message}
+      </div>
+    `;
+  } finally {
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
+    btnKirim.disabled = true;
   }
+}
+   
+// *******************
+// Untuk mereset form
+// *******************
+function resetForm() {
+  document.getElementById("fitnessForm").reset();
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page1").classList.add("active");
+  updateProgressBar(1);
+  ["1", "2", "3"].forEach(n => clearMessage(n));
+    
+  document.getElementById("hasilAnalisa").innerHTML = "";
+  document.getElementById("hasilAnalisa").style.display = "none";
+  document.getElementById("loadingSpinner").style.display = "block";
+    
+  const btnKirim = document.getElementById("btnKirim");
+  btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
+  btnKirim.disabled = false;
+    
+  document.getElementById("pesan-kirim").innerHTML = "";
+    
+  // Tampilkan pesan reset
+  showMessage(1, "Form berhasil direset", "success");
+}
   
 </script>
 </body>

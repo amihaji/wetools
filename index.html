@@ -836,28 +836,30 @@ function tampilkanHasilEvaluasi(data) {
 
     return `
       <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-            <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-            <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-            <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-            <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${safeData.evaluasi.map((item, index) => `
+      <div style="overflow-x: auto; width: 100%;">
+        <table class="table table-bordered">
+          <thead>
             <tr>
-              <td>${item.param || `Parameter ${index + 1}`}</td>
-              <td style="text-align:center;">${item.hasil || "-"}</td>
-              <td style="text-align:center;">${item.ideal || "-"}</td>
-              <td style="text-align:center;">${item.satuan || "-"}</td>
-              <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
+              <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+              <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+              <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+              <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+              <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
             </tr>
-          `).join('')}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            ${safeData.evaluasi.map((item, index) => `
+              <tr>
+                <td>${item.param || `Parameter ${index + 1}`}</td>
+                <td style="text-align:center;">${item.hasil || "-"}</td>
+                <td style="text-align:center;">${item.ideal || "-"}</td>
+                <td style="text-align:center;">${item.satuan || "-"}</td>
+                <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
     `;
   };
 
