@@ -573,17 +573,9 @@ body {
         </div>
         
         <!-- Footer -->
-        <div class="card-footer bg-dark text-white">
-          <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <a href="https://www.beratidealku.com" class="text-white text-decoration-none md-12 mb-md-0">
-              WETools Versi 2.0 Copyright © 2025, beratidealku - All rights reserved
-            </a>
-            <a href="https://bit.ly/LokasiKlubKita" class="text-white text-decoration-none">
-              <i class="fas fa-map-marker-alt me-1"></i> Lokasi Map NC - klubKITA 
-            </a>
-          </div>
-        </div>
-      
+        <footer class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
+          WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
+        </footer>
     </div>
   </div>
 </div>
@@ -962,17 +954,22 @@ function tampilkanHasilEvaluasi(data) {
                   placeholder="Nomor WA tanpa angka 0" 
                   pattern="[0-9]{10,14}">
           </div>
+          
+          <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
+          <h6 style="text-align: center; color:#cc0000;">
+              Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+              <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
+          </h6>
         </div>
 
-        <div class="d-grid gap-2 mt-3">
+        <div class="d-grid gap-2 mt-3 style="max-width:50%">
           <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
             <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
           </button>
-        </div>
-
         <div class="text-center text-muted mt-3">
-          <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
+      </div>
   `;
 
   // Tampilkan bagian hasil analisa
