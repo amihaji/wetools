@@ -106,27 +106,14 @@ body {
   color: white;
 }
 
-/* TIDAK DIAKTIFKAN
 .btn-kirim {
   background-color: #002266;
   color: white;
   width: 100%;
-  align-content: center;
+  /* align-content: center; */
 }
+
 .btn-kirim:hover {
-  background-color: #0b5ed7;
-  color: white;             
-}
-*/
-
-
-.btnkirim {
-  background-color: #002266;
-  color: white;
-  width: 100%;
-  align-content: center;
-}
-.btnkirim:hover {
   background-color: #0b5ed7;
   color: white;             
 }
@@ -979,8 +966,8 @@ function tampilkanHasilEvaluasi(data) {
             <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
         
-        <div class="d-grid gap-2 mt-3" style="max-width:50%">
-          <button id="btnKirim" class="btn btn-success" style="center-block" onclick="kirimData()">
+        <div class="d-grid gap-2 mt-3 justify-content-center" style="max-width:50%">
+          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
             <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
           </button>
         </div>
