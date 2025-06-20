@@ -694,9 +694,7 @@ function submitForm() {
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
     };
 
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    
+      
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
     
@@ -726,9 +724,11 @@ function submitForm() {
       
       // Handle response
       if (response.status === "success") {
-        // Tampilkan spinner disini
-        document.getElementById("loadingSpinner").style.display = "block";
+        // Tampilkan halaman 3
         navigate(2, 3);
+        // Tampilkan loading
+        document.getElementById("loadingSpinner").style.display = "block";
+        // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
         // navigate(2, 3);
       } else {
