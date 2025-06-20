@@ -722,12 +722,13 @@ function submitForm() {
       document.body.removeChild(script);
       delete window[callbackName];
       
-      // Tampilkan halaman 3
-      navigate(2, 3);
       // Tampilkan loading
       document.getElementById("loadingSpinner").style.display = "block";
+      
       // Handle response
       if (response.status === "success") {
+        // Tampilkan halaman 3
+        navigate(2, 3);
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
         // navigate(2, 3);
