@@ -724,11 +724,12 @@ function submitForm() {
       
       // Tampilkan loading
       document.getElementById("loadingSpinner").style.display = "block";
-      
+      // Tampilkan halaman 3
+      navigate(2, 3);
+
       // Handle response
       if (response.status === "success") {
-        // Tampilkan halaman 3
-        navigate(2, 3);
+       
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
         // navigate(2, 3);
