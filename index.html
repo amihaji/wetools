@@ -725,7 +725,7 @@ function submitForm() {
     document.getElementById("loadingSpinner").style.display = "block";
     
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -903,7 +903,28 @@ function tampilkanHasilEvaluasi(data) {
         <!-- Tabel Evaluasi -->
         ${generateTabelEvaluasi()}
 
+        <!-- TABEL 4: SKOR, KESIMPULAN & REKOMENDASI -->
+        <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+              <td style="width:85%;">
+                Persentase kebugaran anda : <strong>${safeData.persen}</strong>
+              </td> 
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                <td style="width:85%;">${safeData.kesimpulan}</td>
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                <td style="width:85%;">${safeData.rekomendasi}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+
         <!-- Kesimpulan & Rekomendasi -->
+        <!-- TIDAK AKTIF
         <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan</h5>
         <div class="alert alert-info">${safeData.kesimpulan}</div>
 
@@ -914,6 +935,7 @@ function tampilkanHasilEvaluasi(data) {
         <div class="text-center mt-4">
           <h5>Persentase Kebugaran Anda: <span class="badge bg-primary">${safeData.persen}</span></h5>
         </div>
+        -->
 
         <!-- Form Sponsor -->
         <!-- TIDAK DITAMPILKAN
@@ -967,7 +989,7 @@ function tampilkanHasilEvaluasi(data) {
         mHpSponsor: document.getElementById("mHpSponsor").value
       };
       
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec", {
         method: "POST",
         body: new URLSearchParams(sponsorData)
       });

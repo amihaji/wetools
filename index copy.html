@@ -28,16 +28,14 @@ Fitur Aplikasi:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base target="_top">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Survey Kebugaran - WETools Versi 4</title>
-  
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Custom CSS -->
-  <!-- <link rel="stylesheet" href="assets/css/styleWETools.css"> -->
+   
 <style>
-
 body {
   background-image: url('https://lh3.googleusercontent.com/d/1xkWUSf4IUFav2aLaSfzmSIch8ywwagc7');
   background-size: cover;
@@ -66,6 +64,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.1);
   padding: 30px;
+  /* max-width: 800px; */
 }
 
 .page {
@@ -144,22 +143,20 @@ body {
 }
 </style>
 
-<!-- <script src="https://apis.google.com/js/api.js"></script>  -->
-
 </head>
 <body>
 <div class="container mt-5 mb-5">
   <div class="row justify-content-center">
-      <div class="card mx-auto card shadow" style="max-width:600px">
-        <div class="card-header bg-primary text-white text-center">
-          <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
-        </div>
-        
+      <div class="card mx-auto card shadow" style="max-width:800px";>
+        <div class="header-image">
+          <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
+        </div>       
         <div class="card-body">
-          <div class="header-image">
-            <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid">
+          <div class="card-header bg-primary text-white text-center">
+            <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
           </div>
-          
+
+          <div><p>&nbsp</p></div>
           <!-- Progress Bar -->
           <div class="progress mb-4">
             <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
@@ -527,9 +524,10 @@ body {
                 <div class="spinner-border text-primary" role="status"></div>
                 <p class="mt-2">Memproses data...</p>
               </div>
-
+                         
+              <!-- <div id="hasilAnalisa"></div> -->  
               <div id="hasilAnalisa" style="display: none;">
-                  <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
+                <!-- DATA UNTUK SPONSOR / PENGUNDANG -->
                   <div class="border p-3 rounded bg-light mb-4">
                     <h6><i class="fas fa-user form-icon"></i>Data Sponsor</h6>
                     <p><h7>Silahkan memasukkan data Sponsor/pengundang anda, jika ada (optional)</h7></p>
@@ -591,291 +589,435 @@ body {
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
-// Fungsi untuk menampilkan halaman
-function navigate(from, to) {
-  // Hanya hilangkan class 'active' jika from tidak null
-  if (from !== null) {
-    const fromElement = document.getElementById("page" + from);
-    if (fromElement) fromElement.classList.remove("active");
+  // Fungsi untuk menampilkan halaman
+  function navigate(from, to) {
+    if (from !== null) {
+      const fromElement = document.getElementById("page" + from);
+      if (fromElement) fromElement.classList.remove("active");
+    }
+    
+    const toElement = document.getElementById("page" + to);
+    if (toElement) toElement.classList.add("active");
+    
+    updateProgressBar(to);
+    clearMessage(to);
   }
   
-  // Tambahkan class 'active' ke halaman tujuan
-  const toElement = document.getElementById("page" + to);
-  if (toElement) toElement.classList.add("active");
-  
-  updateProgressBar(to);
-  clearMessage(to);
-}
-
-// Untuk progress bar
-function updateProgressBar(page) {
-  const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
-  const progressBar = document.getElementById("progressBar");
-  if (progressBar) {
-    progressBar.style.width = percent + "%";
-    progressBar.setAttribute('aria-valuenow', percent);
-  }
-}
-
-// Untuk menghapus pesan
-function clearMessage(page) {
-  const msg = document.getElementById("formMessage" + page);
-  if (msg) msg.innerHTML = "";
-}
-
-// Menampilkan pesan
-function showMessage(page, text, type) {
-  const msgBox = document.getElementById("formMessage" + page);
-  if (msgBox) {
-    msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
-    msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-}
-
-// Untuk validasi halaman1
-function validatePage1() {
-  const nama   = document.getElementById("mNama").value.trim();
-  const hp     = document.getElementById("mNomorHp").value.trim();
-  const email  = document.getElementById("mEmail").value.trim();
-  const umur   = +document.getElementById("mUmur").value;
-  const berat  = +document.getElementById("mBeratBadan").value;
-  const tinggi = +document.getElementById("mTinggiBadan").value;
- 
-  if (nama.length < 3 || nama.length > 40) 
-     return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-  if (!/^[0-9]{10,14}$/.test(hp)) 
-     return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
-  if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
-     return showMessage(1, "Salah input email", "error");
-  if (umur < 18 || umur > 80) 
-     return showMessage(1, "Umur harus antara 18-80 thn", "error");
-  if (berat < 40 || berat > 150) 
-     return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
-  if (tinggi < 100 || tinggi > 190) 
-     return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
-   
-  const lingkarPerut   = document.getElementById("mLingkarPerut").value;
-  const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
-
-  if (!lingkarPerut || !aktivitasFisik) {
-    showMessage(1, "Inputan di isi dengan lengkap", "error");
-    return false;
-  }
-
-  // Kalau semua validasi lolos, pindah ke halaman 2
-  navigate(1, 2);
-}
-
-// Untuk validasi halaman2
-function validatePage2() {
-  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-
-  for (let id of required) {
-    if (!document.querySelector(`input[name="${id}"]:checked`)) {
-      return showMessage(2, "Inputan di isi dengan lengkap", "error");
+  // Untuk progress bar
+  function updateProgressBar(page) {
+    const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
+    const progressBar = document.getElementById("progressBar");
+    if (progressBar) {
+      progressBar.style.width = percent + "%";
+      progressBar.setAttribute('aria-valuenow', percent);
     }
   }
-  submitForm();
-}
+  
+  // Untuk menghapus pesan
+  function clearMessage(page) {
+    const msg = document.getElementById("formMessage" + page);
+    if (msg) msg.innerHTML = "";
+  }
+  
+  // Menampilkan pesan
+  function showMessage(page, text, type) {
+    const msgBox = document.getElementById("formMessage" + page);
+    if (msgBox) {
+      msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
+      msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+  
+  // Untuk validasi halaman1
+  function validatePage1() {
+    const nama = document.getElementById("mNama").value.trim();
+    const hp = document.getElementById("mNomorHp").value.trim();
+    const email = document.getElementById("mEmail").value.trim();
+    const umur = +document.getElementById("mUmur").value;
+    const berat = +document.getElementById("mBeratBadan").value;
+    const tinggi = +document.getElementById("mTinggiBadan").value;
+   
+    if (nama.length < 3 || nama.length > 40) 
+       return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
+    if (!/^[0-9]{10,14}$/.test(hp)) 
+       return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
+    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
+       return showMessage(1, "Salah input email", "error");
+    if (umur < 18 || umur > 80) 
+       return showMessage(1, "Umur harus antara 18-80 thn", "error");
+    if (berat < 40 || berat > 150) 
+       return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
+    if (tinggi < 100 || tinggi > 190) 
+       return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
+     
+    const lingkarPerut = document.getElementById("mLingkarPerut").value;
+    const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
+  
+    if (!lingkarPerut || !aktivitasFisik) {
+      showMessage(1, "Inputan di isi dengan lengkap", "error");
+      return false;
+    }
+  
+    // Kalau semua validasi lolos, pindah ke halaman 2
+    navigate(1, 2);
+  }
+  
 
-async function submitForm() {
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxcoP5vwShA_-zDt-THM0wX1yJ2YqhDDoY4k0DFOLxyk88FzQiiFjShUSaeCpZ9uwX1/exec";
-   // Kumpulkan semua data form
-   const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value, 
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
-  };
+// fungsi validatePage2 untuk halaman 2
+function validatePage2() {
+  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+  let isValid = true;
 
-  try {
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(data)
+  for (let id of required) {
+    const inputs = document.querySelectorAll(`input[name="${id}"]`);
+    let answered = false;
+    
+    inputs.forEach(input => {
+      if (input.checked) answered = true;
     });
     
-    const hasilHTML = await response.text();
-    // Tampilkan hasil evaluasi
-    document.getElementById("hasilAnalisa").innerHTML = hasilHTML;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("loadingSpinner").style.display = "none";
-    navigate(2, 3); // Pindah ke halaman 3
-    
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Gagal mengirim data. Silakan coba lagi.");
+    if (!answered) {
+      showMessage(2, `Harap jawab pertanyaan ${id}`, "error");
+      isValid = false;
+      break;
+    }
+  }
+  
+  if (isValid) {
+    submitForm();
   }
 }
 
-async function BACKUP_submitForm() {
-//function submitForm() {
-  // Ganti dengan URL deployment GAS
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbx93k4_nrvhQponDKxCZKTrMsqmEYQEkgKmyLC8p2-CFnpHwlseeBb8aCS1jcPYeO0o/exec"; 
+function submitForm() {
+  try {
+    // Kumpulkan data form
+    const formData = {
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value,
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+    };
+
+    // Tampilkan loading
+    document.getElementById("loadingSpinner").style.display = "block";
     
-  // Kumpulkan semua data form
-  const data = {
-    mNama: document.getElementById("mNama").value,
-    mNomorHp: document.getElementById("mNomorHp").value, 
-    mEmail: document.getElementById("mEmail").value,
-    mUmur: document.getElementById("mUmur").value,
-    mJenisKelamin: document.getElementById("mJenisKelamin").value,
-    mBeratBadan: document.getElementById("mBeratBadan").value,
-    mTinggiBadan: document.getElementById("mTinggiBadan").value,
-    mLingkarPerut: document.getElementById("mLingkarPerut").value,
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-    mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-    mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-    mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-    mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-    mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-    mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-    mAir: document.querySelector('input[name="mAir"]:checked').value,
-    mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-    mBab: document.querySelector('input[name="mBab"]:checked').value,
-    mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-    mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-    mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-    mBak: document.querySelector('input[name="mBak"]:checked').value,
-    mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-    mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-    mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-    mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-    mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+    // 1. DEKLARASI SCRIPT URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec';
+    
+    // 2. Buat callback unik
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    
+    // 3. Tambahkan parameter callback
+    formData.callback = callbackName;
+    
+    // 4. Bangun parameter query
+    const params = Object.keys(formData)
+      .map(key => `${key}=${encodeURIComponent(formData[key])}`)
+      .join('&');
+    
+    // 5. Bangun URL lengkap
+    const url = scriptURL + '?' + params;
+    
+    // 6. Buat elemen script
+    const script = document.createElement('script');
+    script.src = url;
+    
+    // 7. Handle response
+    window[callbackName] = function(response) {
+      // Cleanup
+      document.body.removeChild(script);
+      delete window[callbackName];
+      
+      // Handle response
+      if (response.status === "success") {
+        tampilkanHasilEvaluasi(response.data);
+        navigate(2, 3);
+      } else {
+        showMessage(2, response.message || "Gagal memproses data", "error");
+      }
+      
+      document.getElementById("loadingSpinner").style.display = "none";
+    };
+    
+    // 8. Tambahkan ke dokumen
+    document.body.appendChild(script);
+ 
+  } catch (error) {
+    console.error("Error in submitForm:", error);
+    showMessage(2, "Terjadi kesalahan saat memproses data", "error");
+    document.getElementById("loadingSpinner").style.display = "none";
+  }
+}
+
+function tampilkanHasilEvaluasi(data) {
+  // Pastikan elemen hasilAnalisa ada
+  const hasilAnalisa = document.getElementById("hasilAnalisa");
+  if (!hasilAnalisa) {
+    console.error("Element hasilAnalisa tidak ditemukan");
+    return;
+  }
+
+  // Validasi data yang diterima
+  if (!data || typeof data !== 'object' || data.error) {
+    hasilAnalisa.innerHTML = `
+      <div class="alert alert-danger">
+        ${data?.error || "Data hasil tidak valid. Silakan coba lagi atau hubungi admin."}
+      </div>
+    `;
+    hasilAnalisa.style.display = "block";
+    return;
+  }
+
+  // Siapkan data default untuk menghindari error
+  const safeData = {
+    tanggal: data.tanggal || "Tidak tersedia",
+    nama: data.nama || "Tidak tersedia",
+    hp: data.hp || "Tidak tersedia",
+    email: data.email || "Tidak tersedia",
+    umur: data.umur || "Tidak tersedia",
+    jk: data.jk || "Tidak tersedia",
+    berat: data.berat || "Tidak tersedia",
+    tinggi: data.tinggi || "Tidak tersedia",
+    lingkar: data.lingkar || "Tidak tersedia",
+    aktivitas: data.aktivitas || "Tidak tersedia",
+    fungsional: data.fungsional || [],
+    evaluasi: data.evaluasi || [],
+    persen: data.persen || "0%",
+    kesimpulan: data.kesimpulan || "Tidak tersedia",
+    rekomendasi: data.rekomendasi || "Tidak tersedia"
   };
 
-  // Tampilkan loading
-  document.getElementById("loadingSpinner").style.display = "block";
+  // Fungsi untuk generate tabel fungsional
+  const generateTabelFungsional = () => {
+    if (safeData.fungsional.length === 0) {
+      return `
+        <div class="alert alert-warning">
+          Data status fungsional tidak tersedia
+        </div>
+      `;
+    }
 
-  // Kirim data ke Google Apps Script
-  fetch(GAS_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams(data)
-  })
-  .then(res => res.text())
-  .then(html => {
-    // Tampilkan hasil evaluasi
-    document.getElementById("hasilAnalisa").innerHTML = html;
-    document.getElementById("hasilAnalisa").style.display = "block";
-    document.getElementById("loadingSpinner").style.display = "none";
-    navigate(2, 3); // Pindah ke halaman 3
-  })
-  .catch(err => {
-    console.error("Error:", err);
-    document.getElementById("loadingSpinner").style.display = "none";
-    alert("Gagal mengirim data. Silakan coba lagi.");
-  });
-}
-
-// Untuk mereset form
-function resetForm() {
-  document.getElementById("fitnessForm").reset();
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page1").classList.add("active");
-  updateProgressBar(1);
-  ["1", "2", "3"].forEach(n => clearMessage(n));
-  
-  document.getElementById("page1").style.fontFamily       = "Segoe UI, Tahoma, Geneva, Verdana, sans-serif";
-  document.getElementById("page1").style.fontSize         = "1rem";
- 
-  document.getElementById("hasilAnalisa").innerHTML       = "";
-  document.getElementById("hasilAnalisa").style.display   = "none";
-  document.getElementById("loadingSpinner").style.display = "block";
-  
-  document.getElementById("btnKirim").innerHTML           = `<i class="bi bi-send-check"></i> Kirim`; 
-  document.getElementById("btnKirim").style.display       = "block";
-  document.getElementById("btnReset").style.display       = "block";
-
-  document.getElementById("btnKirim").disabled            = false;   // Tombol Kirim Aktif
-  document.getElementById("btnReset").disabled            = false;   // Tombol Reset Aktif 
- 
-  // Tampilkan pesan reset
-  showMessage(1, "Form berhasil direset", "success");
-}
-
-function kirimData() {
-  const GAS_URL     = "https://script.google.com/macros/s/AKfycbxcoP5vwShA_-zDt-THM0wX1yJ2YqhDDoY4k0DFOLxyk88FzQiiFjShUSaeCpZ9uwX1/exec"; 
-  const sponsorData = {
-    action: "prosesKirim",
-    mSponsor: document.getElementById("mSponsor").value,
-    mHpSponsor: document.getElementById("mHpSponsor").value
+    return `
+      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${safeData.fungsional.map((item, index) => `
+            <tr>
+              <td>${item.label || `Pertanyaan ${index + 1}`}</td>
+              <td style="text-align:center;">${item.jawaban || "Tidak diisi"}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
   };
+
+  // Fungsi untuk generate tabel evaluasi
+  const generateTabelEvaluasi = () => {
+    if (safeData.evaluasi.length === 0) {
+      return `
+        <div class="alert alert-warning">
+          Data evaluasi parameter tidak tersedia
+        </div>
+      `;
+    }
+
+    return `
+      <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+            <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+            <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+            <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+            <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${safeData.evaluasi.map((item, index) => `
+            <tr>
+              <td>${item.param || `Parameter ${index + 1}`}</td>
+              <td style="text-align:center;">${item.hasil || "-"}</td>
+              <td style="text-align:center;">${item.ideal || "-"}</td>
+              <td style="text-align:center;">${item.satuan || "-"}</td>
+              <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  };
+
+  // Generate HTML lengkap
+  hasilAnalisa.innerHTML = `
+      <div class="card-body">
+        <!-- Data Pribadi -->
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td></tr>
+            <tr><td>Nama</td><td>${safeData.nama}</td></tr>
+            <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
+            <tr><td>Email</td><td>${safeData.email}</td></tr>
+            <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
+            <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
+            <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
+            <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
+            <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
+            <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Tabel Fungsional -->
+        ${generateTabelFungsional()}
+
+        <!-- Tabel Evaluasi -->
+        ${generateTabelEvaluasi()}
+
+        <!-- Kesimpulan & Rekomendasi -->
+        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan</h5>
+        <div class="alert alert-info">${safeData.kesimpulan}</div>
+
+        <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Rekomendasi</h5>
+        <div class="alert alert-warning">${safeData.rekomendasi}</div>
+
+        <!-- Skor -->
+        <div class="text-center mt-4">
+          <h5>Persentase Kebugaran Anda: <span class="badge bg-primary">${safeData.persen}</span></h5>
+        </div>
+
+        <!-- Form Sponsor -->
+        <!-- TIDAK DITAMPILKAN
+        <div class="border p-3 rounded bg-light mt-4">
+          <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
+          <div class="mb-3">
+            <label class="form-label">Nama Sponsor</label>
+            <input type="text" id="mSponsor" class="form-control" 
+                  placeholder="Masukkan Nama Sponsor" 
+                  oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">HP Sponsor</label>
+            <input type="tel" id="mHpSponsor" class="form-control" 
+                  placeholder="Nomor WA tanpa angka 0" 
+                  pattern="[0-9]{10,14}">
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-3">
+          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+          </button>
+        </div>
+
+        <div class="text-center text-muted mt-3">
+          <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        </div>
+      </div>
+       --->
+  `;
+
+  // Tampilkan bagian hasil analisa
+  hasilAnalisa.style.display = "block";
   
-  fetch(GAS_URL, {
-    method: "POST",
-    body: new URLSearchParams(sponsorData)
-  })
-  .then(response => {
-    if (!response.ok) throw new Error("Gagal mengirim");
-    alert("Hasil survey berhasil dikirim!");
-  })
-  .catch(error => {
-    console.error("Error:", error);
-    alert("Gagal mengirim hasil. Silakan coba lagi.");
-  });
+  // Simpan data terakhir untuk proses kirim
+  window.dataTerakhir = data;
 }
-
-function BACKUP_kirimData() {
-  const GAS_URL      = "https://script.google.com/macros/s/AKfycbwIVo-bVZuAYWbwUOA9Fn95iaUxekg4fkdbCeEaXCQ6GR1LTmJEz897JOFWxthjUInb/exec"; 
-  const sponsorName  = document.getElementById("mSponsor")?.value || "Hesty Husain";
-  const sponsorPhone = document.getElementById("mHpSponsor")?.value || "81241318600";
   
-  // Ubah tampilan tombol saat proses kirim
-  const btnKirim = document.getElementById("btnKirim");
-  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
-  btnKirim.disabled = true;
-
-  // Kirim data sponsor ke GAS
-  fetch(GAS_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      action: "prosesKirim",
-      mSponsor: sponsorName,
-      mHpSponsor: sponsorPhone
-    })
-  })
-  .then(res => {
-    btnKirim.innerHTML = '<i class="fas fa-check"></i> Terkirim!';
-    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
-  })
-  .catch(err => {
-    console.error("Gagal kirim:", err);
-    btnKirim.innerHTML = '<i class="fas fa-share-square"></i> KIRIM';
+ // Fungsi untuk kirim data
+  async function kirimData() {
+    try {
+      const btnKirim = document.getElementById("btnKirim");
+      btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+      btnKirim.disabled = true;
+      
+      const sponsorData = {
+        action: "prosesKirim",
+        id: dataTerakhir.id, // Simpan ID data terakhir
+        mSponsor: document.getElementById("mSponsor").value,
+        mHpSponsor: document.getElementById("mHpSponsor").value
+      };
+      
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxSUWMckhhdaGubEMToV9hEb6UhTabyfcK-T6efQHjDJFtsiTE62V4ssL15SCHy5j0meQ/exec", {
+        method: "POST",
+        body: new URLSearchParams(sponsorData)
+      });
+      
+      const result = await response.json();
+      
+      if (result.status !== "success") {
+        throw new Error(result.message || "Gagal mengirim data");
+      }
+      
+      document.getElementById("pesan-kirim").innerHTML = `
+        <div class="alert alert-success">
+          Hasil survey berhasil dikirim ke WA/Email Anda!
+        </div>
+      `;
+      
+    } catch (error) {
+      document.getElementById("pesan-kirim").innerHTML = `
+        <div class="alert alert-danger">
+          Gagal mengirim hasil: ${error.message}
+        </div>
+      `;
+    } finally {
+      btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
+      btnKirim.disabled = false;
+    }
+  }
+    
+  // Untuk mereset form
+  function resetForm() {
+    document.getElementById("fitnessForm").reset();
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page1").classList.add("active");
+    updateProgressBar(1);
+    ["1", "2", "3"].forEach(n => clearMessage(n));
+    
+    document.getElementById("hasilAnalisa").innerHTML = "";
+    document.getElementById("hasilAnalisa").style.display = "none";
+    document.getElementById("loadingSpinner").style.display = "block";
+    
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
     btnKirim.disabled = false;
-    alert("Gagal mengirim. Silakan coba lagi.");
-  });
-}
+    
+    document.getElementById("pesan-kirim").innerHTML = "";
+    
+    // Tampilkan pesan reset
+    showMessage(1, "Form berhasil direset", "success");
+  }
+  
 </script>
 </body>
 </html>
