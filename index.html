@@ -118,6 +118,14 @@ body {
   color: white;             
 }
 
+.btn-center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 .footer {
   font-size: 14px;
   border-radius: 5px;
@@ -956,7 +964,7 @@ function tampilkanHasilEvaluasi(data) {
       </div>
 
       <!-- Call To Action -->
-      <div class="border p-3 rounded bg-light mt-4 justify-content-center">    
+      <div class="border p-3 rounded bg-light mt-4">    
         <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
         <h6 style="text-align: center; color:#cc0000;">
             Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
@@ -966,8 +974,8 @@ function tampilkanHasilEvaluasi(data) {
             <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
         
-        <div class="d-grid gap-2 mt-3" style="max-width:50px">
-          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+        <div class="d-grid gap-2 mt-3" style="max-width:50%">
+          <button id="btnKirim" class="btn btn-success btn-center" onclick="kirimData()">
             <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
           </button>
         </div>
