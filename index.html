@@ -716,23 +716,22 @@ function submitForm() {
     const script = document.createElement('script');
     script.src = url;
     
+    // Tampilkan loading
+    document.getElementById("loadingSpinner").style.display = "block";
+    // Tampilkan halaman 3
+    navigate(2, 3);
+    
     // 7. Handle response
     window[callbackName] = function(response) {
       // Cleanup
       document.body.removeChild(script);
       delete window[callbackName];
-      
-      // Tampilkan loading
-      document.getElementById("loadingSpinner").style.display = "block";
-      // Tampilkan halaman 3
-      navigate(2, 3);
-
+    
       // Handle response
       if (response.status === "success") {
        
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
-        // navigate(2, 3);
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
         document.getElementById("loadingSpinner").style.display = "none";
@@ -802,7 +801,7 @@ function tampilkanHasilEvaluasi(data) {
     }
 
     return `
-      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
+      <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -887,7 +886,7 @@ function tampilkanHasilEvaluasi(data) {
         ${generateTabelEvaluasi()}
 
         <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
-        <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Kesimpulan & Rekomendasi</h6>
+        <h6 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h6>
         <table class="table table-bordered">
           <tbody>
             <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
