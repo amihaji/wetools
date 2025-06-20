@@ -118,14 +118,6 @@ body {
   color: white;             
 }
 
-.btn-center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-}
-
 .footer {
   font-size: 14px;
   border-radius: 5px;
@@ -975,7 +967,7 @@ function tampilkanHasilEvaluasi(data) {
         </div>
         
         <div class="d-grid gap-2 mt-3" style="max-width:50%">
-          <button id="btnKirim" class="btn btn-success btn-center" onclick="kirimData()">
+          <button id="btnKirim" class="btn btn-success d-flex justify-content-center" onclick="kirimData()">
             <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
           </button>
         </div>
