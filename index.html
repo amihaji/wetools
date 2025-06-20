@@ -106,12 +106,27 @@ body {
   color: white;
 }
 
+/* TIDAK DIAKTIFKAN
 .btn-kirim {
   background-color: #002266;
   color: white;
   width: 100%;
+  align-content: center;
 }
 .btn-kirim:hover {
+  background-color: #0b5ed7;
+  color: white;             
+}
+*/
+
+
+.btnkirim {
+  background-color: #002266;
+  color: white;
+  width: 100%;
+  align-content: center;
+}
+.btnkirim:hover {
   background-color: #0b5ed7;
   color: white;             
 }
@@ -835,7 +850,7 @@ function tampilkanHasilEvaluasi(data) {
     }
 
     return `
-      <h6 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h6>
+      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Status Fungsional</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -866,7 +881,7 @@ function tampilkanHasilEvaluasi(data) {
     }
 
     return `
-      <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
+      <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -951,7 +966,10 @@ function tampilkanHasilEvaluasi(data) {
           <label class="form-label">HP Sponsor</label>
           <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa angka 0" pattern="[0-9]{10,14}">
         </div>
-          
+      </div>
+
+      <!-- Call To Action -->
+      <div class="border p-3 rounded bg-light mt-4">    
         <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
         <h6 style="text-align: center; color:#cc0000;">
             Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
@@ -961,8 +979,8 @@ function tampilkanHasilEvaluasi(data) {
             <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
         </div>
         
-        <div class="d-grid gap-2 mt-3" style="max-width:50%; center-block;">
-          <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+        <div class="d-grid gap-2 mt-3" style="max-width:50%">
+          <button id="btnKirim" class="btn btn-success" style="center-block" onclick="kirimData()">
             <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
           </button>
         </div>
