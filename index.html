@@ -961,6 +961,10 @@ function tampilkanHasilEvaluasi(data) {
 // Untuk Kirim File PDF hasil Evaluasi
 // ***********************************
 async function handleKirimSurvey() {
+  const btnKirim     = document.getElementById("btnKirim");
+  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+  btnKirim.disabled  = true;
+
   // 1. Ambil data sponsor
   let mSponsor = document.getElementById('mSponsor').value.trim();
   let mHpSponsor = document.getElementById('mHpSponsor').value.trim();
@@ -987,6 +991,8 @@ async function handleKirimSurvey() {
   await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
 
   // 6. Reset form
+  btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
+  btnKirim.disabled  = true;
   resetForm();
   // 7. Kembali ke halaman awal
   document.getElementById('page1').classList.add('active');
