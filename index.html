@@ -978,8 +978,11 @@ async function handleKirimSurvey() {
   const { tanggal, nama, email, hp, fileUrl } = result.data;
 
   // 3. Buat PDF (panggil buatPDF di server, otomatis dari backend)
+  await fetch('URL_APPS_SCRIPT?buatPDF=1', { method: 'POST', body: JSON.stringify({ dataTerakhir, tanggal }) });
+  
   // 4. Kirim Email
   await fetch('URL_APPS_SCRIPT?kirimEmail=1', { method: 'POST', body: JSON.stringify({ email, nama, fileUrl, mSponsor, mHpSponsor }) });
+  
   // 5. Kirim WA
   await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
 
