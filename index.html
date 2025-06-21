@@ -551,6 +551,11 @@ body {
 <script src="https://apis.google.com/js/api.js"></script>
 
 <script>
+// *************************************************************  
+// Definisikan URL Google Apps Script secara Global di Index.html
+// *************************************************************
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw6vfNwhdruMHQrk5p45y7HcZNtG6sBxmHG7LYoSl7q8T9dShEksvH7KkgcUpCC2_l4aw/exec';
+
   // ********************************
   // Fungsi untuk menampilkan halaman
   // ********************************
@@ -699,7 +704,8 @@ function submitForm() {
 
       
     // 1. DEKLARASI SCRIPT URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
+    //const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
+    const scriptURL = URL_APPS_SCRIPT;
     
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
@@ -935,7 +941,7 @@ function tampilkanHasilEvaluasi(data) {
         
         <div class="d-flex justify-content-center mt-3">
           <div style="max-width: 50%;">
-            <button id="btnKirim" class="btn btn-success" onclick="kirimData()">
+            <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
               <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
             </button>
           </div>
@@ -950,11 +956,44 @@ function tampilkanHasilEvaluasi(data) {
   // Simpan data terakhir untuk proses kirim
   window.dataTerakhir = data;
 }
-  
+ 
+// ***********************************
+// Untuk Kirim File PDF hasil Evaluasi
+// ***********************************
+async function handleKirimSurvey() {
+  // 1. Ambil data sponsor
+  let mSponsor = document.getElementById('mSponsor').value.trim();
+  let mHpSponsor = document.getElementById('mHpSponsor').value.trim();
+  if (!mSponsor) mSponsor = "Hesty Husain";
+  if (!mHpSponsor) mHpSponsor = "81241318600";
+  // Validasi input sponsor
+  if (!/^[A-Za-z\s]+$/.test(mSponsor)) { alert('Nama sponsor hanya boleh huruf dan spasi'); return; }
+  if (!/^\d{10,}$/.test(mHpSponsor)) { alert('No HP sponsor minimal 10 digit angka'); return; }
+
+  // 2. Submit data ke server (Google Apps Script)
+  // Kirim data lengkap termasuk mSponsor dan mHpSponsor
+  const response = await fetch('URL_APPS_SCRIPT', { method: 'POST', body: new FormData(form) });
+  const result = await response.json();
+  if (result.status !== 'success') { alert('Gagal menyimpan data'); return; }
+  const { tanggal, nama, email, hp, fileUrl } = result.data;
+
+  // 3. Buat PDF (panggil buatPDF di server, otomatis dari backend)
+  // 4. Kirim Email
+  await fetch('URL_APPS_SCRIPT?kirimEmail=1', { method: 'POST', body: JSON.stringify({ email, nama, fileUrl, mSponsor, mHpSponsor }) });
+  // 5. Kirim WA
+  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
+
+  // 6. Reset form
+  resetForm();
+  // 7. Kembali ke halaman awal
+  document.getElementById('page1').classList.add('active');
+  document.getElementById('page2').classList.remove('active');
+}
+
 // *************************
 // Fungsi untuk kirim data
 // *************************
-async function kirimData() {
+async function BACKUP_kirimData() {
   try {
     const btnKirim = document.getElementById("btnKirim");
     btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
