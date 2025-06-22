@@ -1,0 +1,1134 @@
+ function doGet(e) {
+  try {
+    // Panggil fungsi prosesSurvey dengan parameter dari request
+    const hasilSurvey = prosesSurvey(e.parameter);
+    
+    // Ambil callback name untuk JSONP
+    const callback = e.parameter.callback;
+    
+    // Kembalikan response sebagai JSONP
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(hasilSurvey) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      
+  } catch (error) {
+    const callback = e.parameter.callback;
+    const response = {
+      status: "error",
+      message: error.message
+    };
+    
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(response) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+}
+
+function doPost(e) {
+  try {
+    const data = e.parameter;
+    
+    // Gunakan fungsi prosesSurvey yang sudah ada
+    const hasilSurvey = prosesSurvey(data);
+    
+    // Kembalikan response
+    return ContentService.createTextOutput(
+      JSON.stringify(hasilSurvey)
+    ).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({
+        status: "error",
+        message: error.message
+      })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function prosesSurvey(data) {
+  const SPREADSHEET_ID = '1l2uwadVAXrpQeY0ijB94uhN1oq5O8ZekjRKyOxFP4RA';
+  const SHEET_NAME     = "SurveyData";
+  const spreadsheet    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet          = spreadsheet.getSheetByName(SHEET_NAME);
+
+  if (!sheet) {
+    throw new Error(`Sheet '${SHEET_NAME}' tidak ditemukan`);
+  }
+  
+  const timestamp = new Date();
+  
+  // Hitung semua parameter sekaligus
+  const [
+    bbIdeal,
+    imt,
+    lemakTubuh,
+    lemakPerut,
+    massaOtot,
+    bmr,
+    kalori,
+    protein,
+    skor
+  ] = hitungParameter(data);
+  
+  const hasilKesimpulan  = getKesimpulan(skor);
+  const hasilRekomendasi = getRekomendasi(skor, massaOtot, lemakTubuh);
+  
+  // 1. Simpan data ke sheet
+  const rowData = [
+    timestamp, 
+    data.mNama, 
+    data.mNomorHp, 
+    data.mEmail || "", 
+    data.mUmur, 
+    data.mJenisKelamin, 
+    data.mBeratBadan, 
+    data.mTinggiBadan, 
+    data.mLingkarPerut, 
+    data.mAktivitasFisik,  
+    data.mSarapan, 
+    data.mMenu, 
+    data.mNgantuk,
+    data.mLelah, 
+    data.mLambung, 
+    data.mLapar, 
+    data.mAir, 
+    data.mKonsumsi, 
+    data.mBab, 
+    data.mKeram,
+    data.mTidur, 
+    data.mOlahraga, 
+    data.mBak, 
+    data.mKerutan,
+    data.mSulit, 
+    data.mBBNaik, 
+    data.mRokok,
+    data.mAlkohol,
+    bbIdeal,
+    imt, 
+    lemakTubuh, 
+    lemakPerut, 
+    massaOtot, 
+    bmr,
+    kalori, 
+    protein, 
+    skor,
+    hasilKesimpulan.teks,
+    hasilRekomendasi.teks,
+    "", // Kolom untuk link file PDF
+    "", // Kolom untuk nama sponsor
+    ""  // Kolom untuk HP sponsor
+  ];
+  
+  sheet.appendRow(rowData);
+  
+  // 2. Siapkan data untuk dikirim ke client
+  return {
+    status: "success",
+    data: {
+      tanggal:   Utilities.formatDate(timestamp, Session.getScriptTimeZone(), "dd MMMM yyyy"),
+      nama:      data.mNama,
+      hp:        data.mNomorHp,
+      umur:      data.mUmur,
+      jk:        data.mJenisKelamin,
+      berat:     data.mBeratBadan,
+      tinggi:    data.mTinggiBadan,
+      lingkar:   data.mLingkarPerut,
+      aktivitas: data.mAktivitasFisik,
+      
+      // Data untuk tabel status fungsional
+      fungsional: getFungsionalList(data),
+      
+      // Data untuk tabel evaluasi parameter
+      evaluasi: getEvaluasiList(data, {
+        bbIdeal,
+        imt,
+        lemakTubuh,
+        lemakPerut,
+        massaOtot,
+        bmr,
+        kalori,
+        protein
+      }),
+      
+      persen: ((skor / 18) * 100).toFixed(1) + "%",
+      kesimpulan: hasilKesimpulan.teks,
+      rekomendasi: hasilRekomendasi.teks
+    }
+  };
+}
+
+// Fungsi untuk menghitung semua parameter sekaligus
+function hitungParameter(data) {
+  const bbIdeal    = calculateBBIdeal(data.mTinggiBadan, data.mUmur);
+  const imt        = calculateIMT(data.mBeratBadan, data.mTinggiBadan);
+  const lemakTubuh = calculateLemakTubuh(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin);
+  const lemakPerut = calculateLemakPerut(data.mLingkarPerut, data.mJenisKelamin, data.mUmur);
+  const massaOtot  = calculateMassaOtot(data.mJenisKelamin, lemakTubuh);
+  const bmr        = calculateBMR(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin);
+  const kalori     = calculateKalori(bmr, data.mAktivitasFisik);
+  const protein    = calculateProtein(data.mBeratBadan, data.mJenisKelamin, data.mAktivitasFisik);
+  const skor       = Number(calculateSkor(data));
+  return [bbIdeal, imt, lemakTubuh, lemakPerut, massaOtot, bmr, kalori, protein, skor];
+}
+
+// Fungsi untuk mendapatkan daftar fungsional
+function getFungsionalList(data) {
+  return [
+    { label: "1. Sarapan Setiap Pagi", jawaban: data.mSarapan },
+    { label: "2. Untuk menu sarapan, pilihan anda nasi goreng, roti, kue & sejenis", jawaban: data.mMenu },
+    { label: "3. Sering merasa ngantuk terutama setelah makan", jawaban: data.mNgantuk },
+    { label: "4. Sering lelah, lesu dan kurang berstamina", jawaban: data.mLelah },
+    { label: "5. Sering merasakan gangguan lambung", jawaban: data.mLambung },
+    { label: "6. Sering merasa lapar atau haus", jawaban: data.mLapar },
+    { label: "7. Minum air putih 8 gelas/hari", jawaban: data.mAir },
+    { label: "8. Mengkonsumsi makanan instant, minuman manis, ultra processed food & sejenisnya", jawaban: data.mKonsumsi },
+    { label: "9. BAB tidak lancar", jawaban: data.mBab },
+    { label: "10. Sering keram / kesemutan", jawaban: data.mKeram },
+    { label: "11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari", jawaban: data.mTidur },
+    { label: "12. Berolahraga minimum 30 menit setiap 3-5 hari dalam seminggu", jawaban: data.mOlahraga },
+    { label: "13. Kurang minum tetapi sering buang air kecil", jawaban: data.mBak }, 
+    { label: "14. Kerutan di kulit wajah sebelum usia 40 tahun", jawaban: data.mKerutan }, 
+    { label: "15. Sulit tidur / cemas / kurang konsentrasi", jawaban: data.mSulit },
+    { label: "16. Berat badan naik 3kg dalam 3 bulan", jawaban: data.mBBNaik },
+    { label: "17. Merokok (termasuk rokok elektrik)", jawaban: data.mRokok },
+    { label: "18. Minum alkohol", jawaban: data.mAlkohol }
+  ];
+}
+
+// Fungsi untuk mendapatkan daftar evaluasi
+function getEvaluasiList(data, params) {
+  return [
+    { 
+      param: "Berat Badan",
+      hasil: data.mBeratBadan, 
+      ideal: getEvaluasiBBIdeal(params.bbIdeal).ideal,   
+      satuan: "kg", 
+      penjelasan: getEvaluasiBBIdeal(params.bbIdeal).penjelasan 
+    },
+    { 
+      param: "Body Mass Index (BMI)", 
+      hasil: params.imt, 
+      ideal: getEvaluasiIMT(params.imt, data.mJenisKelamin).ideal, 
+      satuan: "kg/m²",
+      penjelasan: getEvaluasiIMT(params.imt, data.mJenisKelamin).penjelasan
+    },
+    { 
+      param: "Lemak Tubuh", 
+      hasil: params.lemakTubuh,
+      ideal: getEvaluasiLemakTubuh(params.lemakTubuh, data.mJenisKelamin).ideal, 
+      satuan: "%",
+      penjelasan: getEvaluasiLemakTubuh(params.lemakTubuh, data.mJenisKelamin).penjelasan 
+    },
+    { 
+      param: "Lingkar Perut", 
+      hasil: params.lemakPerut, 
+      ideal: getEvaluasiLemakPerut(params.lemakPerut, data.mJenisKelamin).ideal, 
+      satuan: "cm",
+      penjelasan: getEvaluasiLemakPerut(params.lemakPerut, data.mJenisKelamin).penjelasan 
+    },
+    { 
+      param: "Massa Tubuh Tanpa Lemak", 
+      hasil: params.massaOtot,
+      ideal: getEvaluasiMassaOtot(params.massaOtot, data.mJenisKelamin, data.mUmur).ideal, 
+      satuan: "%",
+      penjelasan: getEvaluasiMassaOtot(params.massaOtot, data.mJenisKelamin, data.mUmur).penjelasan 
+    },
+    { 
+      param: "Basal Metabolic Rate (BMR)", 
+      hasil: params.bmr,   
+      ideal: getEvaluasiBMR(params.bmr, data.mJenisKelamin).ideal, 
+      satuan: "kcal/hari",
+      penjelasan: getEvaluasiBMR(params.bmr, data.mJenisKelamin).penjelasan 
+    },
+    { 
+      param: "Kebutuhan Kalori", 
+      hasil: params.kalori,
+      ideal: getEvaluasiKalori().ideal,
+      satuan: "kcal/hari", 
+      penjelasan: getEvaluasiKalori().penjelasan 
+    },
+    { 
+      param: "Kebutuhan Protein", 
+      hasil: params.protein, 
+      ideal: getEvaluasiProtein(params.protein, data.mBeratBadan, data.mJenisKelamin).ideal, 
+      satuan: "gr/hari",
+      penjelasan: getEvaluasiProtein(params.protein, data.mBeratBadan, data.mJenisKelamin).penjelasan
+    }
+  ];
+}
+
+function ambilDataDariSheet(idRecord) {
+  try {
+    const SPREADSHEET_ID = '1l2uwadVAXrpQeY0ijB94uhN1oq5O8ZekjRKyOxFP4RA';
+    const spreadsheet    = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet          = spreadsheet.getSheetByName("SurveyData");
+    const data           = sheet.getRange(idRecord, 1, 1, sheet.getLastColumn()).getValues()[0];
+    
+    return {
+      id: idRecord,
+      tanggal:     Utilities.formatDate(data[0], Session.getScriptTimeZone(), "dd MMMM yyyy"),
+      nama:        data[1],
+      hp:          data[2],
+      email:       data[3],
+      umur:        data[4],
+      jk:          data[5],
+      berat:       data[6],
+      tinggi:      data[7],
+      lingkar:     data[8],
+      aktivitas:   data[9],
+      bbIdeal:     data[28],
+      imt:         data[29],
+      lemakTubuh:  data[30],
+      lemakPerut:  data[31],
+      massaOtot:   data[32],
+      bmr:         data[33],
+      kalori:      data[34],
+      protein:     data[35],
+      skor:        data[36],
+      kesimpulan:  data[37],
+      rekomendasi: data[38]
+    };
+  } catch (error) {
+    console.error("Gagal ambil data dari sheet:", error);
+    throw new Error("Gagal mengambil data dari spreadsheet: " + error.message);
+  }
+}
+
+// Untuk menghitung Berat Ideal
+function calculateBBIdeal(tinggi, usia) {
+  if (usia >= 40) {
+    const beratIdeal = tinggi - 100;
+    return Number(beratIdeal.toFixed(1));
+  } else {
+    const beratIdeal = (tinggi - 100) * 0.9;
+    return Number(beratIdeal.toFixed(1));
+  }
+}
+
+// Untuk menghitung IMT / BMI
+function calculateIMT(berat, tinggi) {
+  const tinggiMeter = tinggi / 100;
+  return (berat / (tinggiMeter * tinggiMeter)).toFixed(1);
+}
+
+// Untuk menghitung lemak tubuh, menggunakan rumus Siri (1956)
+function calculateLemakTubuh(berat, tinggi, umur, jenkel) {
+  berat  = Number(berat);
+  tinggi = Number(tinggi);
+  umur   = Number(umur);
+  jenkel = jenkel.trim().charAt(0).toUpperCase() + jenkel.trim().slice(1).toLowerCase(); // "pria" → "Pria"
+
+  if (isNaN(berat) || isNaN(tinggi) || isNaN(umur) || tinggi <= 0) {
+    return 0; // Jika input tidak valid
+  }
+
+  const tinggiMeter = tinggi / 100;
+  const imt = berat / (tinggiMeter * tinggiMeter);
+
+  let lemak;
+
+  if (jenkel === "Pria") {
+    lemak = 1.2 * imt + 0.23 * umur - 10.8 - 5.4;
+  } else if (jenkel === "Wanita") {
+    lemak = 1.2 * imt + 0.23 * umur - 5.4 - 2;
+  } else {
+    return 0; // Jika jenis kelamin tidak valid
+  }
+
+  return lemak.toFixed(0);
+}
+
+// Untuk menghitung lemak perut / lingkar perut
+function calculateLemakPerut(lingkarPerut) {
+  return parseFloat(lingkarPerut);  // hanya return angka lingkar pinggang, dalam cm
+}
+
+// Untuk menghitung Massa Otot
+function calculateMassaOtot(jenkel, lemakTubuh) {
+  lemakTubuh = Number(lemakTubuh);
+
+  if (isNaN(lemakTubuh) || lemakTubuh <= 0 || lemakTubuh >= 100) {
+    return 0; // atau return 0; tergantung kamu ingin nilai default apa
+  }
+
+  jenkel = jenkel.trim().charAt(0).toUpperCase() + jenkel.trim().slice(1).toLowerCase();
+  if (jenkel === "Pria") {
+    return ((100 - lemakTubuh) - 10.8).toFixed(0);
+  } else if (jenkel === "Wanita") {
+    return ((100 - lemakTubuh) - 5.4 - 2).toFixed(0);
+  } else {
+    return 0  // jenis kelamin tidak dikenali
+  }
+}
+
+// Untuk menghitung BMR
+function calculateBMR(berat, tinggi, umur, jenkel) {  
+  if (jenkel === "Pria") {
+    return (88.362 + (13.397 * berat) + (4.799 * tinggi) - (5.677 * umur)).toFixed(0);
+  } else {
+    return (447.593 + (9.247 * berat) + (3.098 * tinggi) - (4.330 * umur)).toFixed(0);
+  }
+}
+
+// Untuk menghitung kebutuhan kalori berdasarkan BMR dan aktifitas
+function calculateKalori(bmr, aktivitas) {
+  const faktor = {
+    "Sedikit/Tidak Olahraga": 1.2,
+    "Olahraga ringan 1-3 hari/minggu": 1.375,
+    "Olahraga moderat 3-5 hari/minggu": 1.550,
+    "Olahraga berat 6-7 hari per minggu": 1.725,
+    "Olahraga sangat aktif + Kegiatan fisik" : 1.9
+  };
+  return (bmr * (faktor[aktivitas] || 1.2)).toFixed(0);
+}
+
+// Untuk menghitung kebutuhan protein berdasarkan aktifitas
+function calculateProtein(berat, jenkel, aktifitas) {
+  const faktorProtein = {
+    "Sedikit/Tidak Olahraga":                 jenkel === "Pria" ? 1.0 : 0.8,
+    "Olahraga ringan 1-3 hari/minggu":        jenkel === "Pria" ? 1.2 : 1.0,
+    "Olahraga moderat 3-5 hari/minggu":       jenkel === "Pria" ? 1.4 : 1.2,
+    "Olahraga berat 6-7 hari per minggu":     jenkel === "Pria" ? 1.6 : 1.4,
+    "Olahraga sangat aktif + Kegiatan fisik": jenkel === "Pria" ? 2.0 : 1.8
+  };
+  const faktor = faktorProtein[aktifitas] || 1.2;  // default moderat
+  return (berat * faktor).toFixed(0);              // hasil gram/hari
+}
+
+// Untuk menghitung total skor dimana jika 1 = jawaban postif dan jika 0 = jawaban negatif
+function calculateSkor(data) {
+  const pertanyaan = [
+    { field: "mSarapan",  nilai: 1 },
+    { field: "mMenu",     nilai: 0 },
+    { field: "mNgantuk",  nilai: 0 },
+    { field: "mLelah",    nilai: 0 },
+    { field: "mLambung",  nilai: 0 },
+    { field: "mLapar",    nilai: 0 },
+    { field: "mAir",      nilai: 1 },
+    { field: "mKonsumsi", nilai: 0 },
+    { field: "mBab",      nilai: 0 },
+    { field: "mKeram",    nilai: 0 },
+    { field: "mTidur",    nilai: 1 },
+    { field: "mOlahraga", nilai: 1 },
+    { field: "mBak",      nilai: 0 },
+    { field: "mKerutan",  nilai: 0 },
+    { field: "mSulit",    nilai: 0 },
+    { field: "mBBNaik",   nilai: 0 },
+    { field: "mRokok",    nilai: 0 },
+    { field: "mAlkohol",  nilai: 0 }
+  ];
+
+  let skor = 0;
+  pertanyaan.forEach(q => {
+    const jawaban = data[q.field];
+    if ((jawaban === "Ya" && q.nilai === 1) || (jawaban === "Tidak" && q.nilai === 0)) {
+      skor += 1;
+    }
+  });
+  return skor;
+}
+
+
+// Ganti fungsi ini:
+function BACKUP_getEvaluasiBBIdeal(bbIdeal) {
+  // Gunakan langsung parameter bbIdeal
+  const beratSekarang = bbIdeal; // Gunakan nilai bbIdeal langsung
+  const sLebih  = (beratSekarang - bbIdeal).toFixed(1);
+  const sKurang = (bbIdeal - beratSekarang).toFixed(1);
+
+  if (beratSekarang < bbIdeal) {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Kekurangan berat badan" + (sKurang) };
+  } else if (beratSekarang === bbIdeal) {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Berat badan ideal" };
+  } else {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Kelebihan berat badan" + (sLebih) };
+  }
+}
+
+// Penjelasan untuk evaluasai BB Ideal
+function getEvaluasiBBIdeal(bbIdeal) {
+  const SPREADSHEET_ID = '1l2uwadVAXrpQeY0ijB94uhN1oq5O8ZekjRKyOxFP4RA';
+  const SHEET_NAME     = "SurveyData";
+  const spreadsheet    = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet          = spreadsheet.getSheetByName(SHEET_NAME);
+
+  const mBB     = ambilBrsAkhirKol(sheet, "G") ;   // Nilai Berat badan
+  const sLebih  = (mBB - bbIdeal).toFixed(1);
+  const sKurang = (bbIdeal - mBB).toFixed(1);
+
+  if (mBB < bbIdeal) {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Kekurangan berat badan " + (sKurang) };
+  } else if (mBB === bbIdeal) {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Berat badan ideal" };
+  } else {
+      return { ideal: bbIdeal.toFixed(1), penjelasan: "Kelebihan berat badan " + (sLebih) };
+  }
+}
+
+// Penjelasan untuk evaluasi IMT / BMI
+function getEvaluasiIMT(imt, jenkel) {
+  if (jenkel === "Pria") {
+    if (imt < 18.5)
+      return { ideal: "18.5 - 24.9", penjelasan: "Kurus (underweight)" };
+    else if (imt <= 24.9)
+      return { ideal: "18.5 - 24.9", penjelasan: "Normal" };
+    else if (imt <= 29.9)
+      return { ideal: "18.5 - 24.9", penjelasan: "Kelebihan Berat Badan (overweight)" };
+    else
+      return { ideal: "18.5 - 24.9", penjelasan: "Kegemukan (obesitas)" };
+  } else if (jenkel === "Wanita") {
+    if (imt < 18)
+      return { ideal: "18 - 24.4", penjelasan: "Kurus (underweight)" };
+    else if (imt <= 24.4)
+      return { ideal: "18 - 24.4", penjelasan: "Normal" };
+    else if (imt <= 29.9)
+      return { ideal: "18 - 24.4", penjelasan: "Kelebihan Berat Badan (overweight)" };
+    else
+      return { ideal: "18 - 24.4", penjelasan: "Kegemukan (obesitas)" };
+  } else {
+    return { ideal: "-", penjelasan: "-" };
+  }
+}
+
+// Penjelasan untuk evaluasi lemak tubuh
+function getEvaluasiLemakTubuh(lemak, jenkel) {
+  jenkel = jenkel.trim().charAt(0).toUpperCase() + jenkel.trim().slice(1).toLowerCase(); // Normalisasi
+
+  let ideal = "";
+  let penjelasan = "";
+  let mLT = "";
+
+  if (jenkel === "Pria") {
+    if (lemak < 10) {
+      ideal = "10 - 25";
+      penjelasan = "Terlalu rendah";
+      mLT = "rendah";
+    } else if (lemak <= 25) {
+      ideal = "10 - 25";
+      penjelasan = "Ideal";
+      mLT = "ideal";
+    } else {
+      ideal = "10 - 25";
+      penjelasan = "Tinggi";
+      mLT = "tinggi";
+    }
+  } else if (jenkel === "Wanita") {
+    if (lemak < 18) {
+      ideal = "18 - 30";
+      penjelasan = "Terlalu rendah";
+      mLT = "rendah";
+    } else if (lemak <= 30) {
+      ideal = "18 - 30";
+      penjelasan = "Ideal";
+      mLT = "ideal";
+    } else {
+      ideal = "18 - 30";
+      penjelasan = "Tinggi";
+      mLT = "tinggi";
+    }
+  }
+  return { ideal, penjelasan, mLT };
+}
+
+// Penjelasan untuk evaluasi lemak perut / lingkar perut
+function getEvaluasiLemakPerut(lingkarPerut, jenkel) {
+  if (jenkel === "Pria") {
+    if (lingkarPerut < 90) {
+      return { ideal: "< 90", penjelasan: "Ideal" };
+    } else {
+      return { ideal: "< 90", penjelasan: "Resiko tinggi penyakit degeneratif" };
+    }
+  } else if (jenkel === "Wanita") {
+    if (lingkarPerut < 80) {
+      return { ideal: "< 80", penjelasan: "Ideal" };
+    } else {
+      return { ideal: "< 80", penjelasan: "Resiko tinggi penyakit degeneratif" };
+    }
+  } else {
+    return { ideal: "-", penjelasan: "-" };
+  }
+}
+
+// Penjelasan untuk evaluasi massa otot
+function getEvaluasiMassaOtot(massaOtot, jenkel, usia) {
+  jenkel    = jenkel.trim().charAt(0).toUpperCase() + jenkel.trim().slice(1).toLowerCase(); // "pria" -> "Pria"
+  usia      = Number(usia);
+  massaOtot = Number(massaOtot);
+
+  //Logger.log("Evaluasi Massa Otot - Input:", massaOtot, jenkel, usia);
+
+  massaOtot = parseFloat(massaOtot);
+  if (isNaN(massaOtot)) {
+    return { ideal: "", penjelasan: "", mMO: "" };
+  }
+
+  let ideal = "";
+  let penjelasan = "";
+  let mMO = "";
+  if (jenkel === "Pria") {
+    // Logger.log("Masuk blok Pria");
+    if (usia >= 18 && usia <= 35) {
+      if (massaOtot < 40) {
+        ideal      = "40 - 44";
+        penjelasan = "Level stamina kurang, mudah lelah";
+        mMO        = "kurang";
+      } else if (massaOtot <= 44) {
+        ideal      = "40 - 44";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "40 - 44";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    } else if (usia >= 36 && usia <= 55) {
+      if (massaOtot < 36) {
+        ideal      = "36 - 40";
+        penjelasan = "Level stamina kurang, mudah lelah";
+        mMO        = "kurang";
+      } else if (massaOtot <= 40) {
+        ideal      = "36 - 40";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "36 - 40";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    } else if (usia >= 56 && usia <= 75) {
+      if (massaOtot < 32) {
+        ideal      = "32 - 35";
+        penjelasan = "Level stamina kurang, mudah lelah";
+        mMO        = "kurang";
+      } else if (massaOtot <= 35) {
+        ideal      = "32 - 35";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "32 - 35";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    } else if (usia > 75) {
+      if (massaOtot < 31) {
+        ideal      = "31 - 35";
+        penjelasan = "Level stamina kurang, mudah lelah";
+        mMO        = "kurang";
+      } else if (massaOtot <= 35) {
+        ideal      = "31 - 35";
+        penjelasan = "Level stamina ideal"
+        mMO        = "cukup";
+      } else {
+        ideal      = "31 - 35";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    }
+
+  } else if (jenkel === "Wanita") {
+    Logger.log("Masuk blok Wanita");
+    if (usia >= 18 && usia <= 35) {
+      if (massaOtot < 31) {
+        ideal      = "31  -33";
+        penjelasan = "Level stamina kurang, mudah lelah";
+        mMO        = "kurang";
+      } else if (massaOtot <= 33) {
+        ideal      = "31 - 33";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup" ;
+      } else {
+        ideal      = "31 - 33";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    } else if (usia >= 36 && usia <= 55) {
+      if (massaOtot < 29) {
+        ideal      = "29 - 31";
+        penjelasan = "Level kurang stamina, mudah lelah lesu";
+        mMO        = "kurang";
+      } else if (massaOtot <= 31) {
+        ideal      = "29 - 31"; 
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "29 - 31";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    } else if (usia >= 56 && usia <= 75) {
+      if (massaOtot < 27) {
+        ideal      = "27 - 30";
+        penjelasan = "Level kurang stamina, mudah lelah lesu";
+        mMO        = "kurang";
+      } else if (massaOtot <= 30) {
+        ideal      = "27 - 30";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "27 - 30"; 
+        penjelasan = "Level stamina sangat baik"; 
+        mMO        = "baik";
+      }
+    } else if (usia >= 76) {
+      if (massaOtot < 26) {
+        ideal      = "26 - 30";
+        penjelasan = "Level kurang stamina, mudah lelah lesu";
+        mMO        = "kurang";
+      } else if (massaOtot <= 30) {
+        ideal      = "26 - 30";
+        penjelasan = "Level stamina ideal";
+        mMO        = "cukup";
+      } else {
+        ideal      = "26 - 30";
+        penjelasan = "Level stamina sangat baik";
+        mMO        = "baik";
+      }
+    }
+  
+  //} else {
+  //  Logger.log("jenkel tidak cocok: " + jenkel);
+  }
+  //Logger.log("Evaluasi Massa Otot - Output:", { ideal, penjelasan, mMO });
+  return { ideal, penjelasan, mMO };
+}
+
+// Penjelasan untuk evaluasi BMR
+function getEvaluasiBMR(bmr, jenkel) {
+  if (jenkel === "Pria") {
+    if (bmr < 1500) {
+      return { ideal: "1500 - 1800", penjelasan: "Rendah, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    } else if (bmr >= 1500 && bmr <= 1800) {
+      return { ideal: "1500 - 1800", penjelasan: "Cukup Baik, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    } else if (bmr > 1800) {
+      return { ideal: "1500 - 1800", penjelasan: "Sangat Baik, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    }
+  } else if (jenkel === "Wanita") {
+    if (bmr < 1200) {
+      return { ideal: "1200 - 1500", penjelasan: "Rendah, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    } else if (bmr >= 1200 && bmr <= 1500) {
+      return { ideal: "1200 - 1500", penjelasan: "Cukup Baik, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    } else if (bmr > 1500) {
+      return { ideal: "1200 - 1500", penjelasan: "Sangat Baik, Nilai BMR : Merupakan jumlah kalori yang dibutuhkan tubuh untuk menjalankan fungsi dasar saat istirahat" };
+    }
+  } else {
+    return { ideal: "-", penjelasan: "-" };
+  }
+}
+
+// Penjelasan untuk evaluasi kalori
+function getEvaluasiKalori() {
+    // berikan spasi karakter kosong ALT + 255     
+    return { ideal: "-", penjelasan: "Total asupan kalori yang diperlukan tubuh.\n" +
+      "-  Untuk menurunkan Berat Badan, Anda perlu\n"+
+      "   mengurangi asupan kalori (DEFISIT KALORI)\n" +      
+      "   300-500 kalori.\n" +
+      "-  Untuk menaikkan Berat Badan, Anda perlu\n" + 
+      "   meningkatkan asupan kalori (SURPLUS KALORI)\n" +
+      "   300-500 kalori." 
+  };
+}
+
+// Penjelasan untuk evaluasi Protein
+function getEvaluasiProtein() {
+      return { ideal: "-", penjelasan: "Jumlah asupan protein harian yang dibutuhkan tubuh agar dapat memperbaiki dan membangun kembali jaringan otot setelah beraktivitas" };
+}
+
+// Fungsi: Mendapatkan Data Fungsional Status Ya/Tidak (untuk proses pembuatan file pdf)
+function getFungsionalList(data) {
+  return [
+    { label: "1. Sarapan Setiap Pagi", jawaban: data.mSarapan },
+    { label: "2. Untuk menu sarapan, pilihan anda nasi goreng, roti, kue & sejenis", jawaban: data.mMenu },
+    { label: "3. Sering merasa ngantuk terutama setelah makan", jawaban: data.mNgantuk },
+    { label: "4. Sering lelah, lesu dan kurang berstamina", jawaban: data.mLelah },
+    { label: "5. Sering merasakan gangguan lambung", jawaban: data.mLambung },
+    { label: "6. Sering merasa lapar atau haus", jawaban: data.mLapar },
+    { label: "7. Minum air putih 8 gelas/hari", jawaban: data.mAir },
+    { label: "8. Mengkonsumsi makanan instan, minuman manis, ultra processed food & sejenisnya", jawaban: data.mKonsumsi },
+    { label: "9. BAB tidak lancar", jawaban: data.mBab },
+    { label: "10. Sering keram / kesemutan", jawaban: data.mKeram },
+    { label: "11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari", jawaban: data.mTidur },
+    { label: "12. Berolahraga minimum 30 menit setiap 3-5 hari/minggu", jawaban: data.mOlahraga },
+    { label: "13. Kurang minum tetapi sering buang air kecil", jawaban: data.mBak },
+    { label: "14. Kerutan di kulit wajah sebelum usia 40 tahun", jawaban: data.mKerutan },
+    { label: "15. Sulit tidur / cemas / kurang konsentrasi", jawaban: data.mSulit },
+    { label: "16. Berat badan naik 3kg dalam 3 bulan", jawaban: data.mBBNaik },
+    { label: "17. Merokok (termasuk rokok elektrik)", jawaban: data.mRokok },
+    { label: "18. Minum alkohol", jawaban: data.mAlkohol }
+  ];
+}
+
+// Hitung Evaluasi Parameter 
+function getEvaluasiList(data) {
+  const bbIdeal    = calculateBBIdeal(data.mTinggiBadan, data.mUmur);
+  const imt        = calculateIMT(data.mBeratBadan, data.mTinggiBadan);
+  const lemakTubuh = calculateLemakTubuh(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin);
+  const lemakPerut = calculateLemakPerut(data.mLingkarPerut, data.mJenisKelamin, data.mUmur);
+  const massaOtot  = calculateMassaOtot(data.mJenisKelamin, lemakTubuh);
+  const bmr        = calculateBMR(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin);
+  const kalori     = calculateKalori(bmr, data.mAktivitasFisik);
+  const protein    = calculateProtein(data.mBeratBadan, data.mJenisKelamin, data.mAktivitasFisik);
+
+  return [
+    (() => { const r = getEvaluasiBBIdeal(bbIdeal); 
+      // Hasil berat badan 
+      return { 
+        param: "Berat Badan", 
+        hasil: data.mBeratBadan, 
+        ideal: r.ideal, 
+        satuan: "kg", 
+        penjelasan: r.penjelasan 
+      }; 
+    })(),
+
+    (() => { const r = getEvaluasiIMT(imt, data.mJenisKelamin); 
+      // Hasil jenis kelamin 
+      return { 
+        param: "Body Mass Index (BMI)", 
+        hasil: imt, 
+        ideal: r.ideal, 
+        satuan: "kg/m²", 
+        penjelasan: r.penjelasan 
+      };
+    })(),
+
+    (() => { const r = getEvaluasiLemakTubuh(lemakTubuh, data.mJenisKelamin); 
+      // Hasil lemak tubuh 
+      return { 
+        param: "Lemak Tubuh", 
+        hasil: lemakTubuh, 
+        ideal: r.ideal, 
+        satuan: "%", 
+        penjelasan: r.penjelasan 
+      }; 
+    })(),
+
+    (() => { const r = getEvaluasiLemakPerut(lemakPerut, data.mJenisKelamin); 
+      // Hasil lingkar perut / lemak perut 
+      return { 
+        param: "Lingkar Perut", 
+        hasil: lemakPerut, 
+        ideal: r.ideal, 
+        satuan: "cm", 
+        penjelasan: r.penjelasan 
+      };  
+    })(),
+
+    (() => { const r = getEvaluasiMassaOtot(massaOtot, data.mJenisKelamin, data.mUmur);
+      // Hasil massa tubuh tanpa lemak  / massa otot
+      return { 
+        param: "Massa Tubuh Tanpa Lemak",
+        hasil: massaOtot, 
+        ideal: r.ideal, 
+        satuan: "%", 
+        penjelasan: r.penjelasan 
+      }; 
+    })(),
+
+    (() => { const r = getEvaluasiBMR(bmr, data.mJenisKelamin); 
+      // Hasil BMR 
+      return { 
+        param: "Basal Metabolic Rate (BMR)", 
+        hasil: bmr, 
+        ideal: r.ideal, 
+        satuan: "kcal/hari", 
+        penjelasan: r.penjelasan 
+      }; 
+    })(),
+
+    (() => { const r = getEvaluasiKalori(); 
+      // Hasil Kebutuhan kalori
+      return { 
+        param: "Kebutuhan Kalori", 
+        hasil: kalori, 
+        ideal: r.ideal, 
+        satuan: "kcal/hari", 
+        penjelasan: r.penjelasan 
+      }; 
+    })(),
+
+    (() => { const r = getEvaluasiProtein(protein, data.mBeratBadan, data.mJenisKelamin); 
+      // Hasil Kebutuhan protein
+      return { 
+        param: "Kebutuhan Protein", 
+        hasil: protein, 
+        ideal: r.ideal, 
+        satuan: "gr/hari", 
+        penjelasan: r.penjelasan 
+      }; 
+    })()
+  ];
+}
+
+// Kesimpulan berdasarkan total skor
+function getKesimpulan(skor) {
+  if (skor >= 0 && skor <= 6) {
+    return { teks: "Anda BELUM menjalani kebiasaaan hidup sehat dan aktif" };
+  } else if (skor > 6 && skor < 12) {
+    return { teks: "Anda MASIH PERLU meningkatkan kebiasaaan hidup sehat dan aktif" };
+  } else if (skor >= 12 && skor <= 18) {
+    return { teks: "Anda SUDAH menjalani kebiasaaan hidup sehat dan aktif" };
+  } else {
+    return { teks: "Skor tidak valid. Silakan isi survei dengan lengkap." };
+  }
+}
+
+// Rekomendasi berdasarkan skor, Massa Otot (Massa tubuh tanpa lemak), Lemak Tubuh
+function getRekomendasi(skor, mMO, mLT) {
+  console.log("Debug Input → skor:", skor, "| mMO:", mMO, "| mLT:", mLT);
+
+  if (skor >= 12 && skor <= 18) {
+    if (mMO === 'kurang' && mLT === 'rendah') {
+      return { teks: "Anda perlu meningkatkan asupan KALORI LEBIH BESAR dari pada kebutuhan harian untuk menaikkan BERAT BADAN, Anda juga perlu mencukupi kebutuhan PROTEIN dan melakukan Latihan Beban rutin 5x seminggu selama 30 menit per sesi untuk meningkatkan MASSA OTOT. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan kebutuhan dan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'rendah') {
+      return { teks: "Komposisi LEMAK dan OTOT Anda CUKUP BAIK. Cukupi kebutuhan PROTEIN harian dan Latihan Beban rutin untuk meningkatkan MASSA OTOT. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'rendah') {
+      return { teks: "Pertahankan komposisi Otot & Lemak Anda tetap IDEAL dengan tetap aktif secara fisik dan mencukupi asupan nutrisi harian yang seimbang. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'ideal') {
+      return { teks: "Lemak Tubuh Anda tidak berlebih, tapi Anda masih perlu meningkatkan massa otot dengan cara mencukupi kebutuhan PROTEIN harian dan Latihan Beban rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'ideal') {
+      return { teks: "Komposisi tubuh Anda CUKUP BAIK. Pertahankan pola makan dan latihan untuk menjaga keseimbangan antara massa otot dan kadar lemak tubuh. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'ideal') {
+      return { teks: "Pertahankan komposisi Otot & Lemak Anda tetap IDEAL dengan tetap aktif secara fisik dan mencukupi asupan nutrisi harian yang seimbang. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'tinggi') {
+      return { teks: "Anda perlu DEFISIT KALORI tapi TETAP memenuhi kebutuhan PROTEIN harian untuk mempertahankan MASSA OTOT. Kombinasikan Latihan Kardio dan OLAHRAGA BEBAN agar kalori aktivitas (output) makin besar. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan kebutuhan dan level kebugaran Anda." };
+    }
+  }
+
+  else if (skor >= 7 && skor <= 11) {
+    if (mMO === 'kurang' && mLT === 'rendah') {
+      return { teks: "Anda perlu meningkatkan asupan KALORI LEBIH BESAR dari pada kebutuhan harian untuk menaikkan BERAT BADAN. Cukupi kebutuhan PROTEIN harian dan Latihan Beban rutin untuk meningkatkan MASSA OTOT. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'rendah') {
+      return { teks: "Komposisi LEMAK dan OTOT Anda CUKUP BAIK. Cukupi kebutuhan PROTEIN harian dan Latihan Beban rutin untuk meningkatkan MASSA OTOT. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'rendah') {
+      return { teks: "Pertahankan komposisi Otot & Lemak Anda tetap IDEAL dengan tetap aktif secara fisik dan mencukupi asupan nutrisi harian yang seimbang. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'ideal') {
+      return { teks: "Lemak Tubuh Anda tidak berlebih, tapi Anda masih perlu meningkatkan massa otot dengan cara mencukupi kebutuhan PROTEIN harian dan Latihan Beban rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'ideal') {
+      return { teks: "Komposisi tubuh Anda CUKUP BAIK. Pertahankan pola makan dan latihan untuk menjaga keseimbangan antara massa otot dan kadar lemak tubuh. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'ideal') {
+      return { teks: "Pertahankan komposisi Otot & Lemak Anda tetap IDEAL dengan tetap aktif secara fisik dan mencukupi asupan nutrisi harian yang seimbang. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    }
+  }
+
+  else if (skor >= 0 && skor <= 6) {
+    if (mMO === 'kurang' && mLT === 'rendah') {
+      return { teks: "Anda masih perlu meningkatkan massa otot dan asupan kalori secara bertahap. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'rendah') {
+      return { teks: "Komposisi LEMAK dan OTOT Anda CUKUP BAIK, namun Anda masih perlu konsisten dengan pola hidup sehat dan aktif. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda" };
+    } else if (mMO === 'baik' && mLT === 'rendah') {
+      return { teks: "Komposisi tubuh Anda cukup Ideal, namun Anda masih perlu konsisten dengan pola hidup sehat dan aktif. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'ideal') {
+      return { teks: "Anda masih perlu meningkatkan massa otot dan mencukupi asupan nutrisi yang seimbang terutama protein. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'ideal') {
+      return { teks: "Komposisi LEMAK dan OTOT Anda CUKUP BAIK, namun Anda masih perlu konsisten dengan pola hidup sehat dan aktif. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'ideal') {
+      return { teks: "Komposisi LEMAK dan OTOT Anda CUKUP BAIK, namun Anda masih perlu konsisten dengan pola hidup sehat dan aktif. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'kurang' && mLT === 'tinggi') {
+      return { teks: "Lakukan DEFISIT KALORI namun tetap memenuhi kebutuhan nutrisi terutama PROTEIN dan fokus pada kombinasi latihan beban untuk naikkan massa otot & latihan kardio low impact untuk membantu membakar lemak. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'cukup' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    } else if (mMO === 'baik' && mLT === 'tinggi') {
+      return { teks: "Perlu DEFISIT KALORI, tapi kebutuhan nutrisi harian terutama protein harus terpenuhi. Lakukan kombinasi Latihan Beban rutin dan Kardio. Lakukan pola hidup sehat dan aktif secara rutin. Hubungi Pengundang Anda untuk mendapatkan pola makan (meal plan) dan pola latihan yang sesuai dengan level kebugaran Anda." };
+    }
+  }
+
+  return { teks: "! Rekomendasi Tidak ada, Silakan konsultasikan hasil Anda dengan Pengundang Anda untuk mendapatkan arahan lebih lanjut." };
+}
+
+// Pembuatan File pdf 
+function buatPDF(data, tanggal) {  
+    // Simpan logo beratidealku dari https://www.base64-image.de/ di variabel
+    const ambilLogo = "data:image/png;base64,KODE_BASE64_DISINI=";
+
+    // Simpan QR Code MAP Lokasi NC dari https://www.base64-image.de/ di variabel
+    const ambilQRCode = "data:image/png;base64,KODE_BASE64_DISINI=";
+
+  try {
+    const logoBlob      = Utilities.base64Decode(ambilLogo.split(",")[1]);    // ambil logo beratidealku 
+    const qrCodeBlob    = Utilities.base64Decode(ambilQRCode.split(",")[1]);  // ambil image QRCode
+    const folderId      = "1V_s-kNoDFwDXnPBUqtOyKwlZSbM4Fs2p";                // ganti sesuai folder Drive Anda
+    const namaBersih    = data.mNama ? data.mNama.replace(/\s+/g, '') : "TanpaNama";
+    const fileName      = `Survey-${namaBersih}-${tanggal}.pdf`;
+    const mTgl          = new Date();
+    const formatTgl     = Utilities.formatDate(mTgl, Session.getScriptTimeZone(), "dd MMMM yyyy");
+                       
+    // Hitung ulang skor dan hasil
+    const lemakTubuh    = Number(calculateLemakTubuh(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin));
+    const massaOtot     = Number(calculateMassaOtot(data.mJenisKelamin, lemakTubuh));
+    const bmr           = Number(calculateBMR(data.mBeratBadan, data.mTinggiBadan, data.mUmur, data.mJenisKelamin));
+    const kalori        = Number(calculateKalori(bmr, data.mAktivitasFisik));
+    const protein       = Number(calculateProtein(data.mBeratBadan, data.mJenisKelamin, data.mAktivitasFisik));
+ 
+    // Skor Kesimpulan & Rekomendasi 
+    const hasilLemakTubuh  = getEvaluasiLemakTubuh(lemakTubuh, data.mJenisKelamin);
+    const hasilMassaOtot   = getEvaluasiMassaOtot(massaOtot, data.mJenisKelamin, data.mUmur);
+    const skor             = Number(calculateSkor(data));
+    const hasilKesimpulan  = getKesimpulan(skor);
+    const hasilRekomendasi = getRekomendasi(skor, hasilMassaOtot.mMO, hasilLemakTubuh.mLT);
+    const kesimpulan       = hasilKesimpulan.teks;
+    const rekomendasi      = hasilRekomendasi.teks;
+
+    const template      = HtmlService.createTemplateFromFile("templatePDF");
+    template.logoBlob   = logoBlob;      // image logo beratidealku
+    template.qrCodeBlob = qrCodeBlob;    // image QR Code MAP NC 
+    template.tanggal    = formatTgl;
+    template.nama       = data.mNama;
+    template.hp         = data.mNomorHp;
+    template.email      = data.mEmail;
+    template.umur       = data.mUmur;
+    template.jenkel     = data.mJenisKelamin;
+    template.berat      = data.mBeratBadan;
+    template.tinggi     = data.mTinggiBadan;
+    template.lingkar    = data.mLingkarPerut;
+    template.aktivitas  = data.mAktivitasFisik;
+    template.fungsional = getFungsionalList(data);
+    template.evaluasi   = getEvaluasiList(data);
+    template.lemakTubuh = lemakTubuh;
+    template.massaOtot  = massaOtot;
+    template.bmr        = bmr;
+    template.kalori     = kalori;
+    template.protein    = protein;
+    
+    // Total pertanyaan ada 18, jadi kalau ada perubahan tinggal diganti nilai saja
+    template.skor       = skor;
+    template.persen     = ((template.skor / 18) * 100).toFixed(1) + "%";
+
+    // Hasil Kesimpulan dan Rekomendasi 
+    template.kesimpulan = kesimpulan;
+    template.rekomendasi= rekomendasi;
+
+    // Tambahkan data sponsor ke template
+    template.sponsor    = data.mSponsor || "Hesty Husain";
+    template.hpSponsor  = data.mHpSponsor || "81241318600";
+   
+    const htmlContent   = template.evaluate().getContent();
+    const pdfBlob       = Utilities.newBlob(htmlContent, 'text/html', fileName);  // pdf kualitas 150 DPI
+    const pdf           = pdfBlob.getAs('application/pdf').setName(fileName);
+    const folder        = DriveApp.getFolderById(folderId);                       // ID folder google drive Anda
+    const file          = folder.createFile(pdf);                                 // nama file pdf sesuai no simulasi
+    return file.getUrl();                                                         // Dapatkan URL file PDF
+
+  } catch (error) {
+    Logger.log("Gagal buatPDF: " + error);
+    throw new Error("Gagal membuat PDF: " + error.message);
+  }
+}
+
+// Untuk kirim file pdf ke Email
+function kirimEmail(email, nama, fileUrl, mSponsor, mHpSponsor) {
+  try {
+    const mTgl      = new Date();
+    const tglSurvey = Utilities.formatDate(mTgl, Session.getScriptTimeZone(), "dd MMMM yyyy");
+    const subject   = `Hasil Survey Kebugaran - ${nama}`;
+    const body = `
+      <p><strong>HASIL EVALUASI KEBUGARAN</strong>
+      <p>Tgl Survey:${tglSurvey}
+      <br>Terima kasih kak <strong>${nama},</strong>
+      <br>Terlampir hasil survey evaluasi kebugaran</br>
+      <br>Silahkan : <a href="${fileUrl}">Klik ini untuk lihat hasil surveynya !</a></br>
+      <p>Untuk info lebih lanjut silahkan menghubungi:<br>
+      <br>Member Independen
+      <br>${mSponsor}
+      <br>WA: ${mHpSponsor}
+      <br>Terima kasih
+      <p>Copyright by :<a href="www.beratidealku.com">www.beratidealku.com</a> 
+      <br>Lokasi Map NC <a href="bit.ly/LokasiKlubKita">klubKITA</a> 
+      <br><strong>Disclaimer:</strong> Hasil analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis
+    `;
+
+    if (email && email.includes("@")) {
+      MailApp.sendEmail({
+        to: email,
+        subject: subject,
+        htmlBody: body
+      });
+    }
+
+  } catch (error) {
+    Logger.log("Gagal kirimEmail: " + error);
+    throw new Error("Gagal mengirim email: " + error.message);
+  }
+}
+
+// Fungsi proses kirim file WA
+function kirimWA(nomorHP, nama, fileUrl, mSponsor, mHpSponsor) {
+  const TokenFonnte = "Ekjb4bsxt4W6BcXHr4vE";  // Ganti token sesuai akun
+  const url         = "https://api.fonnte.com/send";
+
+  const mTgl        = new Date();
+  const tanggal     = Utilities.formatDate(mTgl, Session.getScriptTimeZone(), "dd MMMM yyyy");
+  const noWaUser    = "62" + nomorHP.replace(/^0+/, "");
+  const noWaSponsor = "62" + mHpSponsor.replace(/^0+/, "");
+
+  // Format isi pesan
+  const fPesanWA =
+    '*EVALUASI KEBUGARAN*' +
+    '\n---------------------------------------------' +
+    '\nTgl : ' + tanggal +
+    '\n\nHai kak ' + nama +
+    '\nTerlampir hasil survey' +
+    '\n*Silahkan klik untuk lihat* 👇\n' + fileUrl +
+    '\n\n*Info lebih lanjut hubungi :*' +
+    '\nMember Independen' +
+    '\n'+ mSponsor +
+    '\nWA: ' + mHpSponsor +
+    '\n\nTerima kasih 🙏\n' +
+    '\n---------------------------------------------' +
+    '\n*Copyright by :*\nwww.beratidealku.com \n' +
+    '\n*Map Klub Nutrisi:*\nbit.ly/LokasiKlubKita \n' +
+    '\n*Disclaimer*: Hasil analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis';
+
+  // Opsi kirim ke user
+  const options_konsumen = {
+    method: "post",
+    headers: {
+      "Authorization": TokenFonnte
+    },
+    payload: {
+      target: noWaUser,
+      message: fPesanWA
+    }
+  };
+
+  // Opsi kirim ke sponsor
+  const options_member = {
+    method: "post",
+    headers: {
+      "Authorization": TokenFonnte
+    },
+    payload: {
+      target: noWaSponsor,
+      message: "*Notifikasi List Baru*\n" + fPesanWA
+    }
+  };
+
+  // Kirim ke konsumen dan sponsor
+  UrlFetchApp.fetch(url, options_konsumen);
+  UrlFetchApp.fetch(url, options_member);
+}
+
+// Fungsi untuk mencari posisi baris terakhir dari suatu kolom
+function ambilBrsAkhirKol(sh, posisiKolom) {
+  const brsAkhir = sh.getMaxRows();                        // ambil total baris, bukan lastRow berdasarkan semua kolom
+  const area     = sh.getRange(posisiKolom + "1:" + posisiKolom + brsAkhir);
+  const nilai    = area.getValues();                      // ambil semua isi kolom (array 2D)
+
+  // Scan dari bawah ke atas
+  for (let i = nilai.length - 1; i >= 0; i--) {
+    if (nilai[i][0] !== "" && nilai[i][0] !== null) {
+      const alamatCell  = posisiKolom + (i + 1);          // +1 karena index array mulai dari 0
+      const isiCell     = sh.getRange(alamatCell).getValue();
+      return isiCell;
+    }
+  }
+  return ""; // kalau tidak ketemu isi
+}
