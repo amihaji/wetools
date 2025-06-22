@@ -554,7 +554,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw6vfNwhdruMHQrk5p45y7HcZNtG6sBxmHG7LYoSl7q8T9dShEksvH7KkgcUpCC2_l4aw/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwrZHJKtIYt4_x0cjqZst9-vhI7wLqxKXleiMLTYNz_c2dUl4xCHbAcngsPgHGZx_IZMA/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -961,6 +961,64 @@ function tampilkanHasilEvaluasi(data) {
 // Untuk Kirim File PDF hasil Evaluasi
 // ***********************************
 async function handleKirimSurvey() {
+  try {
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+    btnKirim.disabled = true;
+
+    // 1. Ambil data sponsor
+    let mSponsor = document.getElementById('mSponsor').value.trim();
+    let mHpSponsor = document.getElementById('mHpSponsor').value.trim();
+    
+    // Set default jika kosong
+    if (!mSponsor) mSponsor = "Hesty Husain";
+    if (!mHpSponsor) mHpSponsor = "81241318600";
+    // Validasi input sponsor
+    if (!/^[A-Za-z\s]+$/.test(mSponsor)) { alert('Nama sponsor hanya boleh huruf dan spasi'); return; }
+    if (!/^\d{10,}$/.test(mHpSponsor)) { alert('No HP sponsor minimal 10 digit angka'); return; }
+
+    // 2. Siapkan data untuk dikirim
+    const dataToSend = {
+      action: "kirimHasilSurvey",
+      data: window.dataTerakhir,
+      mSponsor: mSponsor, 
+      mHpSponsor: mHpSponsor
+    };
+
+    // 3. Kirim ke Google Apps Script
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataToSend)
+    });
+
+    const result = await response.json();
+    
+    if (result.status !== "success") {
+      throw new Error(result.message || "Gagal mengirim data");
+    }
+
+    // 4. Tampilkan pesan sukses
+    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
+    
+    // 5. Reset form dan kembali ke halaman awal
+    resetForm();
+    navigate(3, 1);
+    
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Terjadi kesalahan: " + error.message);
+    
+    // Reset tombol kirim
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
+    btnKirim.disabled = false;
+  }
+}
+
+async function BACKUP_handleKirimSurvey() {
   const btnKirim     = document.getElementById("btnKirim");
   btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
   btnKirim.disabled  = true;
