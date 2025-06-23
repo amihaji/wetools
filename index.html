@@ -542,7 +542,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbywCO8b9brrd6oK4YXc65tjn3aIl4IcWsz8smyYjtWqImTMhLpQmZa0_r39dkmvcK-7/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyiRbewJs3MKPyWVeexbt_EcLwLDfL-_HI-gD2lqu4EaCmzm6tzvaI0YU6niixC-zDu/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -670,6 +670,7 @@ function submitForm() {
   try {
     // Kumpulkan data form
     const formData = {
+      // Data Pribadi
       mNama: document.getElementById("mNama").value,
       mNomorHp: document.getElementById("mNomorHp").value,
       mEmail: document.getElementById("mEmail").value,
@@ -679,6 +680,7 @@ function submitForm() {
       mTinggiBadan: document.getElementById("mTinggiBadan").value,
       mLingkarPerut: document.getElementById("mLingkarPerut").value,
       mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      // Data Fungsional
       mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
       mMenu: document.querySelector('input[name="mMenu"]:checked').value,
       mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
@@ -697,32 +699,26 @@ function submitForm() {
       mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
       mRokok: document.querySelector('input[name="mRokok"]:checked').value,
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+      // Data Sponsor
       mSponsor: document.getElementById("mSponsor").value,
-      mHpSponsor: document.getElementById("mHpSponsor").value
+      mHpSponsor: document.getElementById("mHpSponsor").value,
     };
-
       
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = URL_APPS_SCRIPT;
-    
     // 2. Buat callback unik
     const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-    
     // 3. Tambahkan parameter callback
     formData.callback = callbackName;
-    
     // 4. Bangun parameter query
     const params = Object.keys(formData)
       .map(key => `${key}=${encodeURIComponent(formData[key])}`)
       .join('&');
-    
     // 5. Bangun URL lengkap
     const url = scriptURL + '?' + params;
-    
     // 6. Buat elemen script
     const script = document.createElement('script');
     script.src = url;
-    
     // Tampilkan loading
     document.getElementById("loadingSpinner").style.display = "block";
     // Tampilkan halaman 3
@@ -780,6 +776,7 @@ function tampilkanHasilEvaluasi(data) {
 
   // Siapkan data default untuk menghindari error
   const safeData = {
+    // Data Pribadi
     tanggal: data.tanggal || "Tidak tersedia",
     nama: data.nama || "Tidak tersedia",
     hp: data.hp || "Tidak tersedia",
@@ -790,14 +787,18 @@ function tampilkanHasilEvaluasi(data) {
     tinggi: data.tinggi || "Tidak tersedia",
     lingkar: data.lingkar || "Tidak tersedia",
     aktivitas: data.aktivitas || "Tidak tersedia",
+    // Data Fungsional
     fungsional: data.fungsional || [],
+    // Data Sponsor
+    namaSponsor: data.namaSponsor || "Tidak tersedia",
+    hpSponsor: data.hpSponsor || "Tidak tersedia",
+    // Data Evaluasi
     evaluasi: data.evaluasi || [],
+    // Data Kesimpulan dan rekomendasi
     persen: data.persen || "0%",
     kesimpulan: data.kesimpulan || "Tidak tersedia",
-    rekomendasi: data.rekomendasi || "Tidak tersedia",
-    namaSponsor: data.namaSponsor || "Tidak tersedia",
-    hpSponsor: data.hpSponsor || "Tidak tersedia"
-  };
+    rekomendasi: data.rekomendasi || "Tidak tersedia"
+};
 
   // Fungsi untuk generate tabel fungsional
   const generateTabelFungsional = () => {
@@ -985,52 +986,7 @@ async function handleKirimSurvey() {
   document.getElementById('page1').classList.add('active');
   document.getElementById('page2').classList.remove('active');
 }
-
-// *************************
-// Fungsi untuk kirim data
-// *************************
-async function BACKUP_kirimData() {
-  try {
-    const btnKirim = document.getElementById("btnKirim");
-    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
-    btnKirim.disabled = true;
-     
-    const sponsorData = {
-      action: "prosesKirim",
-      id: dataTerakhir.id, // Simpan ID data terakhir
-      mSponsor: document.getElementById("mSponsor").value,
-      mHpSponsor: document.getElementById("mHpSponsor").value
-    };
-      
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec", {
-      method: "POST",
-      body: new URLSearchParams(sponsorData)
-    });
-      
-    const result = await response.json();
-      
-    if (result.status !== "success") {
-      throw new Error(result.message || "Gagal mengirim data");
-    }
-      
-    document.getElementById("pesan-kirim").innerHTML = `
-      <div class="alert alert-success">
-        Hasil survey berhasil dikirim ke WA/Email Anda!
-      </div>
-    `;
-      
-  } catch (error) {
-    document.getElementById("pesan-kirim").innerHTML = `
-      <div class="alert alert-danger">
-        Gagal mengirim hasil: ${error.message}
-      </div>
-    `;
-  } finally {
-    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
-    btnKirim.disabled = true;
-  }
-}
-   
+ 
 // *******************
 // Untuk mereset form
 // *******************
