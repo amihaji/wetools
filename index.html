@@ -554,7 +554,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzA2CFo9YdgBdWJkphaOGoh_eSdgaAt1GGd1REWxBZ_4binPJqSySk5kLp1nOzuU0bYHw/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyZDWhrTvXr6yvOuxYitXNRB_iUsA4um1L1ceILg_cyIOX3Yajlu1MtnjZ6AM15aDNWsQ/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -965,72 +965,44 @@ async function handleKirimSurvey() {
   btnKirim.disabled = true;
 
   try {
-    // ===== VALIDASI 1: CEK ELEMEN SPONSOR =====
-    if (!document.getElementById('mSponsor') || !document.getElementById('mHpSponsor')) {
-      throw new Error("Elemen sponsor tidak ditemukan di halaman");
-    }
+    // 1. Ambil data sponsor dengan default value
+    const mSponsor = document.getElementById('mSponsor')?.value.trim() || "Hesty Husain";
+    const mHpSponsor = document.getElementById('mHpSponsor')?.value.trim() || "81241318600";
+    // Validasi input sponsor
+    //if (!/^[A-Za-z\s]+$/.test(mSponsor)) { alert('Nama sponsor hanya boleh huruf dan spasi'); return; }
+    //if (!/^\d{10,}$/.test(mHpSponsor)) { alert('No HP sponsor minimal 10 digit angka'); return; }
 
-    // ===== VALIDASI 2: CEK DATA TERAKHIR =====
-    if (!window.dataTerakhir) {
-      // Coba ambil dari localStorage atau variabel lain
-      window.dataTerakhir = JSON.parse(localStorage.getItem('surveyData')) || null;
-      
-      if (!window.dataTerakhir) {
-        throw new Error("Data survey tidak ditemukan. Silakan submit ulang.");
-      }
-    }
-
-    // 1. Ambil data sponsor dengan pengecekan null/undefined
-    const sponsorInput = document.getElementById('mSponsor');
-    const hpSponsorInput = document.getElementById('mHpSponsor');
-    
-    const mSponsor = sponsorInput && sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
-    const mHpSponsor = hpSponsorInput && hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
-
-    // 2. Pastikan dataTerakhir ada
-    if (!window.dataTerakhir) {
-      throw new Error("Data survey tidak ditemukan. Silakan submit ulang.");
-    }
-
-    // 3. Siapkan payload dengan data lengkap
+    // 2. Gunakan JSONP sebagai solusi CORS
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
     const payload = {
       action: "kirimHasilSurvey",
       data: window.dataTerakhir,
-      mSponsor: mSponsor,
-      mHpSponsor: mHpSponsor
+      mSponsor,
+      mHpSponsor
     };
 
-    // 4. Gunakan fetch dengan error handling
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.status !== "success") {
-      throw new Error(result.message || "Gagal memproses data");
-    }
-
-    // 5. Tampilkan notifikasi sukses
-    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
+    const script = document.createElement('script');
+    script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&data=${encodeURIComponent(JSON.stringify(payload))}`;
     
-    // 6. Reset form
-    resetForm();
-    navigate(3, 1);
+    window[callbackName] = function(response) {
+      document.body.removeChild(script);
+      delete window[callbackName];
+      
+      if (response.status === "success") {
+        alert("Hasil survey berhasil dikirim!");
+        resetForm();
+        navigate(3, 1);
+      } else {
+        throw new Error(response.message || "Gagal memproses data");
+      }
+    };
+
+    document.body.appendChild(script);
 
   } catch (error) {
     console.error("Error:", error);
-    alert("Gagal mengirim hasil survey: " + error.message);
+    alert("Gagal mengirim: " + error.message);
     
-    // Reset tombol kirim
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
   }
