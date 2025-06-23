@@ -493,8 +493,6 @@ body {
                 </div>
               </div>
 
-              </div>
-
               <!-- PESAN VALIDASI HALAMAN 2 -->
               <div id="formMessage2" class="mt-3"></div>
 
@@ -775,7 +773,6 @@ function tampilkanHasilEvaluasi(data) {
 
   // Siapkan data default untuk menghindari error
   const safeData = {
-    // Data Pribadi
     tanggal: data.tanggal || "Tidak tersedia",
     nama: data.nama || "Tidak tersedia",
     hp: data.hp || "Tidak tersedia",
@@ -786,16 +783,10 @@ function tampilkanHasilEvaluasi(data) {
     tinggi: data.tinggi || "Tidak tersedia",
     lingkar: data.lingkar || "Tidak tersedia",
     aktivitas: data.aktivitas || "Tidak tersedia",
-    // Data Fungsional
     fungsional: data.fungsional || [],
-    
-    // Data Sponsor
-    //namaSponsor: data.namaSponsor || "Tidak tersedia",
-    //hpSponsor: data.hpSponsor || "Tidak tersedia",
-    
-    // Data Evaluasi
+    namaSponsor: data.namaSponsor || "Tidak tersedia",
+    hpSponsor: data.hpSponsor || "Tidak tersedia",
     evaluasi: data.evaluasi || [],
-    // Data Kesimpulan dan rekomendasi
     persen: data.persen || "0%",
     kesimpulan: data.kesimpulan || "Tidak tersedia",
     rekomendasi: data.rekomendasi || "Tidak tersedia"
@@ -917,7 +908,7 @@ function tampilkanHasilEvaluasi(data) {
         </table>
       </div>  
       
-      <!-- Call To Action -->
+      <!-- CALL TO ACTION -->
       <div class="border p-3 rounded bg-light mt-4">    
         <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
         <h6 style="text-align: center; color:#cc0000;">
