@@ -631,12 +631,16 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxbt6z9hS8s7K08
 // fungsi validatePage2 untuk halaman 2
 // *************************************
 function validatePage2() {
-  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-  let isValid = true;
-
+  const required    = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
   const namaSponsor = document.getElementById("mSponsor").value.trim();
   const hpSponsor   = document.getElementById("mHpSponsor").value.trim();
+  // Validasi Nama Sponsor dan HP
+  //if (mSponsor.length < 3 || mSponsor.length > 40) 
+  //    return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
+  //if (!/^[0-9]{10,14}$/.test(mHpSponsor)) 
+  //    return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
 
+  let isValid = true;
   for (let id of required) {
     const inputs = document.querySelectorAll(`input[name="${id}"]`);
     let answered = false;
@@ -651,12 +655,6 @@ function validatePage2() {
       break;
     }
   }
-
-  // Validasi Nama Sponsor dan HP
-  //if (mSponsor.length < 3 || mSponsor.length > 40) 
-  //    return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-  //if (!/^[0-9]{10,14}$/.test(mHpSponsor)) 
-  //    return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
   
   if (isValid) {
     submitForm();
@@ -789,9 +787,11 @@ function tampilkanHasilEvaluasi(data) {
     aktivitas: data.aktivitas || "Tidak tersedia",
     // Data Fungsional
     fungsional: data.fungsional || [],
+    
     // Data Sponsor
-    namaSponsor: data.namaSponsor || "Tidak tersedia",
-    hpSponsor: data.hpSponsor || "Tidak tersedia",
+    //namaSponsor: data.namaSponsor || "Tidak tersedia",
+    //hpSponsor: data.hpSponsor || "Tidak tersedia",
+    
     // Data Evaluasi
     evaluasi: data.evaluasi || [],
     // Data Kesimpulan dan rekomendasi
