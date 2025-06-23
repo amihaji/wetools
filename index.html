@@ -1,27 +1,3 @@
-<!---------------------------------------------------------------
-Aplikasi Survey Kebugaran - WETools Versi 4.0 GitHUB
-
-Dibuat dengan menggunakan : 
-- HTML Bootstrap versi 5.0
-- CSS dan JScript
-- Google Script Aplication
-
-Terdiri atas beberapa file :
-- Database : Sheet "SurveyData"
-- index.html (program utama) di ditempat di GitHUB
-- code.gs (program server side)
-- evaluasi.html (untuk menampilkan hasil evaluasi di layar TIDAK ditampilkan)
-- templatePDF.html (untuk menampilkan hasil ke bentuk file PDF)
-
-Fitur Aplikasi:
-- Form Input Survey Kebugaran
-- Hasil menghasilkan file pdf
-- File pdf dapat dikirim ke email dan wa
-- Penambahan Inputan untuk Data Sponsor/Pengundang
-- Hasil Survey TIDAK Tampil ke layar
-- Nama Sponsor dan HP Sponsor disimpan di sheet kolom "AO" dan "AP"
-- Tampilan lebih Responsive
-------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -554,7 +530,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwficJSp1nAugKgow0ZzdNYBGAjnulCl4jV7tuT2GgX7pCWLzYoNI82UN-X8Nx_S3x8/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzgirSdKogA96bkLE8K26gl5NuIqmd2xLJZWXP6_2ZPXztjf1MuM6ZOpAZtRFZZlDrw/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -704,6 +680,7 @@ function submitForm() {
 
       
     // 1. DEKLARASI SCRIPT URL
+    //const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
     const scriptURL = URL_APPS_SCRIPT;
     
     // 2. Buat callback unik
@@ -960,52 +937,6 @@ function tampilkanHasilEvaluasi(data) {
 // Untuk Kirim File PDF hasil Evaluasi
 // ***********************************
 async function handleKirimSurvey() {
-  const btnKirim = document.getElementById("btnKirim");
-  const originalBtnText = btnKirim.innerHTML; // Simpan teks asli
-  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
-  btnKirim.disabled = true;
-
-  try {
-    // 1. Ambil data sponsor dengan cara yang lebih aman
-    const mSponsor = document.getElementById('mSponsor')?.value || "Hesty Husain";
-    const mHpSponsor = document.getElementById('mHpSponsor')?.value || "81241318600";
-    
-    // 2. Validasi data terakhir
-    if (!window.dataTerakhir) {
-      throw new Error("Data survey tidak ditemukan. Silakan isi survey kembali.");
-    }
-    
-    // 3. Siapkan payload sederhana
-    const payload = {
-      nama: window.dataTerakhir.nama,
-      hp: window.dataTerakhir.hp,
-      mSponsor: mSponsor,
-      mHpSponsor: mHpSponsor
-    };
-
-    // 4. Kirim dengan metode GET sederhana
-    const url = `${URL_APPS_SCRIPT}?action=kirimHasilSurvey&nama=${encodeURIComponent(payload.nama)}&hp=${encodeURIComponent(payload.hp)}&sponsor=${encodeURIComponent(payload.mSponsor)}&hpsponsor=${encodeURIComponent(payload.mHpSponsor)}`;
-    
-    const response = await fetch(url);
-    const result = await response.json();
-    
-    if (result.status === "success") {
-      alert("Data berhasil dikirim dan diproses!");
-      resetForm();
-    } else {
-      throw new Error(result.message || "Gagal memproses data");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Gagal mengirim: " + error.message);
-  } finally {
-    // Kembalikan tombol ke keadaan semula
-    btnKirim.innerHTML = originalBtnText;
-    btnKirim.disabled = false;
-  }
-}
-
-async function BACKUP_handleKirimSurvey() {
   const btnKirim     = document.getElementById("btnKirim");
   btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
   btnKirim.disabled  = true;
