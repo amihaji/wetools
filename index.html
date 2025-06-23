@@ -672,7 +672,6 @@ function submitForm() {
   try {
     // Kumpulkan data form
     const formData = {
-      // Data Pribadi
       mNama: document.getElementById("mNama").value,
       mNomorHp: document.getElementById("mNomorHp").value,
       mEmail: document.getElementById("mEmail").value,
@@ -682,7 +681,6 @@ function submitForm() {
       mTinggiBadan: document.getElementById("mTinggiBadan").value,
       mLingkarPerut: document.getElementById("mLingkarPerut").value,
       mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      // Data Fungsional
       mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
       mMenu: document.querySelector('input[name="mMenu"]:checked').value,
       mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
@@ -701,7 +699,6 @@ function submitForm() {
       mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
       mRokok: document.querySelector('input[name="mRokok"]:checked').value,
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      // Data Sponsor
       mSponsor: document.getElementById("mSponsor").value,
       mHpSponsor: document.getElementById("mHpSponsor").value,
     };
