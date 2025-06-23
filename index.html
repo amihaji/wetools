@@ -653,10 +653,10 @@ function validatePage2() {
   }
 
   // Validasi Nama Sponsor dan HP
-  if (mSponsor.length < 3 || mSponsor.length > 40) 
-      return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-  if (!/^[0-9]{10,14}$/.test(mHpSponsor)) 
-      return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
+  //if (mSponsor.length < 3 || mSponsor.length > 40) 
+  //    return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
+  //if (!/^[0-9]{10,14}$/.test(mHpSponsor)) 
+  //    return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
   
   if (isValid) {
     submitForm();
