@@ -485,7 +485,7 @@ body {
                 <h5><i class="fas fa-user me-2"></i>Data Sponsor, Jika Ada (Opsional)</h5>
                 <div class="mb-12">
                   <label class="form-label">Nama Sponsor</label>
-                  <input type="text" id="mNamaSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
                 </div>
                 <div class="mb-12">
                   <label class="form-label">HP Sponsor</label>
@@ -542,7 +542,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyhxzMpELFPrsoxQ1lA2YKXs-oTYbbGTZ5cpg53sKX0wuqb1TDTIMnAcO01yV1RpClc/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbywCO8b9brrd6oK4YXc65tjn3aIl4IcWsz8smyYjtWqImTMhLpQmZa0_r39dkmvcK-7/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -634,7 +634,7 @@ function validatePage2() {
   const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
   let isValid = true;
 
-  const namaSponsor = document.getElementById("mNamaSponsor").value.trim();
+  const namaSponsor = document.getElementById("mSponsor").value.trim();
   const hpSponsor   = document.getElementById("mHpSponsor").value.trim();
 
   for (let id of required) {
@@ -653,7 +653,7 @@ function validatePage2() {
   }
 
   // Validasi Nama Sponsor dan HP
-  if (mNamaSponsor.length < 3 || mNamaSponsor.length > 40) 
+  if (mSponsor.length < 3 || mSponsor.length > 40) 
       return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
   if (!/^[0-9]{10,14}$/.test(mHpSponsor)) 
       return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
@@ -697,13 +697,12 @@ function submitForm() {
       mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
       mRokok: document.querySelector('input[name="mRokok"]:checked').value,
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      mNamaSponsor: document.getElementById("mNamaSponsor").value,
+      mSponsor: document.getElementById("mSponsor").value,
       mHpSponsor: document.getElementById("mHpSponsor").value
     };
 
       
     // 1. DEKLARASI SCRIPT URL
-    //const scriptURL = 'https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec';
     const scriptURL = URL_APPS_SCRIPT;
     
     // 2. Buat callback unik
