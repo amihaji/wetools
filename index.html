@@ -554,7 +554,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxQngclYXBOuHjPKiFCVR5v3gt3gY2s0tUKiGqT1mGamHKHnF87NMeyyLvlnNrstK0y/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzwIDBQqZuQLtm7yUON-YQaZJbISYNRRoikwWRdC2MR3oD_a5rPl_NPy_I3SP51eTBp/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -965,15 +965,37 @@ async function handleKirimSurvey() {
   btnKirim.disabled = true;
 
   try {
-    // 1. Ambil data sponsor dengan default value
-    const mSponsor = document.getElementById('mSponsor')?.value.trim() || "Hesty Husain";
-    const mHpSponsor = document.getElementById('mHpSponsor')?.value.trim() || "81241318600";
+    
+    console.log("Sponsor Input:", document.getElementById('mSponsor'));
+    console.log("HP Sponsor Input:", document.getElementById('mHpSponsor'));
+    console.log("Data Terakhir:", window.dataTerakhir);
+
+    // 1. AMBIL DATA SPONSOR DENGAN VALIDASI KETAT
+    const sponsorInput = document.getElementById('mSponsor');
+    const hpSponsorInput = document.getElementById('mHpSponsor');
+    
+    if (!sponsorInput || !hpSponsorInput) {
+      throw new Error("Form sponsor tidak ditemukan di halaman");
+    }
+
+    const mSponsor = sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
+    const mHpSponsor = hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
     // Validasi input sponsor
     //if (!/^[A-Za-z\s]+$/.test(mSponsor)) { alert('Nama sponsor hanya boleh huruf dan spasi'); return; }
     //if (!/^\d{10,}$/.test(mHpSponsor)) { alert('No HP sponsor minimal 10 digit angka'); return; }
 
-    // 2. Gunakan JSONP sebagai solusi CORS
-    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    // 2. VALIDASI DATA TERAKHIR
+    if (!window.dataTerakhir) {
+      const savedData = localStorage.getItem('surveyData');
+      window.dataTerakhir = savedData ? JSON.parse(savedData) : null;
+      
+      if (!window.dataTerakhir) {
+        throw new Error("Data survey tidak ditemukan. Silakan isi survey kembali.");
+      }
+    }
+
+    // 3. KIRIM DATA MENGGUNAKAN JSONP
+    const callbackName = 'callback_' + Date.now();
     const payload = {
       action: "kirimHasilSurvey",
       data: window.dataTerakhir,
@@ -982,16 +1004,15 @@ async function handleKirimSurvey() {
     };
 
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&data=${encodeURIComponent(JSON.stringify(payload))}`;
+    script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&payload=${encodeURIComponent(JSON.stringify(payload))}`;
     
     window[callbackName] = function(response) {
       document.body.removeChild(script);
       delete window[callbackName];
       
       if (response.status === "success") {
-        alert("Hasil survey berhasil dikirim!");
+        alert("Hasil berhasil dikirim ke WA/Email!");
         resetForm();
-        navigate(3, 1);
       } else {
         throw new Error(response.message || "Gagal memproses data");
       }
