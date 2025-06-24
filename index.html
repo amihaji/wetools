@@ -674,8 +674,10 @@ function getValue(name) {
   const el = document.querySelector(`input[name="${name}"]:checked`);
   return el ? el.value : "Tidak";
 }
+
 function submitForm() {
   try {
+    // Ambil data form
     const formData = {
       mNama: document.getElementById("mNama").value || "-",
       mNomorHp: document.getElementById("mNomorHp").value || "-",
@@ -709,31 +711,32 @@ function submitForm() {
       callback: "tampilkanHasilEvaluasi"
     };
 
+    // Bangun URL JSONP
     const query = new URLSearchParams(formData).toString();
     const script = document.createElement("script");
     script.src = `${URL_APPS_SCRIPT}?${query}`;
     script.id = "jsonpScript";
 
-    // Navigasi & loading
+    // Tampilkan loading dan pindah ke halaman 3
     navigate(2, 3);
     document.getElementById("loadingSpinner").style.display = "block";
     document.getElementById("hasilAnalisa").style.display = "none";
 
-    // JSONP callback handler
-    window.tampilkanHasilEvaluasi = function (response) {
+    // Tangani callback JSONP (tidak menimpa fungsi tampilkanHasilEvaluasi)
+    window["tampilkanHasilEvaluasi"] = function (response) {
       console.log("📦 Callback JSONP response:", response);
 
-      try {
-        const oldScript = document.getElementById("jsonpScript");
-        if (oldScript && oldScript.parentNode) {
-          oldScript.parentNode.removeChild(oldScript);
-        }
-      } catch (e) {
-        console.warn("Gagal hapus script:", e.message);
+      // Bersihkan script JSONP
+      const oldScript = document.getElementById("jsonpScript");
+      if (oldScript && oldScript.parentNode) {
+        oldScript.parentNode.removeChild(oldScript);
       }
 
+      // Tidak hapus fungsi ini agar bisa dipakai ulang
+      // delete window.tampilkanHasilEvaluasi;
+
       if (response.status === "success") {
-        tampilkanHasilEvaluasi(response.data);
+        tampilkanHasilEvaluasi(response.data); // ⬅️ panggil fungsi yang sudah Anda buat
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
       }
@@ -741,14 +744,16 @@ function submitForm() {
       document.getElementById("loadingSpinner").style.display = "none";
     };
 
+    // Jalankan JSONP
     document.body.appendChild(script);
 
   } catch (error) {
-    console.error("❌ Error di submitForm:", error);
+    console.error("❌ Error di submitForm:", error.message);
     showMessage(2, "Terjadi kesalahan saat mengirim data.", "error");
     document.getElementById("loadingSpinner").style.display = "none";
   }
 }
+
 
 // *****************************************
 // Untuk menampilkan Hasil Evaluasi Ke Layar
