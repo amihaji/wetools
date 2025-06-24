@@ -676,7 +676,6 @@ function getValue(name) {
 }
 function submitForm() {
   try {
-    // Kumpulkan semua data form
     const formData = {
       mNama: document.getElementById("mNama").value || "-",
       mNomorHp: document.getElementById("mNomorHp").value || "-",
@@ -707,23 +706,20 @@ function submitForm() {
       mAlkohol: getValue("mAlkohol"),
       mSponsor: document.getElementById("mSponsor").value || "-",
       mHpSponsor: document.getElementById("mHpSponsor").value || "-",
-      callback: "tampilkanHasilEvaluasi" // WAJIB untuk JSONP
+      callback: "tampilkanHasilEvaluasi"
     };
 
-    // Ubah ke format URL query string
     const query = new URLSearchParams(formData).toString();
-
-    // Siapkan <script> JSONP
     const script = document.createElement("script");
     script.src = `${URL_APPS_SCRIPT}?${query}`;
-    script.id = "jsonpScript"; // untuk referensi penghapusan
+    script.id = "jsonpScript";
 
-    // Navigasi ke halaman loading
+    // Navigasi & loading
     navigate(2, 3);
     document.getElementById("loadingSpinner").style.display = "block";
     document.getElementById("hasilAnalisa").style.display = "none";
 
-    // Tambahkan handler callback
+    // JSONP callback handler
     window.tampilkanHasilEvaluasi = function (response) {
       console.log("📦 Callback JSONP response:", response);
 
@@ -733,10 +729,8 @@ function submitForm() {
           oldScript.parentNode.removeChild(oldScript);
         }
       } catch (e) {
-        console.warn("Gagal menghapus script JSONP:", e.message);
+        console.warn("Gagal hapus script:", e.message);
       }
-
-      delete window.tampilkanHasilEvaluasi;
 
       if (response.status === "success") {
         tampilkanHasilEvaluasi(response.data);
@@ -747,11 +741,10 @@ function submitForm() {
       document.getElementById("loadingSpinner").style.display = "none";
     };
 
-    // Sisipkan ke dokumen
     document.body.appendChild(script);
 
   } catch (error) {
-    console.error("Error di submitForm:", error.message);
+    console.error("❌ Error di submitForm:", error);
     showMessage(2, "Terjadi kesalahan saat mengirim data.", "error");
     document.getElementById("loadingSpinner").style.display = "none";
   }
@@ -761,27 +754,25 @@ function submitForm() {
 // Untuk menampilkan Hasil Evaluasi Ke Layar
 // *****************************************
 function tampilkanHasilEvaluasi(data) {
-  console.log("📌 tampilkanHasilEvaluasi DIJALANKAN:", data);
+  console.log("📌 tampilkanHasilEvaluasi DIJALANKAN", data);
 
-  // Pastikan elemen hasilAnalisa ada
   const hasilAnalisa = document.getElementById("hasilAnalisa");
   if (!hasilAnalisa) {
-    console.error("Element hasilAnalisa tidak ditemukan");
+    console.error("❌ #hasilAnalisa tidak ditemukan!");
     return;
   }
 
-  // Validasi data yang diterima
-  if (!data || typeof data !== 'object' || data.error) {
+  if (!data || typeof data !== "object") {
     hasilAnalisa.innerHTML = `
       <div class="alert alert-danger">
-        ${data?.error || "Data hasil tidak valid. Silakan coba lagi atau hubungi admin."}
+        Data hasil tidak valid. Silakan coba lagi atau hubungi admin.
       </div>
     `;
     hasilAnalisa.style.display = "block";
     return;
   }
 
-  // Siapkan data default untuk menghindari error
+  // Siapkan data default agar aman
   const safeData = {
     tanggal: data.tanggal || "Tidak tersedia",
     nama: data.nama || "Tidak tersedia",
@@ -802,16 +793,11 @@ function tampilkanHasilEvaluasi(data) {
     rekomendasi: data.rekomendasi || "Tidak tersedia"
   };
 
-  // Fungsi untuk generate tabel fungsional
+  // Tabel Fungsional
   const generateTabelFungsional = () => {
     if (safeData.fungsional.length === 0) {
-      return `
-        <div class="alert alert-warning">
-          Data status fungsional tidak tersedia
-        </div>
-      `;
+      return `<div class="alert alert-warning">Data status fungsional tidak tersedia</div>`;
     }
-
     return `
       <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
       <table class="table table-bordered">
@@ -827,22 +813,17 @@ function tampilkanHasilEvaluasi(data) {
               <td>${item.label || `Pertanyaan ${index + 1}`}</td>
               <td style="text-align:center;">${item.jawaban || "Tidak diisi"}</td>
             </tr>
-          `).join('')}
+          `).join("")}
         </tbody>
       </table>
     `;
   };
 
-  // Fungsi untuk generate tabel evaluasi
+  // Tabel Evaluasi
   const generateTabelEvaluasi = () => {
     if (safeData.evaluasi.length === 0) {
-      return `
-        <div class="alert alert-warning">
-          Data evaluasi parameter tidak tersedia
-        </div>
-      `;
+      return `<div class="alert alert-warning">Data evaluasi parameter tidak tersedia</div>`;
     }
-
     return `
       <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
       <div style="overflow-x: auto; width: 100%;">
@@ -865,94 +846,87 @@ function tampilkanHasilEvaluasi(data) {
                 <td style="text-align:center;">${item.satuan || "-"}</td>
                 <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
               </tr>
-            `).join('')}
+            `).join("")}
           </tbody>
         </table>
       </div>
     `;
   };
 
-  // Tampilkan Hasil Evaluasi ke Layar
+  // Gabungkan semua ke dalam elemen
   hasilAnalisa.innerHTML = `
-      <div class="card-body">
-        <!-- DATA SURVEY -->
-        <table class="table table-bordered">
-          <tbody>
-            <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-                <td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td>
-            </tr>
-            <tr><td>Nama</td><td>${safeData.nama}</td></tr>
-            <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
-            <tr><td>Email</td><td>${safeData.email}</td></tr>
-            <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
-            <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
-            <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
-            <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
-            <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
-            <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
-          </tbody>
-        </table>
+    <div class="card-body">
+      <!-- DATA SURVEY -->
+      <table class="table table-bordered">
+        <tbody>
+          <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+              <td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td>
+          </tr>
+          <tr><td>Nama</td><td>${safeData.nama}</td></tr>
+          <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
+          <tr><td>Email</td><td>${safeData.email}</td></tr>
+          <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
+          <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
+          <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
+          <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
+          <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
+          <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
+        </tbody>
+      </table>
 
-        <!-- TABEL FUNGSIONAL -->
-        ${generateTabelFungsional()}
+      <!-- TABEL FUNGSIONAL -->
+      ${generateTabelFungsional()}
 
-        <!-- TABEL EVALUASI -->
-        ${generateTabelEvaluasi()}
+      <!-- TABEL EVALUASI -->
+      ${generateTabelEvaluasi()}
 
-        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
-        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
-        <table class="table table-bordered">
-          <tbody>
-            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
-              <td style="width:85%;">
-                Persentase kebugaran anda : <strong>${safeData.persen}</strong>
-              </td> 
-            </tr>
-            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-                <td style="width:85%;">${safeData.kesimpulan}</td>
-            </tr>
-            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-                <td style="width:85%;">${safeData.rekomendasi}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>  
-      
-      <!-- CALL TO ACTION -->
-      <div class="border p-3 rounded bg-light mt-4">    
-        <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
-        <h6 style="text-align: center; color:#cc0000;">
-            Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
-            <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
-        </h6>
-        <div class="text-center text-muted mt-3">
-            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
-        </div>
-        
-        <div class="d-flex justify-content-center mt-3">
-          <div style="max-width: 50%;">
-            <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
-              <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
-            </button>
-          </div>
-        </div>
+      <!-- SKOR & REKOMENDASI -->
+      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
+      <table class="table table-bordered">
+        <tbody>
+          <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+            <td style="width:85%;">Persentase kebugaran anda : <strong>${safeData.persen}</strong></td> 
+          </tr>
+          <tr><th style="background-color:#4d94ff;">Kesimpulan</th>
+              <td>${safeData.kesimpulan}</td>
+          </tr>
+          <tr><th style="background-color:#4d94ff;">Rekomendasi</th>
+              <td>${safeData.rekomendasi}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>  
 
+    <!-- CTA -->
+    <div class="border p-3 rounded bg-light mt-4">    
+      <h5 style="text-align: center; color:#cc0000;">SELAMAT,</h5>
+      <h6 style="text-align: center; color:#cc0000;">
+        Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+        <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
+      </h6>
+      <div class="text-center text-muted mt-3">
+        <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
       </div>
+      <div class="d-flex justify-content-center mt-3">
+        <div style="max-width: 50%;">
+          <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
+            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+          </button>
+        </div>
+      </div>
+    </div>
   `;
 
-  // ✅ Tambahkan log debug tepat di sini
-  console.log("✅ hasilAnalisa.innerHTML = ", hasilAnalisa.innerHTML);
-  // Tampilkan bagian hasil analisa
+  // Tampilkan hasil & pastikan halaman aktif
   hasilAnalisa.style.display = "block";
-  // Sembunyikan loading spinner
   document.getElementById("loadingSpinner").style.display = "none";
-  // halaman 3 aktif ditampilkan
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page3").classList.add("active");
-  // Simpan data terakhir untuk proses kirim
+
+  // Simpan untuk dikirim ulang
   window.dataTerakhir = data;
 }
- 
+
 // ***********************************
 // Untuk Kirim File PDF hasil Evaluasi
 // ***********************************
