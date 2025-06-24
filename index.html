@@ -553,7 +553,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxNxl2nobkKSYdjmhL8ng36IT6wjg3Ba0CATnrOA715l2Hk3GIh4NucK2omccNfxz6q/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyDfsGMBNdyw69Nru38eA77BKAX6tbTa3bAj7oxjjZ1IivT0BGsz_K_ADmGPlCkRoi_/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -738,6 +738,7 @@ function submitForm() {
         document.getElementById("loadingSpinner").style.display = "none";
 
         // Tampilkan hasil evaluasi
+        console.log(response);
         tampilkanHasilEvaluasi(response.data);
 
       } else {
