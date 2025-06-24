@@ -528,7 +528,9 @@ body {
               
               <!-- Hasil Analisa akan ditampilkan kalau berhasil -->  
               <div id="hasilAnalisa" style="display: none;">
-        
+                <!-- Hasil Evaluasi akan dimasukkan oleh JS -->
+              </div>
+
               <!-- Footer Hamalan 3 -->
               <div class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
                 WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
@@ -551,7 +553,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwzXEQH2Jj7VQWXQ1CEhxzQ0AtxJAHGv2eOPmtGPSWFKcgmza_p3FL1O8hurwc0yVTK/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxNxl2nobkKSYdjmhL8ng36IT6wjg3Ba0CATnrOA715l2Hk3GIh4NucK2omccNfxz6q/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -734,8 +736,10 @@ function submitForm() {
       if (response.status === "success") {
         // Sembuyikan Tampilkan loading
         document.getElementById("loadingSpinner").style.display = "none";
+
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
+
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
         document.getElementById("loadingSpinner").style.display = "none";
@@ -971,7 +975,7 @@ async function handleKirimSurvey() {
   await fetch('URL_APPS_SCRIPT?kirimEmail=1', { method: 'POST', body: JSON.stringify({ email, nama, fileUrl, mSponsor, mHpSponsor }) });
   
   // 5. Kirim WA
-  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
+  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ hp, nama, fileUrl, mSponsor, mHpSponsor }) });
 
   // 6. Reset form
   btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
