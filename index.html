@@ -564,7 +564,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwLTdJDk7Nim5Xn91PSFxQsz71LeE-yyjsOjIdJdMDdJccMSm5ro2jUkUmE6l5u8Zme/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzDUpSaDdnf3FmEnowxVScrkrDurZ3A_y2bGrAiCNu5zduGy1Y4l_H9B-Ba4FA6VIbc/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -617,11 +617,11 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwLTdJDk7Nim5Xn
   // Untuk validasi halaman1
   //*************************
   function validatePage1() {
-    const nama = document.getElementById("mNama").value.trim();
-    const hp = document.getElementById("mNomorHp").value.trim();
-    const email = document.getElementById("mEmail").value.trim();
-    const umur = +document.getElementById("mUmur").value;
-    const berat = +document.getElementById("mBeratBadan").value;
+    const nama   = document.getElementById("mNama").value.trim();
+    const hp     = document.getElementById("mNomorHp").value.trim();
+    const email  = document.getElementById("mEmail").value.trim();
+    const umur   = +document.getElementById("mUmur").value;
+    const berat  = +document.getElementById("mBeratBadan").value;
     const tinggi = +document.getElementById("mTinggiBadan").value;
    
     if (nama.length < 3 || nama.length > 40) 
@@ -653,7 +653,9 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwLTdJDk7Nim5Xn
 // fungsi validatePage2 untuk halaman 2
 // *************************************
 function validatePage2() {
-  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+  const required  = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+  const sponsor   = document.getElementById("mSponsor").value.trim();
+  const hpSponsor = document.getElementById("mHpSponsor").value.trim();
   let isValid = true;
 
   for (let id of required) {
@@ -709,7 +711,9 @@ function submitForm() {
       mSulit: document.querySelector('input[name="mSulit"]:checked').value,
       mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
       mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+      mSponsor: document.getElementById("mSponsor").value,
+      mHpSponsor: document.getElementById("mHpSponsor").value
     };
 
      
@@ -802,6 +806,8 @@ function tampilkanHasilEvaluasi(data) {
     lingkar: data.lingkar || "Tidak tersedia",
     aktivitas: data.aktivitas || "Tidak tersedia",
     fungsional: data.fungsional || [],
+    sponsor: data.sponsor || "Tidak tersedia",
+    hpSponsor: data.hpSponsor || "Tidak tersedia",
     evaluasi: data.evaluasi || [],
     persen: data.persen || "0%",
     kesimpulan: data.kesimpulan || "Tidak tersedia",
