@@ -553,7 +553,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzY8cgRt9DdEztgOpR6GEx0ZdM65jMThhWbJtWLS6gQerWv6kBmscHu7ADvuofRNlLS/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxcqBkcsMHUD2NdYxmQwvqED7nsA758y_TyduY4RtFL6WMYFj1Fr2U8TXNDXDLenEBH/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -670,77 +670,90 @@ function validatePage2() {
 // ************************************
 // Untuk mengirim data inputan ke sheet
 // ************************************
-function submitForm() {
-  const formData = {
-    // isi semua nilai wajib
-    mNama: document.getElementById("mNama").value || "N/A",
-    mNomorHp: document.getElementById("mNomorHp").value || "N/A",
-    mEmail: document.getElementById("mEmail").value || "",
-    mUmur: document.getElementById("mUmur").value || "0",
-    mJenisKelamin: document.getElementById("mJenisKelamin").value || "Pria",
-    mBeratBadan: document.getElementById("mBeratBadan").value || "0",
-    mTinggiBadan: document.getElementById("mTinggiBadan").value || "0",
-    mLingkarPerut: document.getElementById("mLingkarPerut").value || "0",
-    mAktivitasFisik: document.getElementById("mAktivitasFisik").value || "-",
-    mSarapan: getValue("mSarapan"),
-    mMenu: getValue("mMenu"),
-    mNgantuk: getValue("mNgantuk"),
-    mLelah: getValue("mLelah"),
-    mLambung: getValue("mLambung"),
-    mLapar: getValue("mLapar"),
-    mAir: getValue("mAir"),
-    mKonsumsi: getValue("mKonsumsi"),
-    mBab: getValue("mBab"),
-    mKeram: getValue("mKeram"),
-    mTidur: getValue("mTidur"),
-    mOlahraga: getValue("mOlahraga"),
-    mBak: getValue("mBak"),
-    mKerutan: getValue("mKerutan"),
-    mSulit: getValue("mSulit"),
-    mBBNaik: getValue("mBBNaik"),
-    mRokok: getValue("mRokok"),
-    mAlkohol: getValue("mAlkohol"),
-    mSponsor: document.getElementById("mSponsor").value || "Hesti Husain",
-    mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600",
-    callback: "tampilkanHasilEvaluasi"
-  };
-
-  // Validasi
-  for (const key in formData) {
-    if (formData[key] === undefined) {
-      console.error(`Field ${key} kosong!`);
-      showMessage(2, `Field ${key} kosong atau belum diisi.`, "error");
-      return;
-    }
-  }
-
-  const query = new URLSearchParams(formData).toString();
-  const script = document.createElement("script");
-  script.src = `${URL_APPS_SCRIPT}?${query}`;
-
-  navigate(2, 3);
-  document.getElementById("loadingSpinner").style.display = "block";
-  document.getElementById("hasilAnalisa").style.display = "none";
-
-  document.body.appendChild(script);
-
-  // JSONP handler
-  window.tampilkanHasilEvaluasi = function(response) {
-    document.body.removeChild(script);
-    if (response.status === "success") {
-      tampilkanHasilEvaluasi(response.data);
-    } else {
-      showMessage(2, response.message || "Gagal memproses", "error");
-    }
-    document.getElementById("loadingSpinner").style.display = "none";
-  };
-}
-
 function getValue(name) {
   const el = document.querySelector(`input[name="${name}"]:checked`);
   return el ? el.value : "Tidak";
 }
+function submitForm() {
+  try {
+    // Kumpulkan semua data form
+    const formData = {
+      mNama: document.getElementById("mNama").value || "-",
+      mNomorHp: document.getElementById("mNomorHp").value || "-",
+      mEmail: document.getElementById("mEmail").value || "-",
+      mUmur: document.getElementById("mUmur").value || "-",
+      mJenisKelamin: document.getElementById("mJenisKelamin").value || "-",
+      mBeratBadan: document.getElementById("mBeratBadan").value || "0",
+      mTinggiBadan: document.getElementById("mTinggiBadan").value || "0",
+      mLingkarPerut: document.getElementById("mLingkarPerut").value || "0",
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value || "-",
+      mSarapan: getValue("mSarapan"),
+      mMenu: getValue("mMenu"),
+      mNgantuk: getValue("mNgantuk"),
+      mLelah: getValue("mLelah"),
+      mLambung: getValue("mLambung"),
+      mLapar: getValue("mLapar"),
+      mAir: getValue("mAir"),
+      mKonsumsi: getValue("mKonsumsi"),
+      mBab: getValue("mBab"),
+      mKeram: getValue("mKeram"),
+      mTidur: getValue("mTidur"),
+      mOlahraga: getValue("mOlahraga"),
+      mBak: getValue("mBak"),
+      mKerutan: getValue("mKerutan"),
+      mSulit: getValue("mSulit"),
+      mBBNaik: getValue("mBBNaik"),
+      mRokok: getValue("mRokok"),
+      mAlkohol: getValue("mAlkohol"),
+      mSponsor: document.getElementById("mSponsor").value || "-",
+      mHpSponsor: document.getElementById("mHpSponsor").value || "-",
+      callback: "tampilkanHasilEvaluasi" // WAJIB untuk JSONP
+    };
 
+    // Ubah ke format URL query string
+    const query = new URLSearchParams(formData).toString();
+
+    // Siapkan <script> JSONP
+    const script = document.createElement("script");
+    script.src = `${URL_APPS_SCRIPT}?${query}`;
+    script.id = "jsonpScript"; // untuk referensi penghapusan
+
+    // Navigasi ke halaman loading
+    navigate(2, 3);
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("hasilAnalisa").style.display = "none";
+
+    // Tambahkan handler callback
+    window.tampilkanHasilEvaluasi = function (response) {
+      try {
+        const oldScript = document.getElementById("jsonpScript");
+        if (oldScript && oldScript.parentNode) {
+          oldScript.parentNode.removeChild(oldScript);
+        }
+      } catch (e) {
+        console.warn("Gagal menghapus script JSONP:", e.message);
+      }
+
+      delete window.tampilkanHasilEvaluasi;
+
+      if (response.status === "success") {
+        tampilkanHasilEvaluasi(response.data);
+      } else {
+        showMessage(2, response.message || "Gagal memproses data", "error");
+      }
+
+      document.getElementById("loadingSpinner").style.display = "none";
+    };
+
+    // Sisipkan ke dokumen
+    document.body.appendChild(script);
+
+  } catch (error) {
+    console.error("Error di submitForm:", error.message);
+    showMessage(2, "Terjadi kesalahan saat mengirim data.", "error");
+    document.getElementById("loadingSpinner").style.display = "none";
+  }
+}
 
 function BACKUP_submitForm() {
   try {
