@@ -553,7 +553,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxcqBkcsMHUD2NdYxmQwvqED7nsA758y_TyduY4RtFL6WMYFj1Fr2U8TXNDXDLenEBH/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxal323XHaFbDq6MmBKyMjyL6nkbB5U5bxjWpl084Y26ErGqBZKhr8c17X9loHAdNwt/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -725,6 +725,8 @@ function submitForm() {
 
     // Tambahkan handler callback
     window.tampilkanHasilEvaluasi = function (response) {
+      console.log("📦 Callback JSONP response:", response);
+
       try {
         const oldScript = document.getElementById("jsonpScript");
         if (oldScript && oldScript.parentNode) {
@@ -755,99 +757,12 @@ function submitForm() {
   }
 }
 
-function BACKUP_submitForm() {
-  try {
-    // Kumpulkan data form
-    const formData = {
-      mNama: document.getElementById("mNama").value,
-      mNomorHp: document.getElementById("mNomorHp").value,
-      mEmail: document.getElementById("mEmail").value,
-      mUmur: document.getElementById("mUmur").value,
-      mJenisKelamin: document.getElementById("mJenisKelamin").value,
-      mBeratBadan: document.getElementById("mBeratBadan").value,
-      mTinggiBadan: document.getElementById("mTinggiBadan").value,
-      mLingkarPerut: document.getElementById("mLingkarPerut").value,
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-      mAir: document.querySelector('input[name="mAir"]:checked').value,
-      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-      mBab: document.querySelector('input[name="mBab"]:checked').value,
-      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-      mBak: document.querySelector('input[name="mBak"]:checked').value,
-      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      mSponsor: document.getElementById("mSponsor").value,
-      mHpSponsor: document.getElementById("mHpSponsor").value,
-    };
-      
-    // 1. DEKLARASI SCRIPT URL
-    const scriptURL = URL_APPS_SCRIPT;
-    
-    // 2. Buat callback unik
-    const callback = "tampilkanHasilEvaluasi";
-    
-    // 3. Tambahkan parameter callback
-    formData.callback = callback;
-    // 4. Bangun parameter query
-    const params = Object.keys(formData)
-      .map(key => `${key}=${encodeURIComponent(formData[key])}`)
-      .join('&');
-    // 5. Bangun URL lengkap
-    const url = scriptURL + '?' + params;
-    // 6. Buat elemen script
-    const script = document.createElement('script');
-    script.src = url;
-    
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    // Tampilkan halaman 3
-    navigate(2, 3);
-    
-    // 7. Handle response
-    window[callback] = function(response) {
-      // Cleanup
-      document.body.removeChild(script);
-      delete window[callback];
-    
-      // Handle response
-      if (response.status === "success") {
-        // Sembuyikan Tampilkan loading
-        document.getElementById("loadingSpinner").style.display = "none";
-
-        // Tampilkan hasil evaluasi
-        console.log(response);
-        tampilkanHasilEvaluasi(response.data);
-
-      } else {
-        showMessage(2, response.message || "Gagal memproses data", "error");
-        document.getElementById("loadingSpinner").style.display = "none";
-      }
-    };
-    
-    // 8. Tambahkan ke dokumen
-    document.body.appendChild(script);
- 
-  } catch (error) {
-    console.error("Error in submitForm:", error);
-    showMessage(2, "Terjadi kesalahan saat memproses data", "error");
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
-
 // *****************************************
 // Untuk menampilkan Hasil Evaluasi Ke Layar
 // *****************************************
 function tampilkanHasilEvaluasi(data) {
+  console.log("📌 tampilkanHasilEvaluasi DIJALANKAN:", data);
+
   // Pastikan elemen hasilAnalisa ada
   const hasilAnalisa = document.getElementById("hasilAnalisa");
   if (!hasilAnalisa) {
