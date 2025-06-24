@@ -553,7 +553,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzcEqRU-Ta5sbn0lpWIapmtCj6_Lk6DW4-KoTpYbqcWUycft8iE3yp6cuiHN7sceRJ5/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyRj2E7m49ZlDjYwCQqWA941TRKyvQ7H2LF2Scj2iTixCBysYTT7cMITt0orra-JNXh/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -672,6 +672,7 @@ function validatePage2() {
 // ************************************
 function submitForm() {
   const formData = {
+    callback: "tampilkanHasilEvaluasi",
     mNama: document.getElementById("mNama").value,
     mNomorHp: document.getElementById("mNomorHp").value,
     mEmail: document.getElementById("mEmail").value,
@@ -703,34 +704,17 @@ function submitForm() {
     mHpSponsor: document.getElementById("mHpSponsor").value
   };
 
-  // Tampilkan loading dan pindah halaman
+  const params = new URLSearchParams(formData).toString();
+  const script = document.createElement('script');
+  script.src = `${URL_APPS_SCRIPT}?${params}`;
+
+  // Navigasi ke halaman 3
   navigate(2, 3);
   document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("hasilAnalisa").style.display = "none";
 
-  fetch(URL_APPS_SCRIPT, {
-    method: 'POST',
-    body: JSON.stringify(formData),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(res => res.json())
-  .then(response => {
-    if (response.status === "success") {
-      document.getElementById("loadingSpinner").style.display = "none";
-      // Tampilkan hasil evaluasi
-      tampilkanHasilEvaluasi(response.data);                
-    } else {
-      document.getElementById("loadingSpinner").style.display = "none";
-      alert("Gagal memproses data: " + response.message);
-    }
-  })
-  .catch(err => {
-    document.getElementById("loadingSpinner").style.display = "none";
-    alert("Error saat mengirim data: " + err.message);
-  });
+  document.body.appendChild(script);
 }
-
 
 function BACKUP_submitForm() {
   try {
