@@ -542,7 +542,9 @@ body {
               
               <!-- Hasil Analisa akan ditampilkan kalau berhasil -->  
               <div id="hasilAnalisa" style="display: none;">
-                
+                <!-- ditampilkan disini melalui proses jscript -->
+              </div> 
+                  
             </div>
           </form>
         </div>
@@ -948,7 +950,6 @@ function tampilkanHasilEvaluasi(data) {
             </button>
           </div>
         </div>
-
       </div>
   `;
 
@@ -969,11 +970,11 @@ async function handleKirimSurvey() {
 
   try {
     // 1. Ambil data sponsor dengan pengecekan null/undefined
-    const sponsorInput = document.getElementById('mSponsor');
-    const hpSponsorInput = document.getElementById('mHpSponsor');
+    //const sponsorInput = document.getElementById('mSponsor');
+    //const hpSponsorInput = document.getElementById('mHpSponsor');
     
-    const mSponsor = sponsorInput && sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
-    const mHpSponsor = hpSponsorInput && hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
+    //const mSponsor = sponsorInput && sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
+    //const mHpSponsor = hpSponsorInput && hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
 
     // 2. Pastikan dataTerakhir ada
     if (!window.dataTerakhir) {
@@ -983,9 +984,7 @@ async function handleKirimSurvey() {
     // 3. Siapkan payload dengan data lengkap
     const payload = {
       action: "kirimHasilSurvey",
-      data: window.dataTerakhir,
-      mSponsor: mSponsor,
-      mHpSponsor: mHpSponsor
+      data: window.dataTerakhir
     };
 
     // 4. Gunakan fetch dengan error handling
@@ -1024,90 +1023,6 @@ async function handleKirimSurvey() {
   }
 }
 
-async function BACKUP_handleKirimSurvey() {
-  const btnKirim     = document.getElementById("btnKirim");
-  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
-  btnKirim.disabled  = true;
-
-  // 1. Ambil data sponsor
-  let mSponsor = document.getElementById('mSponsor').value.trim();
-  let mHpSponsor = document.getElementById('mHpSponsor').value.trim();
-  if (!mSponsor) mSponsor = "Hesty Husain";
-  if (!mHpSponsor) mHpSponsor = "81241318600";
-  // Validasi input sponsor
-  if (!/^[A-Za-z\s]+$/.test(mSponsor)) { alert('Nama sponsor hanya boleh huruf dan spasi'); return; }
-  if (!/^\d{10,}$/.test(mHpSponsor)) { alert('No HP sponsor minimal 10 digit angka'); return; }
-
-  // 2. Submit data ke server (Google Apps Script)
-  // Kirim data lengkap termasuk mSponsor dan mHpSponsor
-  const response = await fetch('URL_APPS_SCRIPT', { method: 'POST', body: new FormData(form) });
-  const result = await response.json();
-  if (result.status !== 'success') { alert('Gagal menyimpan data'); return; }
-  const { tanggal, nama, email, hp, fileUrl } = result.data;
-
-  // 3. Buat PDF (panggil buatPDF di server, otomatis dari backend)
-  await fetch('URL_APPS_SCRIPT?buatPDF=1', { method: 'POST', body: JSON.stringify({ dataTerakhir, tanggal }) });
-  
-  // 4. Kirim Email
-  await fetch('URL_APPS_SCRIPT?kirimEmail=1', { method: 'POST', body: JSON.stringify({ email, nama, fileUrl, mSponsor, mHpSponsor }) });
-  
-  // 5. Kirim WA
-  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
-
-  // 6. Reset form
-  btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
-  btnKirim.disabled  = true;
-  resetForm();
-  // 7. Kembali ke halaman awal
-  document.getElementById('page1').classList.add('active');
-  document.getElementById('page2').classList.remove('active');
-}
-
-// *************************
-// Fungsi untuk kirim data
-// *************************
-async function BACKUP_kirimData() {
-  try {
-    const btnKirim = document.getElementById("btnKirim");
-    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
-    btnKirim.disabled = true;
-     
-    const sponsorData = {
-      action: "prosesKirim",
-      id: dataTerakhir.id, // Simpan ID data terakhir
-      mSponsor: document.getElementById("mSponsor").value,
-      mHpSponsor: document.getElementById("mHpSponsor").value
-    };
-      
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec", {
-      method: "POST",
-      body: new URLSearchParams(sponsorData)
-    });
-      
-    const result = await response.json();
-      
-    if (result.status !== "success") {
-      throw new Error(result.message || "Gagal mengirim data");
-    }
-      
-    document.getElementById("pesan-kirim").innerHTML = `
-      <div class="alert alert-success">
-        Hasil survey berhasil dikirim ke WA/Email Anda!
-      </div>
-    `;
-      
-  } catch (error) {
-    document.getElementById("pesan-kirim").innerHTML = `
-      <div class="alert alert-danger">
-        Gagal mengirim hasil: ${error.message}
-      </div>
-    `;
-  } finally {
-    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
-    btnKirim.disabled = true;
-  }
-}
-   
 // *******************
 // Untuk mereset form
 // *******************
