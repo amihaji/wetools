@@ -670,7 +670,7 @@ function validatePage2() {
 // ************************************
 // Untuk mengirim data inputan ke sheet
 // ************************************
-function submitForm() {
+function BACKUP_submitForm() {
   try {
     const formData = {
       mNama: document.getElementById("mNama").value,
@@ -728,7 +728,7 @@ function submitForm() {
   }
 }
 
-function BACKUP_submitForm() {
+function submitForm() {
   try {
     // Kumpulkan data form
     const formData = {
@@ -765,8 +765,10 @@ function BACKUP_submitForm() {
       
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = URL_APPS_SCRIPT;
+    
     // 2. Buat callback unik
-    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    const callbackName = "tampilkanHasilEvaluasi";
+    
     // 3. Tambahkan parameter callback
     formData.callback = callbackName;
     // 4. Bangun parameter query
