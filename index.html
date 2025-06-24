@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!---------------------------------------------------------------
 Aplikasi Survey Kebugaran - WETools Versi 4.0 GitHUB
 
@@ -6,6 +5,7 @@ Dibuat dengan menggunakan :
 - HTML Bootstrap versi 5.0
 - CSS dan JScript
 - Google Script Aplication
+
 Terdiri atas beberapa file :
 - Database : Sheet "SurveyData"
 - index.html (program utama) di ditempat di GitHUB
@@ -22,8 +22,6 @@ Fitur Aplikasi:
 - Nama Sponsor dan HP Sponsor disimpan di sheet kolom "AO" dan "AP"
 - Tampilan lebih Responsive
 ------------------------------------------------------------------->
-=======
->>>>>>> 741812edea36c3f894e695f3361b08cd502967ad
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -250,7 +248,7 @@ body {
                   </select>
                 </div>
               </div>
-          
+         
               <!-- PESAN VALIDASI HALAMAN 1 -->
               <div id="formMessage1" class="mt-3"></div>
 
@@ -264,13 +262,8 @@ body {
                   <i class="fas fa-arrow-right me-2"></i>Berikutnya
                 </button>
               </div>
-                          
-              <!-- Footer Halaman 1 -->
-              <div class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
-                WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
-              </div>
             </div>
-            
+
             <!-- HALAMAN 2 -->
             <div class="page" id="page2">
               <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab pertanyaan ini sesuai yang anda rasakan (Wajib Isi)</h5>
@@ -303,8 +296,8 @@ body {
                   </div>
                 </div>
 
-              <!-- Pertanyaan 3 -->
-              <div class="md-12">
+                <!-- Pertanyaan 3 -->
+            <div class="md-12">
                 <label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required>
@@ -511,17 +504,7 @@ body {
                 </div>
               </div>
 
-              <!-- FORM SPONSOR -->
-              <div class="border p-3 rounded bg-light mt-4">
-                <h5><i class="fas fa-user me-2"></i>Data Sponsor, Jika Ada (Opsional)</h5>
-                <div class="mb-12">
-                  <label class="form-label">Nama Sponsor</label>
-                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-                </div>
-                <div class="mb-12">
-                  <label class="form-label">HP Sponsor</label>
-                  <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
-                </div>
+
               </div>
 
               <!-- PESAN VALIDASI HALAMAN 2 -->
@@ -537,11 +520,6 @@ body {
                 </button>
               </div>
             </div>
-    
-            <!-- Footer Halaman 2 -->
-            <div class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
-              WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
-            </div>
 
             <!-- HALAMAN 3 -->
             <div class="page" id="page3">
@@ -554,18 +532,15 @@ body {
               
               <!-- Hasil Analisa akan ditampilkan kalau berhasil -->  
               <div id="hasilAnalisa" style="display: none;">
-                <!-- Hasil Evaluasi akan dimasukkan oleh JS -->
-              </div>
-
-              <!-- Footer Hamalan 3 -->
-              <div class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
-                WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
-              </div>    
+                
             </div>
           </form>
         </div>
         
-        
+        <!-- Footer -->
+        <footer class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
+          WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
+        </footer>
     </div>
   </div>
 </div>
@@ -579,7 +554,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzmG1U7sMcVa5vX4CEUiCofeIo2uazLJHGjadtum34ZM95yZCyGJI-FLHg1YPkso6fP/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxaGQFnsQrMc_JWwRlb5ChDO13fV81KA2mmf5nTevBe7snKv-65dV_CkjD7aTWeB4Kn/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -668,11 +643,9 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzmG1U7sMcVa5vX
 // fungsi validatePage2 untuk halaman 2
 // *************************************
 function validatePage2() {
-  const required    = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-  const namaSponsor = document.getElementById("mSponsor").value.trim();
-  const hpSponsor   = document.getElementById("mHpSponsor").value.trim();
-  
+  const required = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
   let isValid = true;
+
   for (let id of required) {
     const inputs = document.querySelectorAll(`input[name="${id}"]`);
     let answered = false;
@@ -696,111 +669,117 @@ function validatePage2() {
 // ************************************
 // Untuk mengirim data inputan ke sheet
 // ************************************
-function getValue(name) {
-  const el = document.querySelector(`input[name="${name}"]:checked`);
-  return el ? el.value : "Tidak";
-}
-
 function submitForm() {
   try {
-    // Ambil data form
+    // Kumpulkan data form
     const formData = {
-      mNama: document.getElementById("mNama").value || "-",
-      mNomorHp: document.getElementById("mNomorHp").value || "-",
-      mEmail: document.getElementById("mEmail").value || "-",
-      mUmur: document.getElementById("mUmur").value || "-",
-      mJenisKelamin: document.getElementById("mJenisKelamin").value || "-",
-      mBeratBadan: document.getElementById("mBeratBadan").value || "0",
-      mTinggiBadan: document.getElementById("mTinggiBadan").value || "0",
-      mLingkarPerut: document.getElementById("mLingkarPerut").value || "0",
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value || "-",
-      mSarapan: getValue("mSarapan"),
-      mMenu: getValue("mMenu"),
-      mNgantuk: getValue("mNgantuk"),
-      mLelah: getValue("mLelah"),
-      mLambung: getValue("mLambung"),
-      mLapar: getValue("mLapar"),
-      mAir: getValue("mAir"),
-      mKonsumsi: getValue("mKonsumsi"),
-      mBab: getValue("mBab"),
-      mKeram: getValue("mKeram"),
-      mTidur: getValue("mTidur"),
-      mOlahraga: getValue("mOlahraga"),
-      mBak: getValue("mBak"),
-      mKerutan: getValue("mKerutan"),
-      mSulit: getValue("mSulit"),
-      mBBNaik: getValue("mBBNaik"),
-      mRokok: getValue("mRokok"),
-      mAlkohol: getValue("mAlkohol"),
-      mSponsor: document.getElementById("mSponsor").value || "-",
-      mHpSponsor: document.getElementById("mHpSponsor").value || "-",
-      callback: "tampilkanHasilEvaluasi"
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value,
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
     };
 
-    // Bangun URL JSONP
-    const query = new URLSearchParams(formData).toString();
-    const script = document.createElement("script");
-    script.src = `${URL_APPS_SCRIPT}?${query}`;
-    script.id = "jsonpScript";
-
-    // Tampilkan loading dan pindah ke halaman 3
-    navigate(2, 3);
+      
+    // 1. DEKLARASI SCRIPT URL
+    const scriptURL = URL_APPS_SCRIPT;
+    
+    // 2. Buat callback unik
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    
+    // 3. Tambahkan parameter callback
+    formData.callback = callbackName;
+    
+    // 4. Bangun parameter query
+    const params = Object.keys(formData)
+      .map(key => `${key}=${encodeURIComponent(formData[key])}`)
+      .join('&');
+    
+    // 5. Bangun URL lengkap
+    const url = scriptURL + '?' + params;
+    
+    // 6. Buat elemen script
+    const script = document.createElement('script');
+    script.src = url;
+    
+    // Tampilkan loading
     document.getElementById("loadingSpinner").style.display = "block";
-    document.getElementById("hasilAnalisa").style.display = "none";
-
-    // Tangani callback JSONP (tidak menimpa fungsi tampilkanHasilEvaluasi)
-    window["tampilkanHasilEvaluasi"] = function (response) {
-      console.log("📦 Callback JSONP response:", response);
-
-      // Bersihkan script JSONP
-      const oldScript = document.getElementById("jsonpScript");
-      if (oldScript && oldScript.parentNode) {
-        oldScript.parentNode.removeChild(oldScript);
-      }
-
-      // Tidak hapus fungsi ini agar bisa dipakai ulang
-      // delete window.tampilkanHasilEvaluasi;
-
+    // Tampilkan halaman 3
+    navigate(2, 3);
+    
+    // 7. Handle response
+    window[callbackName] = function(response) {
+      // Cleanup
+      document.body.removeChild(script);
+      delete window[callbackName];
+    
+      // Handle response
       if (response.status === "success") {
-        tampilkanHasilEvaluasi(response.data); // ⬅️ panggil fungsi yang sudah Anda buat
+        // Sembuyikan Tampilkan loading
+        document.getElementById("loadingSpinner").style.display = "none";
+        // Tampilkan hasil evaluasi
+        tampilkanHasilEvaluasi(response.data);
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
+        document.getElementById("loadingSpinner").style.display = "none";
       }
-
-      document.getElementById("loadingSpinner").style.display = "none";
     };
-
-    // Jalankan JSONP
+    
+    // 8. Tambahkan ke dokumen
     document.body.appendChild(script);
-
+ 
   } catch (error) {
-    console.error("❌ Error di submitForm:", error.message);
-    showMessage(2, "Terjadi kesalahan saat mengirim data.", "error");
+    console.error("Error in submitForm:", error);
+    showMessage(2, "Terjadi kesalahan saat memproses data", "error");
     document.getElementById("loadingSpinner").style.display = "none";
   }
 }
-
 
 // *****************************************
 // Untuk menampilkan Hasil Evaluasi Ke Layar
 // *****************************************
 function tampilkanHasilEvaluasi(data) {
+  // Pastikan elemen hasilAnalisa ada
   const hasilAnalisa = document.getElementById("hasilAnalisa");
   if (!hasilAnalisa) {
-    console.error("Element #hasilAnalisa tidak ditemukan");
+    console.error("Element hasilAnalisa tidak ditemukan");
     return;
   }
 
-  if (!data || typeof data !== 'object') {
+  // Validasi data yang diterima
+  if (!data || typeof data !== 'object' || data.error) {
     hasilAnalisa.innerHTML = `
       <div class="alert alert-danger">
-        Data hasil tidak valid. Silakan coba lagi atau hubungi admin.
+        ${data?.error || "Data hasil tidak valid. Silakan coba lagi atau hubungi admin."}
       </div>
     `;
     hasilAnalisa.style.display = "block";
     return;
   }
 
+  // Siapkan data default untuk menghindari error
   const safeData = {
     tanggal: data.tanggal || "Tidak tersedia",
     nama: data.nama || "Tidak tersedia",
@@ -813,18 +792,22 @@ function tampilkanHasilEvaluasi(data) {
     lingkar: data.lingkar || "Tidak tersedia",
     aktivitas: data.aktivitas || "Tidak tersedia",
     fungsional: data.fungsional || [],
-    namaSponsor: data.namaSponsor || "Tidak tersedia",
-    hpSponsor: data.hpSponsor || "Tidak tersedia",
     evaluasi: data.evaluasi || [],
     persen: data.persen || "0%",
     kesimpulan: data.kesimpulan || "Tidak tersedia",
     rekomendasi: data.rekomendasi || "Tidak tersedia"
   };
 
+  // Fungsi untuk generate tabel fungsional
   const generateTabelFungsional = () => {
     if (safeData.fungsional.length === 0) {
-      return `<div class="alert alert-warning">Data status fungsional tidak tersedia</div>`;
+      return `
+        <div class="alert alert-warning">
+          Data status fungsional tidak tersedia
+        </div>
+      `;
     }
+
     return `
       <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
       <table class="table table-bordered">
@@ -840,16 +823,22 @@ function tampilkanHasilEvaluasi(data) {
               <td>${item.label || `Pertanyaan ${index + 1}`}</td>
               <td style="text-align:center;">${item.jawaban || "Tidak diisi"}</td>
             </tr>
-          `).join("")}
+          `).join('')}
         </tbody>
       </table>
     `;
   };
 
+  // Fungsi untuk generate tabel evaluasi
   const generateTabelEvaluasi = () => {
     if (safeData.evaluasi.length === 0) {
-      return `<div class="alert alert-warning">Data evaluasi parameter tidak tersedia</div>`;
+      return `
+        <div class="alert alert-warning">
+          Data evaluasi parameter tidak tersedia
+        </div>
+      `;
     }
+
     return `
       <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
       <div style="overflow-x: auto; width: 100%;">
@@ -872,91 +861,167 @@ function tampilkanHasilEvaluasi(data) {
                 <td style="text-align:center;">${item.satuan || "-"}</td>
                 <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
               </tr>
-            `).join("")}
+            `).join('')}
           </tbody>
         </table>
       </div>
     `;
   };
 
-  // Isi HTML hasil analisa
+  // Tampilkan Hasil Evaluasi ke Layar
   hasilAnalisa.innerHTML = `
-    <div class="card-body">
-      <!-- DATA SURVEY -->
-      <table class="table table-bordered">
-        <tbody>
-          <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-              <td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td>
-          </tr>
-          <tr><td>Nama</td><td>${safeData.nama}</td></tr>
-          <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
-          <tr><td>Email</td><td>${safeData.email}</td></tr>
-          <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
-          <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
-          <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
-          <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
-          <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
-          <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
-        </tbody>
-      </table>
+      <div class="card-body">
+        <!-- DATA SURVEY -->
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                <td style="background-color:#4d94ff;"><b>${safeData.tanggal}</b></td>
+            </tr>
+            <tr><td>Nama</td><td>${safeData.nama}</td></tr>
+            <tr><td>No. HP</td><td>${safeData.hp}</td></tr>
+            <tr><td>Email</td><td>${safeData.email}</td></tr>
+            <tr><td>Umur</td><td>${safeData.umur} tahun</td></tr>
+            <tr><td>Jenis Kelamin</td><td>${safeData.jk}</td></tr>
+            <tr><td>Berat Badan</td><td>${safeData.berat} kg</td></tr>
+            <tr><td>Tinggi Badan</td><td>${safeData.tinggi} cm</td></tr>
+            <tr><td>Lingkar Perut</td><td>${safeData.lingkar} cm</td></tr>
+            <tr><td>Aktivitas Fisik</td><td>${safeData.aktivitas}</td></tr>
+          </tbody>
+        </table>
 
-      <!-- TABEL FUNGSIONAL -->
-      ${generateTabelFungsional()}
+        <!-- TABEL FUNGSIONAL -->
+        ${generateTabelFungsional()}
 
-      <!-- TABEL EVALUASI -->
-      ${generateTabelEvaluasi()}
+        <!-- TABEL EVALUASI -->
+        ${generateTabelEvaluasi()}
 
-      <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
-      <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
-      <table class="table table-bordered">
-        <tbody>
-          <tr><th style="background-color:#4d94ff;">Skor</th>
-              <td>Persentase kebugaran anda : <strong>${safeData.persen}</strong></td> 
-          </tr>
-          <tr><th style="background-color:#4d94ff;">Kesimpulan</th>
-              <td>${safeData.kesimpulan}</td>
-          </tr>
-          <tr><th style="background-color:#4d94ff;">Rekomendasi</th>
-              <td>${safeData.rekomendasi}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- CTA -->
-    <div class="border p-3 rounded bg-light mt-4">    
-      <h5 style="text-align: center; color:#cc0000;">SELAMAT,</h5>
-      <h6 style="text-align: center; color:#cc0000;">
-        Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
-        <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
-      </h6>
-      <div class="text-center text-muted mt-3">
-        <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
-      </div>
-      <div class="d-flex justify-content-center mt-3">
-        <div style="max-width: 50%;">
-          <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
-            <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
-          </button>
+        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
+        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+              <td style="width:85%;">
+                Persentase kebugaran anda : <strong>${safeData.persen}</strong>
+              </td> 
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                <td style="width:85%;">${safeData.kesimpulan}</td>
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                <td style="width:85%;">${safeData.rekomendasi}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>  
+        
+      <!-- FORM SPONSOR -->
+      <div class="border p-3 rounded bg-light mt-4">
+        <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
+        <div class="mb-3">
+          <label class="form-label">Nama Sponsor</label>
+          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">HP Sponsor</label>
+          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
         </div>
       </div>
-    </div>
+
+      <!-- Call To Action -->
+      <div class="border p-3 rounded bg-light mt-4">    
+        <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
+        <h6 style="text-align: center; color:#cc0000;">
+            Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
+            <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
+        </h6>
+        <div class="text-center text-muted mt-3">
+            <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
+        </div>
+        
+        <div class="d-flex justify-content-center mt-3">
+          <div style="max-width: 50%;">
+            <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
+              <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
+            </button>
+          </div>
+        </div>
+
+      </div>
   `;
 
-  // ✅ Tampilkan hasil dan pastikan halaman 3 aktif
+  // Tampilkan bagian hasil analisa
   hasilAnalisa.style.display = "block";
-  document.getElementById("loadingSpinner").style.display = "none";
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page3").classList.add("active");
-
-  // ✅ Simpan data untuk proses kirim
+  
+  // Simpan data terakhir untuk proses kirim
   window.dataTerakhir = data;
 }
-
+ 
 // ***********************************
 // Untuk Kirim File PDF hasil Evaluasi
 // ***********************************
 async function handleKirimSurvey() {
+  const btnKirim = document.getElementById("btnKirim");
+  btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+  btnKirim.disabled = true;
+
+  try {
+    // 1. Ambil data sponsor dengan pengecekan null/undefined
+    const sponsorInput = document.getElementById('mSponsor');
+    const hpSponsorInput = document.getElementById('mHpSponsor');
+    
+    const mSponsor = sponsorInput && sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
+    const mHpSponsor = hpSponsorInput && hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
+
+    // 2. Pastikan dataTerakhir ada
+    if (!window.dataTerakhir) {
+      throw new Error("Data survey tidak ditemukan. Silakan submit ulang.");
+    }
+
+    // 3. Siapkan payload dengan data lengkap
+    const payload = {
+      action: "kirimHasilSurvey",
+      data: window.dataTerakhir,
+      mSponsor: mSponsor,
+      mHpSponsor: mHpSponsor
+    };
+
+    // 4. Gunakan fetch dengan error handling
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+
+    if (result.status !== "success") {
+      throw new Error(result.message || "Gagal memproses data");
+    }
+
+    // 5. Tampilkan notifikasi sukses
+    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
+    
+    // 6. Reset form
+    resetForm();
+    navigate(3, 1);
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Gagal mengirim hasil survey: " + error.message);
+    
+    // Reset tombol kirim
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
+    btnKirim.disabled = false;
+  }
+}
+
+async function BACKUP_handleKirimSurvey() {
   const btnKirim     = document.getElementById("btnKirim");
   btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
   btnKirim.disabled  = true;
@@ -984,7 +1049,7 @@ async function handleKirimSurvey() {
   await fetch('URL_APPS_SCRIPT?kirimEmail=1', { method: 'POST', body: JSON.stringify({ email, nama, fileUrl, mSponsor, mHpSponsor }) });
   
   // 5. Kirim WA
-  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ hp, nama, fileUrl, mSponsor, mHpSponsor }) });
+  await fetch('URL_APPS_SCRIPT?kirimWA=1', { method: 'POST', body: JSON.stringify({ nomorHP: hp, nama, fileUrl, mSponsor, mHpSponsor }) });
 
   // 6. Reset form
   btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
@@ -994,7 +1059,52 @@ async function handleKirimSurvey() {
   document.getElementById('page1').classList.add('active');
   document.getElementById('page2').classList.remove('active');
 }
- 
+
+// *************************
+// Fungsi untuk kirim data
+// *************************
+async function BACKUP_kirimData() {
+  try {
+    const btnKirim = document.getElementById("btnKirim");
+    btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
+    btnKirim.disabled = true;
+     
+    const sponsorData = {
+      action: "prosesKirim",
+      id: dataTerakhir.id, // Simpan ID data terakhir
+      mSponsor: document.getElementById("mSponsor").value,
+      mHpSponsor: document.getElementById("mHpSponsor").value
+    };
+      
+    const response = await fetch("https://script.google.com/macros/s/AKfycbxC5Jmkp7s_rB9xNgOubL0cojry94O9oUT_QK9REv8lGIErFM8L-ih5jcAgUPRbW7r0Ow/exec", {
+      method: "POST",
+      body: new URLSearchParams(sponsorData)
+    });
+      
+    const result = await response.json();
+      
+    if (result.status !== "success") {
+      throw new Error(result.message || "Gagal mengirim data");
+    }
+      
+    document.getElementById("pesan-kirim").innerHTML = `
+      <div class="alert alert-success">
+        Hasil survey berhasil dikirim ke WA/Email Anda!
+      </div>
+    `;
+      
+  } catch (error) {
+    document.getElementById("pesan-kirim").innerHTML = `
+      <div class="alert alert-danger">
+        Gagal mengirim hasil: ${error.message}
+      </div>
+    `;
+  } finally {
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
+    btnKirim.disabled = true;
+  }
+}
+   
 // *******************
 // Untuk mereset form
 // *******************
