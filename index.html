@@ -270,8 +270,8 @@ body {
               <!-- Pertanyaan Grid -->
               <div class="row g-3">
               
-                <!-- Pertanyaan 1 -->
-                <div class="col-md-12">
+              <!-- Pertanyaan 1 -->
+              <div class="col-md-12">
                   <label class="form-label">1. Sarapan Setiap Pagi</label><br>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanYa" value="Ya" required>
@@ -281,10 +281,10 @@ body {
                     <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanTidak" value="Tidak">
                     <label class="form-check-label" for="mSarapanTidak">Tidak</label>
                   </div>
-                </div>
+              </div>
 
-                <!-- Pertanyaan 2 -->
-                <div class="col-md-12">
+              <!-- Pertanyaan 2 -->
+              <div class="col-md-12">
                   <label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="mMenu" id="mMenuYa" value="Ya" required>
@@ -294,10 +294,10 @@ body {
                     <input class="form-check-input" type="radio" name="mMenu" id="mMenuTidak" value="Tidak">
                     <label class="form-check-label" for="mMenuTidak">Tidak</label>
                   </div>
-                </div>
+              </div>
 
-                <!-- Pertanyaan 3 -->
-            <div class="md-12">
+              <!-- Pertanyaan 3 -->
+              <div class="md-12">
                 <label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required>
@@ -504,9 +504,19 @@ body {
                 </div>
               </div>
 
-
+              <!-- FORM SPONSOR -->
+              <div class="border p-3 rounded bg-light mt-4">
+                <h6><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h6>
+                <div class="mb-12">
+                  <label class="form-label">Nama Sponsor</label>
+                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+                </div>
+                <div class="mb-12">
+                  <label class="form-label">HP Sponsor</label>
+                  <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
+                </div>
               </div>
-
+              
               <!-- PESAN VALIDASI HALAMAN 2 -->
               <div id="formMessage2" class="mt-3"></div>
 
@@ -702,7 +712,7 @@ function submitForm() {
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value
     };
 
-      
+     
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = URL_APPS_SCRIPT;
     
@@ -914,19 +924,6 @@ function tampilkanHasilEvaluasi(data) {
         </table>
       </div>  
         
-      <!-- FORM SPONSOR -->
-      <div class="border p-3 rounded bg-light mt-4">
-        <h5><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h5>
-        <div class="mb-3">
-          <label class="form-label">Nama Sponsor</label>
-          <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">HP Sponsor</label>
-          <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
-        </div>
-      </div>
-
       <!-- Call To Action -->
       <div class="border p-3 rounded bg-light mt-4">    
         <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
