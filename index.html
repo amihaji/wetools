@@ -265,7 +265,7 @@ body {
 
             <!-- HALAMAN 2 -->
             <div class="page" id="page2">
-              <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab pertanyaan ini sesuai yang anda rasakan (Wajib Isi)</h5>
+              <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab sesuai yang anda rasakan (Wajib Isi)</h5>
               <!-- Pertanyaan Grid -->
               <div class="row g-3">
               
@@ -760,6 +760,8 @@ function submitForm() {
         document.getElementById("loadingSpinner").style.display = "none";
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
+        //document.getElementById("hasilAnalisa").innerHTML = "";
+        document.getElementById("hasilAnalisa").style.display = "block";
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
         document.getElementById("loadingSpinner").style.display = "none";
@@ -800,23 +802,23 @@ function tampilkanHasilEvaluasi(data) {
 
   // Siapkan data default untuk menghindari error
   const safeData = {
-    tanggal: data.tanggal || "Tidak tersedia",
-    nama: data.nama || "Tidak tersedia",
-    hp: data.hp || "Tidak tersedia",
-    email: data.email || "Tidak tersedia",
-    umur: data.umur || "Tidak tersedia",
-    jk: data.jk || "Tidak tersedia",
-    berat: data.berat || "Tidak tersedia",
-    tinggi: data.tinggi || "Tidak tersedia",
-    lingkar: data.lingkar || "Tidak tersedia",
-    aktivitas: data.aktivitas || "Tidak tersedia",
+    tanggal: data.tanggal || "-",
+    nama: data.nama || "-",
+    hp: data.hp || "-",
+    email: data.email || "-",
+    umur: data.umur || "-",
+    jk: data.jk || "-",
+    berat: data.berat || "-",
+    tinggi: data.tinggi || "-",
+    lingkar: data.lingkar || "-",
+    aktivitas: data.aktivitas || "-",
     fungsional: data.fungsional || [],
-    sponsor: data.sponsor || "Hesty Husain",
-    hpSponsor: data.hpSponsor || "81241318600",
+    sponsor: data.sponsor || "-",
+    hpSponsor: data.hpSponsor || "-",
     evaluasi: data.evaluasi || [],
     persen: data.persen || "0%",
-    kesimpulan: data.kesimpulan || "Tidak tersedia",
-    rekomendasi: data.rekomendasi || "Tidak tersedia"
+    kesimpulan: data.kesimpulan || "-",
+    rekomendasi: data.rekomendasi || "-"
   };
 
   // Fungsi untuk generate tabel fungsional
@@ -824,7 +826,7 @@ function tampilkanHasilEvaluasi(data) {
     if (safeData.fungsional.length === 0) {
       return `
         <div class="alert alert-warning">
-          Data status fungsional tidak tersedia
+          Data status fungsional Tidak Tersedia
         </div>
       `;
     }
@@ -855,7 +857,7 @@ function tampilkanHasilEvaluasi(data) {
     if (safeData.evaluasi.length === 0) {
       return `
         <div class="alert alert-warning">
-          Data evaluasi parameter tidak tersedia
+          Data evaluasi parameter -
         </div>
       `;
     }
@@ -880,7 +882,7 @@ function tampilkanHasilEvaluasi(data) {
                 <td style="text-align:center;">${item.hasil || "-"}</td>
                 <td style="text-align:center;">${item.ideal || "-"}</td>
                 <td style="text-align:center;">${item.satuan || "-"}</td>
-                <td style="white-space:pre-line">${item.penjelasan || "Tidak tersedia"}</td>
+                <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -957,7 +959,7 @@ function tampilkanHasilEvaluasi(data) {
   `;
 
   // Tampilkan bagian hasil analisa
-  hasilAnalisa.style.display = "block";
+  //hasilAnalisa.style.display = "block";
   
   // Simpan data terakhir untuk proses kirim
   window.dataTerakhir = data;
