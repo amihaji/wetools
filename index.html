@@ -587,7 +587,7 @@ body {
   // *************************************************************  
   // Definisikan URL Google Apps Script secara Global di Index.html
   // *************************************************************
-  const URL_APPS_SCRIPT = 'https://https://script.google.com/macros/s/AKfycbzs_2lFtdGBI738K3cjhumr-TPQs85nNJYNvLW8L97YoVfew39WaSzHbIv1ZytXaNvp/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby6izD_tqQt4QR2A7aC19-Wl7V2Tw4U701eNeJg6k2-kg7ygDoMxhxsdV_h3RBzVb86/exec';
   
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -701,10 +701,93 @@ body {
     }
   }
   
-  // ************************************
-  // Untuk mengirim data inputan ke sheet
-  // ************************************
-  function submitForm() {
+// ************************************
+// Untuk mengirim data inputan ke sheet
+// ************************************
+async function submitForm() {
+  try {
+    // Kumpulkan data form
+    const formData = { 
+        mNama: document.getElementById("mNama").value,
+        mNomorHp: document.getElementById("mNomorHp").value,
+        mEmail: document.getElementById("mEmail").value,
+        mUmur: document.getElementById("mUmur").value,
+        mJenisKelamin: document.getElementById("mJenisKelamin").value,
+        mBeratBadan: document.getElementById("mBeratBadan").value,
+        mTinggiBadan: document.getElementById("mTinggiBadan").value,
+        mLingkarPerut: document.getElementById("mLingkarPerut").value,
+        mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+        mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+        mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+        mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+        mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+        mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+        mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+        mAir: document.querySelector('input[name="mAir"]:checked').value,
+        mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+        mBab: document.querySelector('input[name="mBab"]:checked').value,
+        mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+        mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+        mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+        mBak: document.querySelector('input[name="mBak"]:checked').value,
+        mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+        mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+        mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+        mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+        mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+        mSponsor: document.getElementById("mSponsor").value,
+        mHpSponsor: document.getElementById("mHpSponsor").value, 
+    };
+    
+    // Tampilkan spinner
+    document.getElementById("loadingSpinner").style.display = "block";
+    navigate(2, 3);
+
+    // Kirim via fetch dengan timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    const response = await fetch(URL_APPS_SCRIPT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(formData),
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    
+    const result = await response.json();
+    
+    // Sembunyikan spinner
+    document.getElementById("loadingSpinner").style.display = "none";
+    
+    if (result.status === "success") {
+      tampilkanHasilEvaluasi(result.data);
+      document.getElementById("hasilAnalisa").style.display = "block";
+      document.getElementById("tampilCTA").style.display = "block";
+      window.dataTerakhir = result.data;
+    } else {
+      throw new Error(result.message || "Gagal memproses data");
+    }
+  } catch (error) {
+    console.error("Submit error:", error);
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").innerHTML = `
+      <div class="alert alert-danger">
+        Gagal mengirim data: ${error.message}<br>
+        Silakan coba lagi atau hubungi admin.
+      </div>
+    `;
+    document.getElementById("hasilAnalisa").style.display = "block";
+  }
+}
+  
+  
+  function BACKUP_submitForm() {
     try {
       // Kumpulkan data form
       const formData = {
