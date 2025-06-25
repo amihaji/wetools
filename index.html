@@ -587,7 +587,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby2ZXnAORHgT4emLki9LyJvNf7o59Wkr3_kqNG0-Lz08K5bMVqELvAN6jVt4jCHDUdV/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxHdZ_J46GsWcap9ljNFkhaX-_8we3JROLIFRC49q_qZocSRM-5ld-P1Ri0spZeXdSI/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -705,6 +705,96 @@ function validatePage2() {
 // Untuk mengirim data inputan ke sheet
 // ************************************
 function submitForm() {
+  try {
+   // Kumpulkan data form
+   const formData = {
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value,
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+      mSponsor: document.getElementById("mSponsor").value,
+      mHpSponsor: document.getElementById("mHpSponsor").value,
+    };
+     
+    // 1. Tampilkan spinner dan sembunyikan elemen lain
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("hasilAnalisa").style.display = "none";
+    document.getElementById("tampilCTA").style.display = "none";
+    navigate(2, 3);
+
+    // 2. Kirim data menggunakan JSONP
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    const script       = document.createElement('script');
+    script.src = URL_APPS_SCRIPT +
+      '?callback=' + callbackName + '&' + 
+      Object.keys(formData).map(k => `${k}=${encodeURIComponent(formData[k])}`).join('&');
+
+    // 3. Handle response
+    window[callbackName] = function(response) {
+      // Bersihkan elemen script
+      document.body.removeChild(script);
+      delete window[callbackName];
+
+      // Sembunyikan spinner
+      document.getElementById("loadingSpinner").style.display = "none";
+
+      if (response && response.status === "success") {
+        // Tampilkan hasil evaluasi
+        tampilkanHasilEvaluasi(response.data);
+        document.getElementById("hasilAnalisa").style.display = "block";
+        
+        // Tampilkan tombol CTA
+        document.getElementById("tampilCTA").style.display = "block";
+        
+        // Simpan data untuk proses kirim
+        window.dataTerakhir = response.data;
+      } else {
+        document.getElementById("hasilAnalisa").innerHTML = `
+          <div class="alert alert-danger">
+            ${response?.message || "Gagal memproses data"}
+          </div>`;
+        document.getElementById("hasilAnalisa").style.display = "block";
+      }
+    };
+
+    // 4. Tambahkan script ke dokumen
+    document.body.appendChild(script);
+
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").innerHTML = `
+      <div class="alert alert-danger">
+        Terjadi kesalahan: ${error.message}
+      </div>`;
+    document.getElementById("hasilAnalisa").style.display = "block";
+  }
+}
+
+function BACKUP_submitForm() {
   try {
     // Kumpulkan data form
     const formData = {
