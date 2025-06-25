@@ -587,7 +587,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby0u_BABAz77glMJEHqieowbmNYFz76JzGai0I3XuS_UhCuFxq_qITun_9l9qUnHrRH/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzHBnHPkLQWWzrIskyLQpKw8Lme-MGOaofBVE8YzxRORQdAGTaFzUGAbX-rQO2FLFg8/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -704,10 +704,9 @@ function validatePage2() {
 // ************************************
 // Untuk mengirim data inputan ke sheet
 // ************************************
-// Ganti fungsi submitForm() dengan kode berikut
 function submitForm() {
   try {
-    // Kumpulkan data form
+    // Kumpulkan data form [kode sebelumnya tetap sama]
     const formData = {
       mNama: document.getElementById("mNama").value,
       mNomorHp: document.getElementById("mNomorHp").value,
@@ -739,7 +738,7 @@ function submitForm() {
       mSponsor: document.getElementById("mSponsor").value,
       mHpSponsor: document.getElementById("mHpSponsor").value,
     };
-     
+    
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = URL_APPS_SCRIPT;
     
@@ -760,41 +759,51 @@ function submitForm() {
     const script = document.createElement('script');
     script.src = url;
     
-    // Tampilkan loading
+    // Tampilkan loading spinner
     document.getElementById("loadingSpinner").style.display = "block";
     // Tampilkan halaman 3
     navigate(2, 3);
     
-    // 7. Handle response
+    // 7. Handle response - FOKUS PERBAIKAN DI SINI
     window[callbackName] = function(response) {
-      // Cleanup
-      if (script.parentNode) {
-        document.body.removeChild(script);
-      }
-      delete window[callbackName];
+      try {
+        // Cleanup
+        if (script.parentNode) {
+          document.body.removeChild(script);
+        }
+        delete window[callbackName];
 
-      // Handle response
-      if (response && response.status === "success") {
-        // Sembunyikan loading spinner
+        // Sembunyikan spinner terlebih dahulu
         document.getElementById("loadingSpinner").style.display = "none";
-        
-        // Tampilkan hasil evaluasi
-        tampilkanHasilEvaluasi(response.data);
-        document.getElementById("hasilAnalisa").style.display = "block";
-        
-        // Tampilkan CTA
-        document.getElementById("tampilCTA").style.display = "block";
-        
-        // Simpan data terakhir untuk proses kirim
-        window.dataTerakhir = response;
-      } else {
-        // Tampilkan pesan error di halaman 3
+
+        // Validasi respons
+        if (!response) {
+          throw new Error("Tidak ada respons dari server");
+        }
+
+        if (response.status === "success" && response.data) {
+          // Tampilkan hasil evaluasi
+          tampilkanHasilEvaluasi(response.data);
+          document.getElementById("hasilAnalisa").style.display = "block";
+          
+          // Tampilkan CTA
+          document.getElementById("tampilCTA").style.display = "block";
+          
+          // Simpan data terakhir untuk proses kirim
+          window.dataTerakhir = response.data;
+        } else {
+          // Tampilkan pesan error
+          const hasilAnalisa = document.getElementById("hasilAnalisa");
+          hasilAnalisa.innerHTML = `<div class="alert alert-danger">${
+            response.message || "Gagal memproses data. Silakan coba lagi."
+          }</div>`;
+          hasilAnalisa.style.display = "block";
+        }
+      } catch (error) {
+        console.error("Error in callback:", error);
         const hasilAnalisa = document.getElementById("hasilAnalisa");
-        hasilAnalisa.innerHTML = `<div class="alert alert-danger">${
-          (response && response.message) ? response.message : "Gagal memproses data"
-        }</div>`;
+        hasilAnalisa.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan: ${error.message}</div>`;
         hasilAnalisa.style.display = "block";
-        document.getElementById("loadingSpinner").style.display = "none";
       }
     };
     
@@ -803,10 +812,10 @@ function submitForm() {
  
   } catch (error) {
     console.error("Error in submitForm:", error);
-    // Sembunyikan loading spinner
+    // Sembunyikan spinner jika error
     document.getElementById("loadingSpinner").style.display = "none";
     
-    // Tampilkan error di halaman 3
+    // Tampilkan error
     const hasilAnalisa = document.getElementById("hasilAnalisa");
     hasilAnalisa.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan: ${error.message}</div>`;
     hasilAnalisa.style.display = "block";
