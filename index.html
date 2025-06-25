@@ -128,6 +128,18 @@ body {
  color: #ff4d4d !important;
 }
 
+/* Loading spinner */
+#loadingSpinner {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+#loadingSpinner .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
  .form-container {
@@ -139,15 +151,9 @@ body {
  }
 }
 
-/* Loading spinner */
-.spinner-border {
-  width: 3rem;
-  height: 3rem;
-  border-width: 0.25em;
-}
 </style>
-
 </head>
+
 <body>
 <div class="container mt-5 mb-5">
   <div class="row justify-content-center">
@@ -754,8 +760,13 @@ function submitForm() {
 
     // 3. Handle response
     window[callbackName] = function(response) {
+      //  LOG RESPONSE UNTUK DEBUGGING
+      console.log("Response dari server:", response);
+
       // Bersihkan elemen script
-      document.body.removeChild(script);
+      if (script.parentNode) {
+         document.body.removeChild(script);
+      }
       delete window[callbackName];
 
       // Sembunyikan spinner
