@@ -760,7 +760,7 @@ function submitForm() {
         document.getElementById("loadingSpinner").style.display = "none";
         // Tampilkan hasil evaluasi
         tampilkanHasilEvaluasi(response.data);
-        //document.getElementById("hasilAnalisa").innerHTML = "";
+        document.getElementById("hasilAnalisa").innerHTML = "";
         document.getElementById("hasilAnalisa").style.display = "block";
       } else {
         showMessage(2, response.message || "Gagal memproses data", "error");
