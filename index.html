@@ -764,9 +764,9 @@ function submitForm() {
       console.log("Response dari server:", response);
 
       // Bersihkan elemen script
-      if (script.parentNode) {
+      //if (script.parentNode) {
          document.body.removeChild(script);
-      }
+      //}
       delete window[callbackName];
 
       // Sembunyikan spinner
