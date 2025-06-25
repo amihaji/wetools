@@ -706,7 +706,7 @@ function validatePage2() {
 // ************************************
 function submitForm() {
   try {
-    // Kumpulkan data form [kode sebelumnya tetap sama]
+    // Kumpulkan data form
     const formData = {
       mNama: document.getElementById("mNama").value,
       mNomorHp: document.getElementById("mNomorHp").value,
@@ -738,7 +738,7 @@ function submitForm() {
       mSponsor: document.getElementById("mSponsor").value,
       mHpSponsor: document.getElementById("mHpSponsor").value,
     };
-    
+     
     // 1. DEKLARASI SCRIPT URL
     const scriptURL = URL_APPS_SCRIPT;
     
@@ -764,7 +764,7 @@ function submitForm() {
     // Tampilkan halaman 3
     navigate(2, 3);
     
-    // 7. Handle response - FOKUS PERBAIKAN DI SINI
+    // 7. Handle response - VERSI SEDERHANA YANG BERHASIL
     window[callbackName] = function(response) {
       try {
         // Cleanup
@@ -773,32 +773,18 @@ function submitForm() {
         }
         delete window[callbackName];
 
-        // Sembunyikan spinner terlebih dahulu
+        // Sembunyikan spinner
         document.getElementById("loadingSpinner").style.display = "none";
 
-        // Validasi respons
-        if (!response) {
-          throw new Error("Tidak ada respons dari server");
-        }
-
-        if (response.status === "success" && response.data) {
-          // Tampilkan hasil evaluasi
-          tampilkanHasilEvaluasi(response.data);
-          document.getElementById("hasilAnalisa").style.display = "block";
-          
-          // Tampilkan CTA
-          document.getElementById("tampilCTA").style.display = "block";
-          
-          // Simpan data terakhir untuk proses kirim
-          window.dataTerakhir = response.data;
-        } else {
-          // Tampilkan pesan error
-          const hasilAnalisa = document.getElementById("hasilAnalisa");
-          hasilAnalisa.innerHTML = `<div class="alert alert-danger">${
-            response.message || "Gagal memproses data. Silakan coba lagi."
-          }</div>`;
-          hasilAnalisa.style.display = "block";
-        }
+        // Tampilkan hasil evaluasi
+        tampilkanHasilEvaluasi(response.data);
+        document.getElementById("hasilAnalisa").style.display = "block";
+        
+        // Tampilkan CTA
+        document.getElementById("tampilCTA").style.display = "block";
+        
+        // Simpan data terakhir untuk proses kirim
+        window.dataTerakhir = response.data;
       } catch (error) {
         console.error("Error in callback:", error);
         const hasilAnalisa = document.getElementById("hasilAnalisa");
@@ -812,10 +798,7 @@ function submitForm() {
  
   } catch (error) {
     console.error("Error in submitForm:", error);
-    // Sembunyikan spinner jika error
     document.getElementById("loadingSpinner").style.display = "none";
-    
-    // Tampilkan error
     const hasilAnalisa = document.getElementById("hasilAnalisa");
     hasilAnalisa.innerHTML = `<div class="alert alert-danger">Terjadi kesalahan: ${error.message}</div>`;
     hasilAnalisa.style.display = "block";
