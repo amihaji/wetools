@@ -18,7 +18,6 @@ Fitur Aplikasi:
 - Hasil menghasilkan file pdf
 - File pdf dapat dikirim ke email dan wa
 - Penambahan Inputan untuk Data Sponsor/Pengundang
-- Hasil Survey TIDAK Tampil ke layar
 - Tampilan lebih Responsive
 ------------------------------------------------------------------->
 <!DOCTYPE html>
@@ -593,7 +592,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxHdZ_J46GsWcap9ljNFkhaX-_8we3JROLIFRC49q_qZocSRM-5ld-P1Ri0spZeXdSI/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycby3LzZZHziWUmV5CRe8aEKuT6Rdpd-E-5zpfWb5GiHvbQBryeUiaJz9re-_HDN9Pvgn/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -710,7 +709,206 @@ function validatePage2() {
 // ************************************
 // Untuk mengirim data inputan ke sheet
 // ************************************
+
+// GANTI FUNGSI submitForm() ANDA DENGAN INI
 function submitForm() {
+  try {
+    // 1. Kumpulkan semua data dari form
+    const formData = {
+      mNama: document.getElementById("mNama").value,
+      mNomorHp: document.getElementById("mNomorHp").value,
+      mEmail: document.getElementById("mEmail").value,
+      mUmur: document.getElementById("mUmur").value,
+      mJenisKelamin: document.getElementById("mJenisKelamin").value,
+      mBeratBadan: document.getElementById("mBeratBadan").value,
+      mTinggiBadan: document.getElementById("mTinggiBadan").value,
+      mLingkarPerut: document.getElementById("mLingkarPerut").value,
+      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
+      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
+      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
+      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+      mAir: document.querySelector('input[name="mAir"]:checked').value,
+      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+      mBab: document.querySelector('input[name="mBab"]:checked').value,
+      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
+      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+      mBak: document.querySelector('input[name="mBak"]:checked').value,
+      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
+      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
+      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+      mSponsor: document.getElementById("mSponsor").value || "Hesty Husain", // default value
+      mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600", // default value
+    };
+
+    // 2. Navigasi ke Halaman 3 dan Tampilkan Spinner
+    navigate(2, 3);
+    document.getElementById("loadingSpinner").style.display = "block";
+    document.getElementById("hasilAnalisa").style.display = "none";
+    document.getElementById("tampilCTA").style.display = "none";
+
+    // 3. Siapkan request JSONP
+    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+    const script = document.createElement('script');
+    const params = Object.keys(formData).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(formData[k])}`).join('&');
+    script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&${params}`;
+
+    // 4. Tangani error jika script gagal dimuat (misal, network error)
+    script.onerror = function() {
+      console.error("Gagal memuat script dari Google Apps Script.");
+      document.getElementById("loadingSpinner").style.display = "none";
+      showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet Anda.", "error");
+      delete window[callbackName];
+    };
+    
+    // 5. Definisikan fungsi callback untuk menangani respons dari server
+    window[callbackName] = function(response) {
+      console.log("Response dari server:", response); // Untuk debugging
+      document.getElementById("loadingSpinner").style.display = "none"; // Sembunyikan spinner
+
+      try {
+        if (response && response.status === "success" && response.data) {
+          // Jika sukses, tampilkan hasil dan tombol CTA
+          tampilkanHasilEvaluasi(response.data);
+          document.getElementById("hasilAnalisa").style.display = "block";
+          document.getElementById("tampilCTA").style.display = "block";
+          window.dataTerakhir = response.data; // Simpan data untuk dikirim nanti
+        } else {
+          // Jika server mengembalikan status error
+          const errorMessage = response.message || "Terjadi kesalahan di server.";
+          document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
+          document.getElementById("hasilAnalisa").style.display = "block";
+        }
+      } catch (e) {
+        // Jika ada error saat memproses data di sisi client
+        console.error("Error saat memproses response:", e);
+        document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">Gagal menampilkan hasil: ${e.message}</div>`;
+        document.getElementById("hasilAnalisa").style.display = "block";
+      } finally {
+        // Cleanup: hapus script dan fungsi callback
+        document.body.removeChild(script);
+        delete window[callbackName];
+      }
+    };
+
+    // 6. Tambahkan script ke body untuk memulai request
+    document.body.appendChild(script);
+
+  } catch (error) {
+    console.error("Error di submitForm:", error);
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">Terjadi kesalahan: ${error.message}</div>`;
+    document.getElementById("hasilAnalisa").style.display = "block";
+  }
+}
+
+// GANTI FUNGSI tampilkanHasilEvaluasi() ANDA DENGAN INI
+function tampilkanHasilEvaluasi(data) {
+  const hasilAnalisa = document.getElementById("hasilAnalisa");
+  if (!hasilAnalisa) {
+    console.error("Elemen #hasilAnalisa tidak ditemukan!");
+    return;
+  }
+
+  // Fungsi pembantu untuk mencegah error jika data tidak ada
+  const get = (path, defaultValue = "-") => {
+    return path.reduce((acc, key) => (acc && acc[key] !== null && acc[key] !== undefined) ? acc[key] : defaultValue, data);
+  };
+
+  const fungsionalHTML = (get(['fungsional'], [])).map(item => `
+    <tr>
+      <td>${item.label || "-"}</td>
+      <td style="text-align:center;">${item.jawaban || "-"}</td>
+    </tr>
+  `).join('');
+
+  const evaluasiHTML = (get(['evaluasi'], [])).map(item => `
+    <tr>
+      <td>${item.param || "-"}</td>
+      <td style="text-align:center;">${item.hasil || "-"}</td>
+      <td style="text-align:center;">${item.ideal || "-"}</td>
+      <td style="text-align:center;">${item.satuan || "-"}</td>
+      <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
+    </tr>
+  `).join('');
+
+  hasilAnalisa.innerHTML = `
+      <div class="card-body">
+        <!-- DATA SURVEY -->
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                <td style="background-color:#4d94ff;"><b>${get(['tanggal'])}</b></td>
+            </tr>
+            <tr><td>Nama</td><td>${get(['nama'])}</td></tr>
+            <tr><td>No. HP</td><td>${get(['hp'])}</td></tr>
+            <tr><td>Email</td><td>${get(['email'], 'Tidak diisi')}</td></tr>
+            <tr><td>Umur</td><td>${get(['umur'])} tahun</td></tr>
+            <tr><td>Jenis Kelamin</td><td>${get(['jk'])}</td></tr>
+            <tr><td>Berat Badan</td><td>${get(['berat'])} kg</td></tr>
+            <tr><td>Tinggi Badan</td><td>${get(['tinggi'])} cm</td></tr>
+            <tr><td>Lingkar Perut</td><td>${get(['lingkar'])} cm</td></tr>
+            <tr><td>Aktivitas Fisik</td><td>${get(['aktivitas'])}</td></tr>
+          </tbody>
+        </table>
+
+        <!-- TABEL FUNGSIONAL -->
+        <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+              <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th>
+            </tr>
+          </thead>
+          <tbody>${fungsionalHTML}</tbody>
+        </table>
+
+        <!-- TABEL EVALUASI -->
+        <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
+        <div style="overflow-x: auto; width: 100%;">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+                <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+                <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+                <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+                <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>${evaluasiHTML}</tbody>
+          </table>
+        </div>
+
+        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
+        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
+        <table class="table table-bordered">
+          <tbody>
+            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+              <td style="width:85%;">
+                Persentase kebugaran anda : <strong>${get(['persen'], '0%')}</strong>
+              </td> 
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                <td style="width:85%;">${get(['kesimpulan'])}</td>
+            </tr>
+            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                <td style="width:85%;">${get(['rekomendasi'])}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  `;
+}
+
+
+function BACKUP_submitForm() {
   try {
    // Kumpulkan data form
    const formData = {
@@ -805,99 +1003,6 @@ function submitForm() {
   }
 }
 
-function BACKUP_submitForm() {
-  try {
-    // Kumpulkan data form
-    const formData = {
-      mNama: document.getElementById("mNama").value,
-      mNomorHp: document.getElementById("mNomorHp").value,
-      mEmail: document.getElementById("mEmail").value,
-      mUmur: document.getElementById("mUmur").value,
-      mJenisKelamin: document.getElementById("mJenisKelamin").value,
-      mBeratBadan: document.getElementById("mBeratBadan").value,
-      mTinggiBadan: document.getElementById("mTinggiBadan").value,
-      mLingkarPerut: document.getElementById("mLingkarPerut").value,
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-      mAir: document.querySelector('input[name="mAir"]:checked').value,
-      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-      mBab: document.querySelector('input[name="mBab"]:checked').value,
-      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-      mBak: document.querySelector('input[name="mBak"]:checked').value,
-      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      mSponsor: document.getElementById("mSponsor").value,
-      mHpSponsor: document.getElementById("mHpSponsor").value,
-    };
-     
-    // 1. DEKLARASI SCRIPT URL
-    const scriptURL = URL_APPS_SCRIPT;
-    
-    // 2. Buat callback unik
-    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-    // 3. Tambahkan parameter callback
-    formData.callback = callbackName;
-    
-    // 4. Bangun parameter query
-    const params = Object.keys(formData)
-      .map(key => `${key}=${encodeURIComponent(formData[key])}`)
-      .join('&');
-    
-    // 5. Bangun URL lengkap
-    const url = scriptURL + '?' + params;
-    
-    // 6. Buat elemen script
-    const script = document.createElement('script');
-    script.src = url;
-    
-    // Tampilkan loading
-    document.getElementById("loadingSpinner").style.display = "block";
-    // Tampilkan halaman 3
-    navigate(2, 3);
-    
-    // 7. Handle response
-    window[callbackName] = function(response) {
-      // Cleanup
-      document.body.removeChild(script);
-      delete window[callbackName];
-
-      // Handle response
-      if (response.status === "success") {
-        // Sembuyikan Tampilkan loading
-        document.getElementById("loadingSpinner").style.display = "none";
-     
-        // Tampilkan hasil evaluasi
-        tampilkanHasilEvaluasi(response.data);
-        document.getElementById("hasilAnalisa").style.display = "block";
-     
-        // Tampilkan CTA
-        document.getElementById("tampilCTA").style.display = "block";
-     
-      } else {
-        showMessage(2, response.message || "Gagal memproses data", "error");
-        document.getElementById("loadingSpinner").style.display = "none";
-      }
-    };
-    
-    // 8. Tambahkan ke dokumen
-    document.body.appendChild(script);
- 
-  } catch (error) {
-    console.error("Error in submitForm:", error);
-    showMessage(2, "Terjadi kesalahan saat memproses data", "error");
-    document.getElementById("loadingSpinner").style.display = "none";
-  }
-}
 
 // *****************************************
 // Untuk menampilkan Hasil Evaluasi Ke Layar
