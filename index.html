@@ -70,20 +70,81 @@ body {
               <h5 class="mb-3"><i class="fas fa-user form-icon"></i> Data Survey (Wajib Isi)</h5>
               <p class="text-muted mb-4">Silahkan memasukkan data, Hasil Evaluasi Kebugaran melalui Whatsapp Anda</p>
               <div class="row g-3">
-                <div class="col-md-12"><label for="mNama" class="form-label">Nama Lengkap</label><input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
-                <div class="col-md-12"><label for="mNomorHp" class="form-label">Nomor HP</label><input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}"></div>
-                <div class="col-md-12"><label for="mEmail" class="form-label">Email (opsional)</label><input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()"></div>
-                <div class="col-md-12"><label for="mUmur" class="form-label">Umur</label><input type="number" id="mUmur" class="form-control" required min="18" max="80"></div>
-                <div class="col-md-12"><label for="mJenisKelamin" class="form-label">Jenis Kelamin</label><select id="mJenisKelamin" class="form-select" required><option value="">Pilih Gender</option><option value="Pria">Pria</option><option value="Wanita">Wanita</option></select></div>
-                <div class="col-md-12"><label for="mBeratBadan" class="form-label">Berat Badan (kg)</label><input type="number" id="mBeratBadan" class="form-control" required min="40" max="150"></div>
-                <div class="col-md-12"><label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label><input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190"></div>
-                <div class="col-md-12"><label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label><select id="mLingkarPerut" class="form-select" required><option value="">Pilih Ukuran Celana</option><option value="68">26 = Lingkar 68 cm</option><option value="70">27 = Lingkar 70 cm</option><option value="72">28 = Lingkar 72 cm</option><option value="74">29 = Lingkar 74 cm</option><option value="76">30 = Lingkar 76 cm</option><option value="78">31 = Lingkar 78 cm</option><option value="80">32 = Lingkar 80 cm</option><option value="82">33 = Lingkar 82 cm</option><option value="84">34 = Lingkar 84 cm</option><option value="86">35 = Lingkar 86 cm</option><option value="88">36 = Lingkar 88 cm</option><option value="90">37 = Lingkar 90 cm</option><option value="92">38 = Lingkar 92 cm</option><option value="94">39 = Lingkar 94 cm</option><option value="96">40 = Lingkar 96 cm</option></select></div>
-                <div class="col-md-12"><label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label><select id="mAktivitasFisik" class="form-select" required><option value="">Pilih aktifitas yang dijalani</option><option value="Sedikit/Tidak Olahraga">Sedikit/Tidak Olahraga</option><option value="Olahraga ringan 1-3 hari/minggu">Olahraga ringan 1-3 hari/minggu</option><option value="Olahraga moderat 3-5 hari/minggu">Olahraga moderat 3-5 hari/minggu</option><option value="Olahraga berat 6-7 hari per minggu">Olahraga berat 6-7 hari/minggu</option><option value="Olahraga sangat aktif + Kegiatan fisik">Olahraga aktif + Kegiatan fisik</option></select></div>
+                <div class="col-md-12">
+                  <label for="mNama" class="form-label">Nama Lengkap</label>
+                  <input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+                </div>
+                <div class="col-md-12">
+                  <label for="mNomorHp" class="form-label">Nomor HP</label>
+                  <input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}">
+                </div>
+                <div class="col-md-12">
+                  <label for="mEmail" class="form-label">Email (opsional)</label>
+                  <input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()">
+                </div>
+                <div class="col-md-12">
+                  <label for="mUmur" class="form-label">Umur</label>
+                  <input type="number" id="mUmur" class="form-control" required min="18" max="80">
+                </div>
+                <div class="col-md-12">
+                  <label for="mJenisKelamin" class="form-label">Jenis Kelamin</label>
+                  <select id="mJenisKelamin" class="form-select" required>
+                    <option value="">Pilih Gender</option>
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label for="mBeratBadan" class="form-label">Berat Badan (kg)</label>
+                  <input type="number" id="mBeratBadan" class="form-control" required min="40" max="150">
+                </div>
+                <div class="col-md-12">
+                  <label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label>
+                  <input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190">
+                </div>
+                <div class="col-md-12">
+                  <label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label>
+                  <select id="mLingkarPerut" class="form-select" required>
+                    <option value="">Pilih Ukuran Celana</option>
+                    <option value="68">26 = Lingkar 68 cm</option>
+                    <option value="70">27 = Lingkar 70 cm</option>
+                    <option value="72">28 = Lingkar 72 cm</option>
+                    <option value="74">29 = Lingkar 74 cm</option>
+                    <option value="76">30 = Lingkar 76 cm</option>
+                    <option value="78">31 = Lingkar 78 cm</option>
+                    <option value="80">32 = Lingkar 80 cm</option>
+                    <option value="82">33 = Lingkar 82 cm</option>
+                    <option value="84">34 = Lingkar 84 cm</option>
+                    <option value="86">35 = Lingkar 86 cm</option>
+                    <option value="88">36 = Lingkar 88 cm</option>
+                    <option value="90">37 = Lingkar 90 cm</option>
+                    <option value="92">38 = Lingkar 92 cm</option>
+                    <option value="94">39 = Lingkar 94 cm</option>
+                    <option value="96">40 = Lingkar 96 cm</option>
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label>
+                  <select id="mAktivitasFisik" class="form-select" required>
+                    <option value="">Pilih aktifitas yang dijalani</option>
+                    <option value="Sedikit/Tidak Olahraga">Sedikit/Tidak Olahraga</option>
+                    <option value="Olahraga ringan 1-3 hari/minggu">Olahraga ringan 1-3 hari/minggu</option>
+                    <option value="Olahraga moderat 3-5 hari/minggu">Olahraga moderat 3-5 hari/minggu</option>
+                    <option value="Olahraga berat 6-7 hari per minggu">Olahraga berat 6-7 hari/minggu</option>
+                    <option value="Olahraga sangat aktif + Kegiatan fisik">Olahraga aktif + Kegiatan fisik</option>
+                  </select>
+                </div>
               </div>
+              
+              <!-- Navigasi Hamalan1 -->
               <div id="formMessage1" class="mt-3"></div>
-              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                <button type="button" class="btn btn-secondary btn-custom" onclick="resetForm()"><i class="fas fa-rotate-left me-2"></i>Reset</button>
-                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage1()"><i class="fas fa-arrow-right me-2"></i>Berikutnya</button>
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-2">
+                <button type="button" class="btn btn-secondary btn-custom" onclick="resetForm()">
+                  <i class="fas fa-rotate-left me-2"></i>Reset
+                </button>
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage1()">
+                  <i class="fas fa-arrow-right me-2"></i>Berikutnya
+                </button>
               </div>
             </div>
 
@@ -91,43 +152,170 @@ body {
             <div class="page" id="page2">
               <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab sesuai yang anda rasakan (Wajib Isi)</h5>
               <div class="row g-3">
-                <!-- Pertanyaan 1-18 disederhanakan untuk keringkasan -->
-                <div class="col-md-12"><label class="form-label">1. Sarapan Setiap Pagi</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSarapan" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSarapan" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mMenu" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mMenu" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mNgantuk" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">4. Sering lelah, lesu dan kurang berstamina</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLelah" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLelah" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">5. Sering merasakan gangguan lambung</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLambung" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLambung" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">6. Sering merasa lapar atau haus</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLapar" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLapar" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">7. Minum air putih 8 gelas/hari</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAir" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAir" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">8. Mengkonsumsi makanan instant, minuman manis, ultra processed food dan sejenisnya</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKonsumsi" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKonsumsi" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">9. BAB tidak lancar</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBab" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBab" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">10. Sering keram / kesemutan</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKeram" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKeram" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mTidur" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mTidur" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">12. Berolahraga minimum 30 menit setiap 3-5 hari dalam seminggu</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mOlahraga" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mOlahraga" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">13. Kurang minum tetapi sering buang air kecil</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBak" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBak" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">14. Kerutan di kulit wajah sebelum usia 40 tahun</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKerutan" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKerutan" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">15. Sulit tidur / cemas / kurang konsentrasi</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSulit" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSulit" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">16. Berat badan naik 3kg dalam 3 bulan</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBBNaik" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBBNaik" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">17. Merokok (termasuk rokok elektrik)</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mRokok" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mRokok" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
-                <div class="col-md-12"><label class="form-label">18. Minum alkohol</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAlkohol" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAlkohol" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+
+                <!--PERTANYAAN FUNGSIONAL 1-18 -->
+                <div class="col-md-12">
+                  <label class="form-label">1. Sarapan Setiap Pagi</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mSarapan" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mSarapan" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mMenu" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mMenu" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mNgantuk" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">4. Sering lelah, lesu dan kurang berstamina</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLelah" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLelah" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">5. Sering merasakan gangguan lambung</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLambung" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLambung" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">6. Sering merasa lapar atau haus</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLapar" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mLapar" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">7. Minum air putih 8 gelas/hari</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mAir" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mAir" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">8. Mengkonsumsi makanan instant, minuman manis, ultra processed food dan sejenisnya</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKonsumsi" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKonsumsi" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">9. BAB tidak lancar</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBab" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBab" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">10. Sering keram / kesemutan</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKeram" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKeram" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mTidur" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mTidur" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">12. Berolahraga minimum 30 menit setiap 3-5 hari dalam seminggu</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mOlahraga" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mOlahraga" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">13. Kurang minum tetapi sering buang air kecil</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBak" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBak" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">14. Kerutan di kulit wajah sebelum usia 40 tahun</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKerutan" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mKerutan" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">15. Sulit tidur / cemas / kurang konsentrasi</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mSulit" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mSulit" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">16. Berat badan naik 3kg dalam 3 bulan</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBBNaik" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mBBNaik" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">17. Merokok (termasuk rokok elektrik)</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mRokok" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mRokok" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">18. Minum alkohol</label><br><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mAlkohol" value="Ya" required>
+                  <label class="form-check-label">Ya</label></div><div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="mAlkohol" value="Tidak">
+                  <label class="form-check-label">Tidak</label></div>
+                </div>
               </div>
+
+              <!-- DATA SPONSOR -->
               <div class="border p-3 rounded bg-light mt-4">
                 <h6><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h6>
-                <div class="mb-12"><label class="form-label">Nama Sponsor</label><input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
-                <div class="mb-12"><label class="form-label">HP Sponsor</label><input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
+                <div class="mb-12"><label class="form-label">Nama Sponsor</label>
+                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
+                <div class="mb-12"><label class="form-label">HP Sponsor</label>
+                  <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
               </div>
+
+              <!-- Navigasi Halaman2 -->
               <div id="formMessage2" class="mt-3"></div>
-              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                <button type="button" class="btn btn-secondary btn-custom" onclick="navigate(2, 1)"><i class="fas fa-arrow-left me-2"></i>Sebelumnya</button>
-                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage2()"><i class="fas fa-paper-plane me-2"></i>Submit</button>
+              <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-2">
+                <button type="button" class="btn btn-secondary btn-custom" onclick="navigate(2, 1)">
+                  <i class="fas fa-arrow-left me-2"></i>Sebelumnya
+                </button>
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage2()">
+                  <i class="fas fa-paper-plane me-2"></i>Submit
+                </button>
               </div>
             </div>
 
             <!-- HALAMAN 3 -->
             <div class="page" id="page3">
+              <!-- TAMPILKAN HASIL EVALUASI -->
               <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi</h5>
-              <div id="loadingSpinner" class="text-center my-3"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Memproses data...</p></div>
-              <div id="hasilAnalisa" style="display: none;"></div> 
+              <!-- Tampilkan Load spinner -->
+              <div id="loadingSpinner" class="text-center my-3">
+                  <div class="spinner-border text-primary" role="status"></div>
+                  <p class="mt-2">Memproses data...</p>
+              </div>
+              <div id="hasilAnalisa" style="display: none;">
+                <!-- DISINI UNTUK MENAMPILKAN HASIL EVALUASI DGN JSCRIPT -->
+              </div> 
+
+              <!-- TAMPILKAN TOMBOL CTA -->
               <div id="tampilCTA" style="display: none;">
                 <div class="border p-3 rounded bg-light mt-4">    
                   <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
@@ -140,7 +328,7 @@ body {
           </form>
         </div>
         
-        <footer class="footer mt-2 mb-3 text-white text-center p-2 rounded" style="background-color: #002266;">
+        <footer class="footer mb-3 text-white text-center p-2 rounded" style="background-color: #002266;">
           WETools Versi 4.0 © 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
         </footer>
     </div>
