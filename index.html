@@ -342,7 +342,7 @@ body {
 // *************************
 // Deklarasi Public Variable
 // *************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzWcPQvZeVhoe1Si9WqsQpTtOTwO-ayUUTiJb5_Rx8NHaBea4himhwI0WkdYDS945jL/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzzrY_B4PBhdjOwUwhFDJTcnt-Ec0xDeqysBezmjhHHOwBNEIt-96ZfnCe_PfRP9gPS/exec';
 
 // ***********************
 // Untuk navigasi halaman
@@ -413,7 +413,9 @@ function validatePage2() {
 function submitForm() {
     try {
         const formData = {
-            mNama: document.getElementById("mNama").value, mNomorHp: document.getElementById("mNomorHp").value, mEmail: document.getElementById("mEmail").value,
+            mNama: document.getElementById("mNama").value, 
+            mNomorHp: document.getElementById("mNomorHp").value, 
+            mEmail: document.getElementById("mEmail").value,
             mUmur: document.getElementById("mUmur").value, 
             mJenisKelamin: document.getElementById("mJenisKelamin").value, 
             mBeratBadan: document.getElementById("mBeratBadan").value,
@@ -590,7 +592,8 @@ function handleKirimSurvey() {
   })
   .then(() => {
     // Data berhasil terkirim
-    alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
+    // alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
+    showMessage(1, "Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
     resetForm();
   })
   .catch(error => {
