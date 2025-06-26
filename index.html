@@ -1,25 +1,3 @@
-<!---------------------------------------------------------------
-Aplikasi Survey Kebugaran - WETools Versi 4.0 GitHUB
-
-Dibuat dengan menggunakan : 
-- HTML Bootstrap versi 5.0
-- CSS dan JScript
-- Google Script Aplication
-
-Terdiri atas beberapa file :
-- Database : Sheet "SurveyData"
-- index.html (program utama) di ditempat di GitHUB
-- code.gs (program server side)
-- evaluasi.html (untuk menampilkan hasil evaluasi di layar TIDAK ditampilkan)
-- templatePDF.html (untuk menampilkan hasil ke bentuk file PDF)
-
-Fitur Aplikasi:
-- Form Input Survey Kebugaran
-- Hasil menghasilkan file pdf
-- File pdf dapat dikirim ke email dan wa
-- Penambahan Inputan untuk Data Sponsor/Pengundang
-- Tampilan lebih Responsive
-------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -44,112 +22,28 @@ body {
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
-.header-image {
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 10px;
-  margin-left: 20px;
-  margin-right: 20px;
-}
-
-.header-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.form-container {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  padding: 30px;
-  /* max-width: 800px; */
-}
-
-.page {
-  display: none;
-}
-.page.active {
-  display: block;
-}
-.progress-bar {
-  background-color: #0b5ed7;
-}
-.form-icon {
-  margin-right: 10px;
-}
-.message-box {
-  padding: 10px;
-  border-radius: 5px;
-  font-size: 0.95rem;
-  margin-top: 1rem;
-}
-.message-error {
-  background-color: #f8d7da;
-  color: #842029;
-  border: 1px solid #f5c2c7;
-}
-.message-success {
-  background-color: #dbeafe;
-  color: #1e3a8a;
-  border: 1px solid #93c5fd;
-}
-
-.btn-custom {
-  background-color: #002266;
-  color: white;
-  width: 100%;
-}
-.btn-custom:hover {
-  background-color: #0b5ed7;
-  color: white;
-}
-
-.btn-kirim {
-  background-color: #002266;
-  color: white;
-  width: 100%;
-  /* align-content: center; */
-}
-
-.btn-kirim:hover {
-  background-color: #0b5ed7;
-  color: white;             
-}
-
-.footer {
-  font-size: 14px;
-  border-radius: 5px;
-}
-.footer a:hover {
- color: #ff4d4d !important;
-}
-
-/* Loading spinner */
-#loadingSpinner {
-  display: none;
-  text-align: center;
-  padding: 20px;
-}
-#loadingSpinner .spinner-border {
-  width: 3rem;
-  height: 3rem;
-  border-width: 0.25em;
-}
-
-/* Responsive adjustments */
+.header-image { text-align: center; margin-top: 30px; margin-bottom: 10px; margin-left: 20px; margin-right: 20px; }
+.header-image img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+.form-container { background-color: white; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 30px; }
+.page { display: none; }
+.page.active { display: block; }
+.progress-bar { background-color: #0b5ed7; }
+.form-icon { margin-right: 10px; }
+.message-box { padding: 10px; border-radius: 5px; font-size: 0.95rem; margin-top: 1rem; }
+.message-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+.message-success { background-color: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+.btn-custom { background-color: #002266; color: white; width: 100%; }
+.btn-custom:hover { background-color: #0b5ed7; color: white; }
+.btn-kirim { background-color: #002266; color: white; width: 100%; }
+.btn-kirim:hover { background-color: #0b5ed7; color: white; }
+.footer { font-size: 14px; border-radius: 5px; }
+.footer a:hover { color: #ff4d4d !important; }
+#loadingSpinner { display: none; text-align: center; padding: 20px; }
+#loadingSpinner .spinner-border { width: 3rem; height: 3rem; border-width: 0.25em; }
 @media (max-width: 768px) {
- .form-container {
-   padding: 20px;
-   margin: 15px auto;
- }
- .btn-custom, .btn-kirim {
-   margin-bottom: 10px;
- }
+ .form-container { padding: 20px; margin: 15px auto; }
+ .btn-custom, .btn-kirim { margin-bottom: 10px; }
 }
-
 </style>
 </head>
 
@@ -166,416 +60,86 @@ body {
           </div>
 
           <div><p> </p></div>
-          <!-- Progress Bar -->
           <div class="progress mb-4">
             <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
           </div>
 
           <form id="fitnessForm" class="needs-validation" novalidate>
-                
             <!-- HALAMAN 1 -->
             <div class="page active" id="page1">
               <h5 class="mb-3"><i class="fas fa-user form-icon"></i> Data Survey (Wajib Isi)</h5>
               <p class="text-muted mb-4">Silahkan memasukkan data, Hasil Evaluasi Kebugaran melalui Whatsapp Anda</p>
-              
               <div class="row g-3">
-                <div class="col-md-12">
-                  <label for="mNama" class="form-label">Nama Lengkap</label>
-                  <input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mNomorHp" class="form-label">Nomor HP</label>
-                  <input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mEmail" class="form-label">Email (opsional)</label>
-                  <input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mUmur" class="form-label">Umur</label>
-                  <input type="number" id="mUmur" class="form-control" required min="18" max="80">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mJenisKelamin" class="form-label">Jenis Kelamin</label>
-                  <select id="mJenisKelamin" class="form-select" required>
-                    <option value="">Pilih Gender</option>
-                    <option value="Pria">Pria</option>
-                    <option value="Wanita">Wanita</option>
-                  </select>
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mBeratBadan" class="form-label">Berat Badan (kg)</label>
-                  <input type="number" id="mBeratBadan" class="form-control" required min="40" max="150">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label>
-                  <input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190">
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label>
-                  <select id="mLingkarPerut" class="form-select" required>
-                    <option value="">Pilih Ukuran Celana</option>
-                    <option value="68">26 = Lingkar 68 cm</option>
-                    <option value="70">27 = Lingkar 70 cm</option>
-                    <option value="72">28 = Lingkar 72 cm</option>
-                    <option value="74">29 = Lingkar 74 cm</option>
-                    <option value="76">30 = Lingkar 76 cm</option>
-                    <option value="78">31 = Lingkar 78 cm</option>
-                    <option value="80">32 = Lingkar 80 cm</option>
-                    <option value="82">33 = Lingkar 82 cm</option>
-                    <option value="84">34 = Lingkar 84 cm</option>
-                    <option value="86">35 = Lingkar 86 cm</option>
-                    <option value="88">36 = Lingkar 88 cm</option>
-                    <option value="90">37 = Lingkar 90 cm</option>
-                    <option value="92">38 = Lingkar 92 cm</option>
-                    <option value="94">39 = Lingkar 94 cm</option>
-                    <option value="96">40 = Lingkar 96 cm</option>
-                  </select>
-                </div>
-
-                <div class="col-md-12">
-                  <label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label>
-                  <select id="mAktivitasFisik" class="form-select" required>
-                    <option value="">Pilih aktifitas yang dijalani</option>
-                    <option value="Sedikit/Tidak Olahraga">Sedikit/Tidak Olahraga</option>
-                    <option value="Olahraga ringan 1-3 hari/minggu">Olahraga ringan 1-3 hari/minggu</option>
-                    <option value="Olahraga moderat 3-5 hari/minggu">Olahraga moderat 3-5 hari/minggu</option>
-                    <option value="Olahraga berat 6-7 hari per minggu">Olahraga berat 6-7 hari/minggu</option>
-                    <option value="Olahraga sangat aktif + Kegiatan fisik">Olahraga aktif + Kegiatan fisik</option>
-                  </select>
-                </div>
+                <div class="col-md-12"><label for="mNama" class="form-label">Nama Lengkap</label><input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
+                <div class="col-md-12"><label for="mNomorHp" class="form-label">Nomor HP</label><input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}"></div>
+                <div class="col-md-12"><label for="mEmail" class="form-label">Email (opsional)</label><input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()"></div>
+                <div class="col-md-12"><label for="mUmur" class="form-label">Umur</label><input type="number" id="mUmur" class="form-control" required min="18" max="80"></div>
+                <div class="col-md-12"><label for="mJenisKelamin" class="form-label">Jenis Kelamin</label><select id="mJenisKelamin" class="form-select" required><option value="">Pilih Gender</option><option value="Pria">Pria</option><option value="Wanita">Wanita</option></select></div>
+                <div class="col-md-12"><label for="mBeratBadan" class="form-label">Berat Badan (kg)</label><input type="number" id="mBeratBadan" class="form-control" required min="40" max="150"></div>
+                <div class="col-md-12"><label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label><input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190"></div>
+                <div class="col-md-12"><label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label><select id="mLingkarPerut" class="form-select" required><option value="">Pilih Ukuran Celana</option><option value="68">26 = Lingkar 68 cm</option><option value="70">27 = Lingkar 70 cm</option><option value="72">28 = Lingkar 72 cm</option><option value="74">29 = Lingkar 74 cm</option><option value="76">30 = Lingkar 76 cm</option><option value="78">31 = Lingkar 78 cm</option><option value="80">32 = Lingkar 80 cm</option><option value="82">33 = Lingkar 82 cm</option><option value="84">34 = Lingkar 84 cm</option><option value="86">35 = Lingkar 86 cm</option><option value="88">36 = Lingkar 88 cm</option><option value="90">37 = Lingkar 90 cm</option><option value="92">38 = Lingkar 92 cm</option><option value="94">39 = Lingkar 94 cm</option><option value="96">40 = Lingkar 96 cm</option></select></div>
+                <div class="col-md-12"><label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label><select id="mAktivitasFisik" class="form-select" required><option value="">Pilih aktifitas yang dijalani</option><option value="Sedikit/Tidak Olahraga">Sedikit/Tidak Olahraga</option><option value="Olahraga ringan 1-3 hari/minggu">Olahraga ringan 1-3 hari/minggu</option><option value="Olahraga moderat 3-5 hari/minggu">Olahraga moderat 3-5 hari/minggu</option><option value="Olahraga berat 6-7 hari per minggu">Olahraga berat 6-7 hari/minggu</option><option value="Olahraga sangat aktif + Kegiatan fisik">Olahraga aktif + Kegiatan fisik</option></select></div>
               </div>
-         
-              <!-- PESAN VALIDASI HALAMAN 1 -->
               <div id="formMessage1" class="mt-3"></div>
-
-              <!-- TOMBOL RESPONSIVE HAMALAMAN 1 -->
               <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                <button type="button" class="btn btn-secondary btn-custom" onclick="resetForm()">
-                  <i class="fas fa-rotate-left me-2"></i>Reset
-                </button>
-                
-                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage1()">
-                  <i class="fas fa-arrow-right me-2"></i>Berikutnya
-                </button>
+                <button type="button" class="btn btn-secondary btn-custom" onclick="resetForm()"><i class="fas fa-rotate-left me-2"></i>Reset</button>
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage1()"><i class="fas fa-arrow-right me-2"></i>Berikutnya</button>
               </div>
             </div>
 
             <!-- HALAMAN 2 -->
             <div class="page" id="page2">
               <h5 class="mb-3"><i class="fas fa-list-check me-2"></i>Jawab sesuai yang anda rasakan (Wajib Isi)</h5>
-              <!-- Pertanyaan Grid -->
               <div class="row g-3">
-              
-              <!-- Pertanyaan 1 -->
-              <div class="col-md-12">
-                  <label class="form-label">1. Sarapan Setiap Pagi</label><br>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanYa" value="Ya" required>
-                    <label class="form-check-label" for="mSarapanYa">Ya</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="mSarapan" id="mSarapanTidak" value="Tidak">
-                    <label class="form-check-label" for="mSarapanTidak">Tidak</label>
-                  </div>
+                <!-- Pertanyaan 1-18 disederhanakan untuk keringkasan -->
+                <div class="col-md-12"><label class="form-label">1. Sarapan Setiap Pagi</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSarapan" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSarapan" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mMenu" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mMenu" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mNgantuk" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">4. Sering lelah, lesu dan kurang berstamina</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLelah" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLelah" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">5. Sering merasakan gangguan lambung</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLambung" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLambung" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">6. Sering merasa lapar atau haus</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLapar" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mLapar" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">7. Minum air putih 8 gelas/hari</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAir" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAir" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">8. Mengkonsumsi makanan instant, minuman manis, ultra processed food dan sejenisnya</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKonsumsi" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKonsumsi" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">9. BAB tidak lancar</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBab" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBab" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">10. Sering keram / kesemutan</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKeram" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKeram" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mTidur" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mTidur" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">12. Berolahraga minimum 30 menit setiap 3-5 hari dalam seminggu</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mOlahraga" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mOlahraga" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">13. Kurang minum tetapi sering buang air kecil</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBak" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBak" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">14. Kerutan di kulit wajah sebelum usia 40 tahun</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKerutan" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mKerutan" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">15. Sulit tidur / cemas / kurang konsentrasi</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSulit" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mSulit" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">16. Berat badan naik 3kg dalam 3 bulan</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBBNaik" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mBBNaik" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">17. Merokok (termasuk rokok elektrik)</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mRokok" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mRokok" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
+                <div class="col-md-12"><label class="form-label">18. Minum alkohol</label><br><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAlkohol" value="Ya" required><label class="form-check-label">Ya</label></div><div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="mAlkohol" value="Tidak"><label class="form-check-label">Tidak</label></div></div>
               </div>
-
-              <!-- Pertanyaan 2 -->
-              <div class="col-md-12">
-                  <label class="form-label">2. Menu sarapan nasi goreng, roti, kue</label><br>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="mMenu" id="mMenuYa" value="Ya" required>
-                    <label class="form-check-label" for="mMenuYa">Ya</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="mMenu" id="mMenuTidak" value="Tidak">
-                    <label class="form-check-label" for="mMenuTidak">Tidak</label>
-                  </div>
-              </div>
-
-              <!-- Pertanyaan 3 -->
-              <div class="md-12">
-                <label class="form-label">3. Sering merasa ngantuk terutama setelah makan </label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mNgantuk" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mNgantuk" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 4 -->
-              <div class="md-12">
-                <label class="form-label">4. Sering lelah, lesu dan kurang berstamina</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLelah" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLelah" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 5 -->
-              <div class="md-12">
-                <label class="form-label">5. Sering merasakan gangguan lambung</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLambung" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLambung" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 6 -->
-              <div class="md-12">
-                <label class="form-label">6. Sering merasa lapar atau haus</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLapar" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mLapar" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 7 -->
-              <div class="md-12">
-                <label class="form-label">7. Minum air putih 8 gelas/hari</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mAir" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mAir" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 8 -->
-              <div class="md-12">
-                <label class="form-label">8. Mengkonsumsi makanan instant, minuman manis, ultra processed food dan sejenisnya</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKonsumsi" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKonsumsi" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 9 -->
-              <div class="md-12">
-                <label class="form-label">9. BAB tidak lancar</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBab" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBab" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 10 -->
-              <div class="md-12">
-                <label class="form-label">10. Sering keram / kesemutan</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKeram" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKeram" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 11 -->
-              <div class="md-12">
-                <label class="form-label">11. Tidur malam paling lambat pukul 10 malam, selama 6-8 jam/hari</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mTidur" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mTidur" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 12 -->
-              <div class="md-12">
-                <label class="form-label">12. Berolahraga minimum 30 menit setiap 3-5 hari dalam seminggu</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mOlahraga" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mOlahraga" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 13 -->
-              <div class="md-12">
-                <label class="form-label">13. Kurang minum tetapi sering buang air kecil</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBak" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBak" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 14 -->
-              <div class="md-12">
-                <label class="form-label">14. Kerutan di kulit wajah sebelum usia 40 tahun</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKerutan" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mKerutan" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 15 -->
-              <div class="md-12">
-                <label class="form-label">15. Sulit tidur / cemas / kurang konsentrasi</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mSulit" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mSulit" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 16 -->
-              <div class="md-12">
-                <label class="form-label">16. Berat badan naik 3kg dalam 3 bulan</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBBNaik" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mBBNaik" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 17 -->
-              <div class="md-12">
-                <label class="form-label">17. Merokok (termasuk rokok elektrik)</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mRokok" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mRokok" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-  
-              <!-- Pertanyaan 18 -->
-              <div class="md-12">
-                <label class="form-label">18. Minum alkohol</label><br>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mAlkohol" value="Ya" required>
-                  <label class="form-check-label">Ya</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="mAlkohol" value="Tidak">
-                  <label class="form-check-label">Tidak</label>
-                </div>
-              </div>
-
-              <!-- FORM SPONSOR -->
               <div class="border p-3 rounded bg-light mt-4">
                 <h6><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h6>
-                <div class="mb-12">
-                  <label class="form-label">Nama Sponsor</label>
-                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)">
-                </div>
-                <div class="mb-12">
-                  <label class="form-label">HP Sponsor</label>
-                  <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}">
-                </div>
+                <div class="mb-12"><label class="form-label">Nama Sponsor</label><input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
+                <div class="mb-12"><label class="form-label">HP Sponsor</label><input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
               </div>
-              
-              <!-- PESAN VALIDASI HALAMAN 2 -->
               <div id="formMessage2" class="mt-3"></div>
-
-              <!-- TOMBOL RESPONSIVE HALAMAN 2 -->
               <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
-                <button type="button" class="btn btn-secondary btn-custom" onclick="navigate(2, 1)">
-                  <i class="fas fa-arrow-left me-2"></i>Sebelumnya
-                </button>
-                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage2()">
-                  <i class="fas fa-paper-plane me-2"></i>Submit
-                </button>
+                <button type="button" class="btn btn-secondary btn-custom" onclick="navigate(2, 1)"><i class="fas fa-arrow-left me-2"></i>Sebelumnya</button>
+                <button type="button" class="btn btn-primary btn-custom" onclick="validatePage2()"><i class="fas fa-paper-plane me-2"></i>Submit</button>
               </div>
             </div>
 
             <!-- HALAMAN 3 -->
             <div class="page" id="page3">
               <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi</h5>
-                
-              <div id="loadingSpinner" class="text-center my-3">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2">Memproses data...</p>
-              </div>
-              
-              <!-- Hasil Analisa akan ditampilkan kalau berhasil -->  
-              <div id="hasilAnalisa" style="display: none;">
-                <!-- ditampilkan disini melalui proses jscript -->
-              </div> 
-              
+              <div id="loadingSpinner" class="text-center my-3"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Memproses data...</p></div>
+              <div id="hasilAnalisa" style="display: none;"></div> 
               <div id="tampilCTA" style="display: none;">
-                <!-- Tampilkan Call To Action -->
                 <div class="border p-3 rounded bg-light mt-4">    
                   <h5 style="text-align: center; color:#cc0000;" >SELAMAT,</h5>
-                  <h6 style="text-align: center; color:#cc0000;">
-                      Anda sudah berhasil menyelesaikan survey kebugaran Anda, 
-                      <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong>
-                  </h6>
-                  <div class="text-center text-muted mt-3">
-                      <small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small>
-                  </div>
-                  
-                  <div class="d-flex justify-content-center mt-3">
-                    <div style="max-width: 50%;">
-                      <button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()">
-                        <i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY
-                      </button>
-                    </div>
-                  </div>
+                  <h6 style="text-align: center; color:#cc0000;">Anda sudah berhasil menyelesaikan survey kebugaran Anda, <br>Silahkan lihat hasilnya di WA atau email Anda, dengan klik <strong>"KIRIM HASIL SURVEY"</strong></h6>
+                  <div class="text-center text-muted mt-3"><small>Hasil Analisa ini hanya bersifat umum saja dan bukan merupakan pengganti diagnosa medis</small></div>
+                  <div class="d-flex justify-content-center mt-3"><div style="max-width: 50%;"><button id="btnKirim" class="btn btn-success" onclick="handleKirimSurvey()"><i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY</button></div></div>
                 </div>
-
               </div>  
             </div>
           </form>
         </div>
         
-        <!-- Footer -->
         <footer class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
           WETools Versi 4.0 © 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
         </footer>
@@ -583,400 +147,210 @@ body {
   </div>
 </div>
 
-<!-- JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://apis.google.com/js/api.js"></script>
-
 <script>
-// *************************************************************  
-// Definisikan URL Google Apps Script secara Global di Index.html
-// *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwtpTB3hpzfCoxLfh4-7tK9T6RCZE3dSw5UtDBgnfurE0Rpq7ifuNlgLAj9QY9eoJlD/exec';
+// #######################################################
+// ## SCRIPT UTAMA APLIKASI ##
+// #######################################################
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw7Jvkq_pdDILsmmYBjv58wiESDTLcoMkjTOGW9LA7IFTaqfv6FNyw0wGq105ZZXMk/exec';
 
-  // ********************************
-  // Fungsi untuk menampilkan halaman
-  // ********************************
-  function navigate(from, to) {
-    if (from !== null) {
-      const fromElement = document.getElementById("page" + from);
-      if (fromElement) fromElement.classList.remove("active");
-    }
-    
-    const toElement = document.getElementById("page" + to);
-    if (toElement) toElement.classList.add("active");
-    
+function navigate(from, to) {
+    if (from !== null) document.getElementById("page" + from).classList.remove("active");
+    document.getElementById("page" + to).classList.add("active");
     updateProgressBar(to);
-    // Hapus pesan di halaman tujuan untuk memastikan bersih
     const msgBox = document.getElementById("formMessage" + to);
     if (msgBox) msgBox.innerHTML = "";
-    else { // Khusus untuk halaman 3 yang tidak punya formMessage
-      const hasilAnalisa = document.getElementById('hasilAnalisa');
-      if(hasilAnalisa) hasilAnalisa.innerHTML = "";
-    }
-  }
-  
-  //********************
-  // Untuk progress bar
-  //********************
-  function updateProgressBar(page) {
-    const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
-    const progressBar = document.getElementById("progressBar");
-    if (progressBar) {
-      progressBar.style.width = percent + "%";
-      progressBar.setAttribute('aria-valuenow', percent);
-    }
-  }
-  
-  //********************
-  // Menampilkan pesan
-  //********************
-  function showMessage(page, text, type) {
-    let msgBoxId = "formMessage" + page;
-    if (page === 3) {
-      // Untuk halaman 3, kita tampilkan pesan di dalam div hasilAnalisa
-      msgBoxId = "hasilAnalisa";
-    }
+}
 
+function updateProgressBar(page) {
+    const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
+    document.getElementById("progressBar").style.width = percent + "%";
+}
+
+function showMessage(page, text, type) {
+    const msgBoxId = (page === 3) ? "hasilAnalisa" : "formMessage" + page;
     const msgBox = document.getElementById(msgBoxId);
     if (msgBox) {
-      msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
-      if (page === 3) {
-        msgBox.style.display = 'block'; // Pastikan div hasilAnalisa terlihat
-      }
-      msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
+        if (page === 3) msgBox.style.display = 'block';
+        msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }
-  
-  //*************************
-  // Untuk validasi halaman1
-  //*************************
-  function validatePage1() {
-    document.getElementById("formMessage1").innerHTML = ""; // Bersihkan pesan dulu
-    const nama   = document.getElementById("mNama").value.trim();
-    const hp     = document.getElementById("mNomorHp").value.trim();
-    const email  = document.getElementById("mEmail").value.trim();
-    const umur   = document.getElementById("mUmur").value;
-    const berat  = document.getElementById("mBeratBadan").value;
-    const tinggi = document.getElementById("mTinggiBadan").value;
-    const jk     = document.getElementById("mJenisKelamin").value;
-    const lingkarPerut = document.getElementById("mLingkarPerut").value;
-    const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
-   
-    if (!nama || !hp || !umur || !berat || !tinggi || !jk || !lingkarPerut || !aktivitasFisik)
-       return showMessage(1, "Semua data wajib diisi.", "error");
-    if (nama.length < 3 || nama.length > 40) 
-       return showMessage(1, "Nama harus 3-40 karakter.", "error");
-    if (!/^[0-9]{10,14}$/.test(hp)) 
-       return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
-    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
-       return showMessage(1, "Format email salah.", "error");
-    if (+umur < 18 || +umur > 80) 
-       return showMessage(1, "Umur harus antara 18-80 tahun.", "error");
-    if (+berat < 40 || +berat > 150) 
-       return showMessage(1, "Berat Badan harus antara 40-150 kg.", "error");
-    if (+tinggi < 100 || +tinggi > 190) 
-       return showMessage(1, "Tinggi Badan harus antara 100-190 cm.", "error");
+}
 
+function validatePage1() {
+    document.getElementById("formMessage1").innerHTML = "";
+    const fields = ["mNama", "mNomorHp", "mUmur", "mBeratBadan", "mTinggiBadan", "mJenisKelamin", "mLingkarPerut", "mAktivitasFisik"];
+    for (const id of fields) {
+        if (!document.getElementById(id).value) return showMessage(1, "Semua data wajib diisi.", "error");
+    }
+    if (document.getElementById("mNama").value.length < 3) return showMessage(1, "Nama harus minimal 3 karakter.", "error");
+    if (!/^[0-9]{10,14}$/.test(document.getElementById("mNomorHp").value)) return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
+    const email = document.getElementById("mEmail").value;
+    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) return showMessage(1, "Format email salah.", "error");
     navigate(1, 2);
-  }
-  
-// *************************************
-// fungsi validatePage2 untuk halaman 2
-// *************************************
+}
+
 function validatePage2() {
-  document.getElementById("formMessage2").innerHTML = ""; // Bersihkan pesan dulu
-  const required  = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-  
-  for (let id of required) {
-    const inputs = document.querySelectorAll(`input[name="${id}"]`);
-    if (!inputs[0].checked && !inputs[1].checked) {
-      const label = inputs[0].closest('.col-md-12, .md-12').querySelector('.form-label').textContent;
-      showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
-      return; // Hentikan validasi
-    }
-  }
-
-  submitForm();
-}
-
-// ####################################################################
-// ## INI ADALAH FUNGSI YANG DIPERBAIKI ##
-// ####################################################################
-function submitForm() {
-  try {
-    // 1. Kumpulkan semua data dari form
-    const formData = {
-      mNama: document.getElementById("mNama").value,
-      mNomorHp: document.getElementById("mNomorHp").value,
-      mEmail: document.getElementById("mEmail").value,
-      mUmur: document.getElementById("mUmur").value,
-      mJenisKelamin: document.getElementById("mJenisKelamin").value,
-      mBeratBadan: document.getElementById("mBeratBadan").value,
-      mTinggiBadan: document.getElementById("mTinggiBadan").value,
-      mLingkarPerut: document.getElementById("mLingkarPerut").value,
-      mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
-      mSarapan: document.querySelector('input[name="mSarapan"]:checked').value,
-      mMenu: document.querySelector('input[name="mMenu"]:checked').value,
-      mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value,
-      mLelah: document.querySelector('input[name="mLelah"]:checked').value,
-      mLambung: document.querySelector('input[name="mLambung"]:checked').value,
-      mLapar: document.querySelector('input[name="mLapar"]:checked').value,
-      mAir: document.querySelector('input[name="mAir"]:checked').value,
-      mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
-      mBab: document.querySelector('input[name="mBab"]:checked').value,
-      mKeram: document.querySelector('input[name="mKeram"]:checked').value,
-      mTidur: document.querySelector('input[name="mTidur"]:checked').value,
-      mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
-      mBak: document.querySelector('input[name="mBak"]:checked').value,
-      mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
-      mSulit: document.querySelector('input[name="mSulit"]:checked').value,
-      mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
-      mRokok: document.querySelector('input[name="mRokok"]:checked').value,
-      mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      mSponsor: document.getElementById("mSponsor").value || "Hesty Husain",
-      mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600",
-    };
-
-    // 2. Lakukan perubahan UI SEGERA (Pindah halaman & tampilkan spinner)
-    navigate(2, 3);
-    document.getElementById("loadingSpinner").style.display = "block";
-    document.getElementById("hasilAnalisa").style.display = "none";
-    document.getElementById("tampilCTA").style.display = "none";
-
-    // 3. Gunakan setTimeout untuk menunda request ke siklus event berikutnya
-    // INI ADALAH BAGIAN KUNCI UNTUK MEMASTIKAN SPINNER TAMPIL
-    setTimeout(function() {
-      // Siapkan request JSONP
-      const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-      const script = document.createElement('script');
-      const params = Object.keys(formData).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(formData[k])}`).join('&');
-      script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&${params}`;
-
-      // Tangani error jika script gagal dimuat (misal, network error)
-      script.onerror = function() {
-        console.error("Gagal memuat script dari Google Apps Script.");
-        document.getElementById("loadingSpinner").style.display = "none";
-        showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet Anda.", "error");
-        if (window[callbackName]) delete window[callbackName];
-      };
-      
-      // Definisikan fungsi callback untuk menangani respons dari server
-      window[callbackName] = function(response) {
-        console.log("Response dari server:", response);
-        document.getElementById("loadingSpinner").style.display = "none";
-
-        try {
-          if (response && response.status === "success" && response.data) {
-            // Jika sukses, tampilkan hasil dan tombol CTA
-            tampilkanHasilEvaluasi(response.data);
-            document.getElementById("hasilAnalisa").style.display = "block";
-            document.getElementById("tampilCTA").style.display = "block";
-            window.dataTerakhir = response.data; // Simpan data untuk dikirim nanti
-          } else {
-            // Jika server mengembalikan status error
-            const errorMessage = response.message || "Terjadi kesalahan di server.";
-            showMessage(3, errorMessage, 'error');
-          }
-        } catch (e) {
-          // Jika ada error saat memproses data di sisi client
-          console.error("Error saat memproses response:", e);
-          showMessage(3, `Gagal menampilkan hasil: ${e.message}`, 'error');
-        } finally {
-          // Cleanup: hapus script dan fungsi callback
-          if (script.parentNode) {
-            document.body.removeChild(script);
-          }
-          delete window[callbackName];
+    document.getElementById("formMessage2").innerHTML = "";
+    const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+    for (const name of questions) {
+        if (!document.querySelector(`input[name="${name}"]:checked`)) {
+            const label = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label').textContent;
+            return showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
         }
-      };
-
-      // Tambahkan script ke body untuk memulai request
-      document.body.appendChild(script);
-
-    }, 50); // Diberi jeda 50ms agar lebih pasti spinner-nya muncul
-
-  } catch (error) {
-    console.error("Error di submitForm:", error);
-    document.getElementById("loadingSpinner").style.display = "none";
-    showMessage(3, `Terjadi kesalahan: ${error.message}`, 'error');
-  }
+    }
+    submitForm();
 }
 
-// ####################################################################
-// ## AKHIR DARI FUNGSI YANG DIPERBAIKI ##
-// ####################################################################
+function submitForm() {
+    try {
+        const formData = {
+            mNama: document.getElementById("mNama").value, mNomorHp: document.getElementById("mNomorHp").value, mEmail: document.getElementById("mEmail").value,
+            mUmur: document.getElementById("mUmur").value, mJenisKelamin: document.getElementById("mJenisKelamin").value, mBeratBadan: document.getElementById("mBeratBadan").value,
+            mTinggiBadan: document.getElementById("mTinggiBadan").value, mLingkarPerut: document.getElementById("mLingkarPerut").value, mAktivitasFisik: document.getElementById("mAktivitasFisik").value,
+            mSarapan: document.querySelector('input[name="mSarapan"]:checked').value, mMenu: document.querySelector('input[name="mMenu"]:checked').value,
+            mNgantuk: document.querySelector('input[name="mNgantuk"]:checked').value, mLelah: document.querySelector('input[name="mLelah"]:checked').value,
+            mLambung: document.querySelector('input[name="mLambung"]:checked').value, mLapar: document.querySelector('input[name="mLapar"]:checked').value,
+            mAir: document.querySelector('input[name="mAir"]:checked').value, mKonsumsi: document.querySelector('input[name="mKonsumsi"]:checked').value,
+            mBab: document.querySelector('input[name="mBab"]:checked').value, mKeram: document.querySelector('input[name="mKeram"]:checked').value,
+            mTidur: document.querySelector('input[name="mTidur"]:checked').value, mOlahraga: document.querySelector('input[name="mOlahraga"]:checked').value,
+            mBak: document.querySelector('input[name="mBak"]:checked').value, mKerutan: document.querySelector('input[name="mKerutan"]:checked').value,
+            mSulit: document.querySelector('input[name="mSulit"]:checked').value, mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
+            mRokok: document.querySelector('input[name="mRokok"]:checked').value, mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
+            mSponsor: document.getElementById("mSponsor").value || "Hesty Husain", mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600",
+        };
 
-// GANTI FUNGSI tampilkanHasilEvaluasi() ANDA DENGAN INI
+        navigate(2, 3);
+        document.getElementById("loadingSpinner").style.display = "block";
+        document.getElementById("hasilAnalisa").style.display = "none";
+        document.getElementById("tampilCTA").style.display = "none";
+
+        setTimeout(() => {
+            const callbackName = 'jsonp_callback_' + Date.now();
+            const script = document.createElement('script');
+            const params = new URLSearchParams(formData).toString();
+            script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&${params}`;
+
+            script.onerror = () => {
+                document.getElementById("loadingSpinner").style.display = "none";
+                showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet atau URL Script.", "error");
+                delete window[callbackName];
+            };
+            
+            window[callbackName] = (response) => {
+                document.getElementById("loadingSpinner").style.display = "none";
+                try {
+                    if (response && response.status === "success" && response.data) {
+                        tampilkanHasilEvaluasi(response.data);
+                        document.getElementById("hasilAnalisa").style.display = "block";
+                        document.getElementById("tampilCTA").style.display = "block";
+                        window.dataTerakhir = response.data;
+                    } else {
+                        showMessage(3, `Error dari server: ${response.message || 'Format respons tidak dikenal.'}`, 'error');
+                    }
+                } catch (e) {
+                    showMessage(3, `Terjadi error saat menampilkan hasil: ${e.message}`, 'error');
+                } finally {
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    delete window[callbackName];
+                }
+            };
+            document.body.appendChild(script);
+        }, 50);
+
+    } catch (error) {
+        document.getElementById("loadingSpinner").style.display = "none";
+        showMessage(3, `Terjadi kesalahan pada form: ${error.message}`, 'error');
+    }
+}
+
 function tampilkanHasilEvaluasi(data) {
-  const hasilAnalisa = document.getElementById("hasilAnalisa");
-  if (!hasilAnalisa) {
-    console.error("Elemen #hasilAnalisa tidak ditemukan!");
-    return;
-  }
+    const hasilAnalisa = document.getElementById("hasilAnalisa");
+    
+    // Versi Aman: Gunakan "|| []" untuk .map dan "?." untuk objek
+    const fungsionalHTML = (data.fungsional || []).map(item => `
+        <tr><td>${item.label || "-"}</td><td style="text-align:center;">${item.jawaban || "-"}</td></tr>`).join('');
 
-  // Fungsi pembantu untuk mencegah error jika data tidak ada
-  const get = (path, defaultValue = "-") => {
-    // Memastikan 'data' adalah objek sebelum mencoba reduce
-    if (typeof data !== 'object' || data === null) return defaultValue;
-    return path.reduce((acc, key) => (acc && acc[key] !== null && acc[key] !== undefined) ? acc[key] : defaultValue, data);
-  };
+    const evaluasiHTML = (data.evaluasi || []).map(item => `
+        <tr><td>${item.param || "-"}</td><td style="text-align:center;">${item.hasil || "-"}</td>
+        <td style="text-align:center;">${item.ideal || "-"}</td><td style="text-align:center;">${item.satuan || "-"}</td>
+        <td style="white-space:pre-line">${item.penjelasan || "-"}</td></tr>`).join('');
 
-  const fungsionalHTML = (get(['fungsional'], [])).map(item => `
-    <tr>
-      <td>${item.label || "-"}</td>
-      <td style="text-align:center;">${item.jawaban || "-"}</td>
-    </tr>
-  `).join('');
-
-  const evaluasiHTML = (get(['evaluasi'], [])).map(item => `
-    <tr>
-      <td>${item.param || "-"}</td>
-      <td style="text-align:center;">${item.hasil || "-"}</td>
-      <td style="text-align:center;">${item.ideal || "-"}</td>
-      <td style="text-align:center;">${item.satuan || "-"}</td>
-      <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
-    </tr>
-  `).join('');
-
-  hasilAnalisa.innerHTML = `
-      <div class="card-body">
-        <!-- DATA SURVEY -->
-        <table class="table table-bordered">
-          <tbody>
-            <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-                <td style="background-color:#4d94ff;"><b>${get(['tanggal'])}</b></td>
-            </tr>
-            <tr><td>Nama</td><td>${get(['nama'])}</td></tr>
-            <tr><td>No. HP</td><td>${get(['hp'])}</td></tr>
-            <tr><td>Email</td><td>${get(['email'], 'Tidak diisi')}</td></tr>
-            <tr><td>Umur</td><td>${get(['umur'])} tahun</td></tr>
-            <tr><td>Jenis Kelamin</td><td>${get(['jk'])}</td></tr>
-            <tr><td>Berat Badan</td><td>${get(['berat'])} kg</td></tr>
-            <tr><td>Tinggi Badan</td><td>${get(['tinggi'])} cm</td></tr>
-            <tr><td>Lingkar Perut</td><td>${get(['lingkar'])} cm</td></tr>
-            <tr><td>Aktivitas Fisik</td><td>${get(['aktivitas'])}</td></tr>
-          </tbody>
-        </table>
-
-        <!-- TABEL FUNGSIONAL -->
-        <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-              <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th>
-            </tr>
-          </thead>
-          <tbody>${fungsionalHTML}</tbody>
-        </table>
-
-        <!-- TABEL EVALUASI -->
-        <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
-        <div style="overflow-x: auto; width: 100%;">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-                <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-                <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-                <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-                <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-              </tr>
-            </thead>
-            <tbody>${evaluasiHTML}</tbody>
-          </table>
-        </div>
-
-        <!-- TABEL SKOR, KESIMPULAN & REKOMENDASI -->
-        <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
-        <table class="table table-bordered">
-          <tbody>
-            <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
-              <td style="width:85%;">
-                Persentase kebugaran anda : <strong>${get(['persen'], '0%')}</strong>
-              </td> 
-            </tr>
-            <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-                <td style="width:85%;">${get(['kesimpulan'])}</td>
-            </tr>
-            <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-                <td style="width:85%;">${get(['rekomendasi'])}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  `;
+    hasilAnalisa.innerHTML = `
+        <div class="card-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td></tr>
+                <tr><td>Nama</td><td>${data.nama || "-"}</td></tr><tr><td>No. HP</td><td>${data.hp || "-"}</td></tr><tr><td>Email</td><td>${data.email || "Tidak diisi"}</td></tr>
+                <tr><td>Umur</td><td>${data.umur || "-"} tahun</td></tr><tr><td>Jenis Kelamin</td><td>${data.jk || "-"}</td></tr><tr><td>Berat Badan</td><td>${data.berat || "-"} kg</td></tr>
+                <tr><td>Tinggi Badan</td><td>${data.tinggi || "-"} cm</td></tr><tr><td>Lingkar Perut</td><td>${data.lingkar || "-"} cm</td></tr><tr><td>Aktivitas Fisik</td><td>${data.aktivitas || "-"}</td></tr>
+              </tbody>
+            </table>
+            <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
+            <table class="table table-bordered">
+              <thead><tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th><th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr></thead>
+              <tbody>${fungsionalHTML}</tbody>
+            </table>
+            <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
+            <div style="overflow-x: auto; width: 100%;"><table class="table table-bordered">
+              <thead><tr><th style="background-color:#4d94ff; width:25%;">Parameter</th><th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th><th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th><th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th><th style="background-color:#4d94ff; width:50%;">Keterangan</th></tr></thead>
+              <tbody>${evaluasiHTML}</tbody>
+            </table></div>
+            <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
+            <table class="table table-bordered">
+              <tbody>
+                <tr><th style="background-color:#4d94ff; width:15%;">Skor</th><td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen || "0%"}</strong></td></tr>
+                <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th><td style="width:85%;">${data.kesimpulan || "-"}</td></tr>
+                <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th><td style="width:85%;">${data.rekomendasi || "-"}</td></tr>
+              </tbody>
+            </table>
+        </div>`;
 }
 
-// ***********************************
-// Untuk Kirim File PDF hasil Evaluasi
-// ***********************************
-async function handleKirimSurvey() {
+function handleKirimSurvey() {
   const btnKirim = document.getElementById("btnKirim");
   btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
   btnKirim.disabled = true;
 
-  try {
-    if (!window.dataTerakhir) {
-      throw new Error("Data survey tidak ditemukan. Silakan submit ulang.");
-    }
+  if (!window.dataTerakhir) {
+    alert("Data survey tidak ditemukan. Silakan submit ulang.");
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
+    btnKirim.disabled = false;
+    return;
+  }
 
-    const payload = {
-      action: "kirimHasilSurvey",
-      data: window.dataTerakhir
-    };
+  const payload = JSON.stringify({ action: "kirimHasilSurvey", data: window.dataTerakhir });
 
-    // Gunakan fetch dengan metode POST
-    const response = await fetch(URL_APPS_SCRIPT, {
-      method: 'POST',
-      mode: 'no-cors', // Penting untuk menghindari error CORS saat POST
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8', // Apps Script lebih suka text/plain untuk postData
-      },
-      body: JSON.stringify(payload)
-    });
-    
-    // Karena mode 'no-cors', kita tidak bisa membaca response.
-    // Kita anggap saja berhasil dan tampilkan notifikasi.
+  fetch(URL_APPS_SCRIPT, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: payload
+  })
+  .then(() => {
     alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
-    
-    // Reset form dan kembali ke halaman 1
     resetForm();
-
-  } catch (error) {
+  })
+  .catch(error => {
     console.error("Error:", error);
-    alert("Gagal mengirim hasil survey: " + error.message);
-  } finally {
-    // Selalu reset tombol, baik berhasil atau gagal
+    alert("Gagal mengirim permintaan: " + error.message);
+  })
+  .finally(() => {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
-  }
+  });
 }
 
-// *******************
-// Untuk mereset form
-// *******************
 function resetForm() {
-  document.getElementById("fitnessForm").reset();
-  navigate(3, 1);
-  updateProgressBar(1);
-    
-  document.getElementById("hasilAnalisa").innerHTML = "";
-  document.getElementById("hasilAnalisa").style.display = "none";
-  document.getElementById("loadingSpinner").style.display = "none"; // Pastikan spinner disembunyikan
-  document.getElementById("tampilCTA").style.display = "none"; // Sembunyikan CTA
-    
-  const btnKirim = document.getElementById("btnKirim");
-  if (btnKirim) {
-    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
-    btnKirim.disabled = false;
-  }
-    
-  // Tampilkan pesan reset di halaman 1
-  showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
+    document.getElementById("fitnessForm").reset();
+    navigate(null, 1);
+    document.getElementById("loadingSpinner").style.display = "none";
+    document.getElementById("hasilAnalisa").style.display = "none";
+    document.getElementById("tampilCTA").style.display = "none";
+    window.dataTerakhir = null;
+    showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
 }
-  
 </script>
 </body>
 </html>
