@@ -165,7 +165,7 @@ body {
             <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
           </div>
 
-          <div><p>&nbsp</p></div>
+          <div><p> </p></div>
           <!-- Progress Bar -->
           <div class="progress mb-4">
             <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
@@ -577,7 +577,7 @@ body {
         
         <!-- Footer -->
         <footer class="footer mt-4 text-white text-center p-2 rounded" style="background-color: #002266;">
-          WETools Versi 4.0 &copy; 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
+          WETools Versi 4.0 © 2025 | <a href="https://www.beratidealku.com" class="text-white">www.beratidealku.com</a> - All rights reserved
         </footer>
     </div>
   </div>
@@ -592,7 +592,7 @@ body {
 // *************************************************************  
 // Definisikan URL Google Apps Script secara Global di Index.html
 // *************************************************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxnEiEC2qioBYJPRQY4F3hoE6R0LkqfBuByQUhKfECsM9rp4ZRje6_7wxtztK_-uuqD/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwtpTB3hpzfCoxLfh4-7tK9T6RCZE3dSw5UtDBgnfurE0Rpq7ifuNlgLAj9QY9eoJlD/exec';
 
   // ********************************
   // Fungsi untuk menampilkan halaman
@@ -607,7 +607,13 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxnEiEC2qioBYJP
     if (toElement) toElement.classList.add("active");
     
     updateProgressBar(to);
-    clearMessage(to);
+    // Hapus pesan di halaman tujuan untuk memastikan bersih
+    const msgBox = document.getElementById("formMessage" + to);
+    if (msgBox) msgBox.innerHTML = "";
+    else { // Khusus untuk halaman 3 yang tidak punya formMessage
+      const hasilAnalisa = document.getElementById('hasilAnalisa');
+      if(hasilAnalisa) hasilAnalisa.innerHTML = "";
+    }
   }
   
   //********************
@@ -622,21 +628,22 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxnEiEC2qioBYJP
     }
   }
   
-  //**********************
-  // Untuk menghapus pesan
-  //**********************
-  function clearMessage(page) {
-    const msg = document.getElementById("formMessage" + page);
-    if (msg) msg.innerHTML = "";
-  }
-  
   //********************
   // Menampilkan pesan
   //********************
   function showMessage(page, text, type) {
-    const msgBox = document.getElementById("formMessage" + page);
+    let msgBoxId = "formMessage" + page;
+    if (page === 3) {
+      // Untuk halaman 3, kita tampilkan pesan di dalam div hasilAnalisa
+      msgBoxId = "hasilAnalisa";
+    }
+
+    const msgBox = document.getElementById(msgBoxId);
     if (msgBox) {
       msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
+      if (page === 3) {
+        msgBox.style.display = 'block'; // Pastikan div hasilAnalisa terlihat
+      }
       msgBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
@@ -645,35 +652,32 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxnEiEC2qioBYJP
   // Untuk validasi halaman1
   //*************************
   function validatePage1() {
+    document.getElementById("formMessage1").innerHTML = ""; // Bersihkan pesan dulu
     const nama   = document.getElementById("mNama").value.trim();
     const hp     = document.getElementById("mNomorHp").value.trim();
     const email  = document.getElementById("mEmail").value.trim();
-    const umur   = +document.getElementById("mUmur").value;
-    const berat  = +document.getElementById("mBeratBadan").value;
-    const tinggi = +document.getElementById("mTinggiBadan").value;
-   
-    if (nama.length < 3 || nama.length > 40) 
-       return showMessage(1, "Nama harus 3-40 karakter dan huruf besar", "error");
-    if (!/^[0-9]{10,14}$/.test(hp)) 
-       return showMessage(1, "Nomor HP harus 10-14 digit angka", "error");
-    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
-       return showMessage(1, "Salah input email", "error");
-    if (umur < 18 || umur > 80) 
-       return showMessage(1, "Umur harus antara 18-80 thn", "error");
-    if (berat < 40 || berat > 150) 
-       return showMessage(1, "Berat Badan harus antara 40-150 kg", "error");
-    if (tinggi < 100 || tinggi > 190) 
-       return showMessage(1, "Tinggi Badan harus antara 100-190 cm", "error");
-     
+    const umur   = document.getElementById("mUmur").value;
+    const berat  = document.getElementById("mBeratBadan").value;
+    const tinggi = document.getElementById("mTinggiBadan").value;
+    const jk     = document.getElementById("mJenisKelamin").value;
     const lingkarPerut = document.getElementById("mLingkarPerut").value;
     const aktivitasFisik = document.getElementById("mAktivitasFisik").value;
-  
-    if (!lingkarPerut || !aktivitasFisik) {
-      showMessage(1, "Inputan di isi dengan lengkap", "error");
-      return false;
-    }
-  
-    // Kalau semua validasi lolos, pindah ke halaman 2
+   
+    if (!nama || !hp || !umur || !berat || !tinggi || !jk || !lingkarPerut || !aktivitasFisik)
+       return showMessage(1, "Semua data wajib diisi.", "error");
+    if (nama.length < 3 || nama.length > 40) 
+       return showMessage(1, "Nama harus 3-40 karakter.", "error");
+    if (!/^[0-9]{10,14}$/.test(hp)) 
+       return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
+    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
+       return showMessage(1, "Format email salah.", "error");
+    if (+umur < 18 || +umur > 80) 
+       return showMessage(1, "Umur harus antara 18-80 tahun.", "error");
+    if (+berat < 40 || +berat > 150) 
+       return showMessage(1, "Berat Badan harus antara 40-150 kg.", "error");
+    if (+tinggi < 100 || +tinggi > 190) 
+       return showMessage(1, "Tinggi Badan harus antara 100-190 cm.", "error");
+
     navigate(1, 2);
   }
   
@@ -681,35 +685,24 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxnEiEC2qioBYJP
 // fungsi validatePage2 untuk halaman 2
 // *************************************
 function validatePage2() {
+  document.getElementById("formMessage2").innerHTML = ""; // Bersihkan pesan dulu
   const required  = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-  const sponsor   = document.getElementById("mSponsor").value.trim();
-  const hpSponsor = document.getElementById("mHpSponsor").value.trim();
   
-  let isValid = true;
   for (let id of required) {
     const inputs = document.querySelectorAll(`input[name="${id}"]`);
-    let answered = false;
-    
-    inputs.forEach(input => {
-      if (input.checked) answered = true;
-    });
-    
-    if (!answered) {
-      showMessage(2, `Harap jawab pertanyaan ${id}`, "error");
-      isValid = false;
-      break;
+    if (!inputs[0].checked && !inputs[1].checked) {
+      const label = inputs[0].closest('.col-md-12, .md-12').querySelector('.form-label').textContent;
+      showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
+      return; // Hentikan validasi
     }
   }
-  
-  if (isValid) {
-    submitForm();
-  }
+
+  submitForm();
 }
 
-// ************************************
-// Untuk mengirim data inputan ke sheet
-// ************************************
-// GANTI FUNGSI submitForm() ANDA DENGAN INI
+// ####################################################################
+// ## INI ADALAH FUNGSI YANG DIPERBAIKI ##
+// ####################################################################
 function submitForm() {
   try {
     // 1. Kumpulkan semua data dari form
@@ -741,70 +734,78 @@ function submitForm() {
       mBBNaik: document.querySelector('input[name="mBBNaik"]:checked').value,
       mRokok: document.querySelector('input[name="mRokok"]:checked').value,
       mAlkohol: document.querySelector('input[name="mAlkohol"]:checked').value,
-      mSponsor: document.getElementById("mSponsor").value || "Hesty Husain", // default value
-      mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600", // default value
+      mSponsor: document.getElementById("mSponsor").value || "Hesty Husain",
+      mHpSponsor: document.getElementById("mHpSponsor").value || "81241318600",
     };
 
-    // 2. Navigasi ke Halaman 3 dan Tampilkan Spinner
+    // 2. Lakukan perubahan UI SEGERA (Pindah halaman & tampilkan spinner)
     navigate(2, 3);
     document.getElementById("loadingSpinner").style.display = "block";
     document.getElementById("hasilAnalisa").style.display = "none";
     document.getElementById("tampilCTA").style.display = "none";
 
-    // 3. Siapkan request JSONP
-    const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-    const script = document.createElement('script');
-    const params = Object.keys(formData).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(formData[k])}`).join('&');
-    script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&${params}`;
+    // 3. Gunakan setTimeout untuk menunda request ke siklus event berikutnya
+    // INI ADALAH BAGIAN KUNCI UNTUK MEMASTIKAN SPINNER TAMPIL
+    setTimeout(function() {
+      // Siapkan request JSONP
+      const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
+      const script = document.createElement('script');
+      const params = Object.keys(formData).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(formData[k])}`).join('&');
+      script.src = `${URL_APPS_SCRIPT}?callback=${callbackName}&${params}`;
 
-    // 4. Tangani error jika script gagal dimuat (misal, network error)
-    script.onerror = function() {
-      console.error("Gagal memuat script dari Google Apps Script.");
-      document.getElementById("loadingSpinner").style.display = "none";
-      showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet Anda.", "error");
-      delete window[callbackName];
-    };
-    
-    // 5. Definisikan fungsi callback untuk menangani respons dari server
-    window[callbackName] = function(response) {
-      console.log("Response dari server:", response); // Untuk debugging
-      document.getElementById("loadingSpinner").style.display = "none"; // Sembunyikan spinner
+      // Tangani error jika script gagal dimuat (misal, network error)
+      script.onerror = function() {
+        console.error("Gagal memuat script dari Google Apps Script.");
+        document.getElementById("loadingSpinner").style.display = "none";
+        showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet Anda.", "error");
+        if (window[callbackName]) delete window[callbackName];
+      };
+      
+      // Definisikan fungsi callback untuk menangani respons dari server
+      window[callbackName] = function(response) {
+        console.log("Response dari server:", response);
+        document.getElementById("loadingSpinner").style.display = "none";
 
-      try {
-        if (response && response.status === "success" && response.data) {
-          // Jika sukses, tampilkan hasil dan tombol CTA
-          tampilkanHasilEvaluasi(response.data);
-          document.getElementById("hasilAnalisa").style.display = "block";
-          document.getElementById("tampilCTA").style.display = "block";
-          window.dataTerakhir = response.data; // Simpan data untuk dikirim nanti
-        } else {
-          // Jika server mengembalikan status error
-          const errorMessage = response.message || "Terjadi kesalahan di server.";
-          document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
-          document.getElementById("hasilAnalisa").style.display = "block";
+        try {
+          if (response && response.status === "success" && response.data) {
+            // Jika sukses, tampilkan hasil dan tombol CTA
+            tampilkanHasilEvaluasi(response.data);
+            document.getElementById("hasilAnalisa").style.display = "block";
+            document.getElementById("tampilCTA").style.display = "block";
+            window.dataTerakhir = response.data; // Simpan data untuk dikirim nanti
+          } else {
+            // Jika server mengembalikan status error
+            const errorMessage = response.message || "Terjadi kesalahan di server.";
+            showMessage(3, errorMessage, 'error');
+          }
+        } catch (e) {
+          // Jika ada error saat memproses data di sisi client
+          console.error("Error saat memproses response:", e);
+          showMessage(3, `Gagal menampilkan hasil: ${e.message}`, 'error');
+        } finally {
+          // Cleanup: hapus script dan fungsi callback
+          if (script.parentNode) {
+            document.body.removeChild(script);
+          }
+          delete window[callbackName];
         }
-      } catch (e) {
-        // Jika ada error saat memproses data di sisi client
-        console.error("Error saat memproses response:", e);
-        document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">Gagal menampilkan hasil: ${e.message}</div>`;
-        document.getElementById("hasilAnalisa").style.display = "block";
-      } finally {
-        // Cleanup: hapus script dan fungsi callback
-        document.body.removeChild(script);
-        delete window[callbackName];
-      }
-    };
+      };
 
-    // 6. Tambahkan script ke body untuk memulai request
-    document.body.appendChild(script);
+      // Tambahkan script ke body untuk memulai request
+      document.body.appendChild(script);
+
+    }, 50); // Diberi jeda 50ms agar lebih pasti spinner-nya muncul
 
   } catch (error) {
     console.error("Error di submitForm:", error);
     document.getElementById("loadingSpinner").style.display = "none";
-    document.getElementById("hasilAnalisa").innerHTML = `<div class="alert alert-danger">Terjadi kesalahan: ${error.message}</div>`;
-    document.getElementById("hasilAnalisa").style.display = "block";
+    showMessage(3, `Terjadi kesalahan: ${error.message}`, 'error');
   }
 }
+
+// ####################################################################
+// ## AKHIR DARI FUNGSI YANG DIPERBAIKI ##
+// ####################################################################
 
 // GANTI FUNGSI tampilkanHasilEvaluasi() ANDA DENGAN INI
 function tampilkanHasilEvaluasi(data) {
@@ -816,6 +817,8 @@ function tampilkanHasilEvaluasi(data) {
 
   // Fungsi pembantu untuk mencegah error jika data tidak ada
   const get = (path, defaultValue = "-") => {
+    // Memastikan 'data' adalah objek sebelum mencoba reduce
+    if (typeof data !== 'object' || data === null) return defaultValue;
     return path.reduce((acc, key) => (acc && acc[key] !== null && acc[key] !== undefined) ? acc[key] : defaultValue, data);
   };
 
@@ -915,55 +918,37 @@ async function handleKirimSurvey() {
   btnKirim.disabled = true;
 
   try {
-    // 1. Ambil data sponsor dengan pengecekan null/undefined
-    //const sponsorInput = document.getElementById('mSponsor');
-    //const hpSponsorInput = document.getElementById('mHpSponsor');
-    
-    //const mSponsor = sponsorInput && sponsorInput.value ? sponsorInput.value.trim() : "Hesty Husain";
-    //const mHpSponsor = hpSponsorInput && hpSponsorInput.value ? hpSponsorInput.value.trim() : "81241318600";
-
-    // 2. Pastikan dataTerakhir ada
     if (!window.dataTerakhir) {
       throw new Error("Data survey tidak ditemukan. Silakan submit ulang.");
     }
 
-    // 3. Siapkan payload dengan data lengkap
     const payload = {
       action: "kirimHasilSurvey",
       data: window.dataTerakhir
     };
 
-    // 4. Gunakan fetch dengan error handling
+    // Gunakan fetch dengan metode POST
     const response = await fetch(URL_APPS_SCRIPT, {
       method: 'POST',
+      mode: 'no-cors', // Penting untuk menghindari error CORS saat POST
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'text/plain;charset=utf-8', // Apps Script lebih suka text/plain untuk postData
       },
       body: JSON.stringify(payload)
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.status !== "success") {
-      throw new Error(result.message || "Gagal memproses data");
-    }
-
-    // 5. Tampilkan notifikasi sukses
-    alert("Hasil survey berhasil dikirim ke WA/Email Anda!");
     
-    // 6. Reset form
+    // Karena mode 'no-cors', kita tidak bisa membaca response.
+    // Kita anggap saja berhasil dan tampilkan notifikasi.
+    alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
+    
+    // Reset form dan kembali ke halaman 1
     resetForm();
-    navigate(3, 1);
 
   } catch (error) {
     console.error("Error:", error);
     alert("Gagal mengirim hasil survey: " + error.message);
-    
-    // Reset tombol kirim
+  } finally {
+    // Selalu reset tombol, baik berhasil atau gagal
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
   }
@@ -974,23 +959,22 @@ async function handleKirimSurvey() {
 // *******************
 function resetForm() {
   document.getElementById("fitnessForm").reset();
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page1").classList.add("active");
+  navigate(3, 1);
   updateProgressBar(1);
-  ["1", "2", "3"].forEach(n => clearMessage(n));
     
   document.getElementById("hasilAnalisa").innerHTML = "";
   document.getElementById("hasilAnalisa").style.display = "none";
-  document.getElementById("loadingSpinner").style.display = "block";
+  document.getElementById("loadingSpinner").style.display = "none"; // Pastikan spinner disembunyikan
+  document.getElementById("tampilCTA").style.display = "none"; // Sembunyikan CTA
     
   const btnKirim = document.getElementById("btnKirim");
-  btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM';
-  btnKirim.disabled = false;
+  if (btnKirim) {
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
+    btnKirim.disabled = false;
+  }
     
-  document.getElementById("pesan-kirim").innerHTML = "";
-    
-  // Tampilkan pesan reset
-  showMessage(1, "Form berhasil direset", "success");
+  // Tampilkan pesan reset di halaman 1
+  showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
 }
   
 </script>
