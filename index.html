@@ -149,12 +149,16 @@ body {
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-// #######################################################
-// ## SCRIPT UTAMA APLIKASI ##
-// #######################################################
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzm2vyqQgMcptgwT55X7FOlf9rE-FEAWBiEolWh5rq_yweMwC73D08aS3c6IMjK8D6F/exec';
 
+<script>
+// *************************
+// Deklarasi Public Variable
+// *************************
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxHgrBpy9TwvM9LnE1NC9l0Rc6ASkgaaMKt8-SfLNU3c4Phfk-VCfEQargqsaooA4C8/exec';
+
+// ***********************
+// Untuk navigasi halaman
+// ***********************
 function navigate(from, to) {
     if (from !== null) document.getElementById("page" + from).classList.remove("active");
     document.getElementById("page" + to).classList.add("active");
@@ -163,11 +167,17 @@ function navigate(from, to) {
     if (msgBox) msgBox.innerHTML = "";
 }
 
+// *************************
+// Untuk update Progress Bar
+// *************************
 function updateProgressBar(page) {
     const percent = page === 1 ? 33 : page === 2 ? 66 : 100;
     document.getElementById("progressBar").style.width = percent + "%";
 }
 
+// **********************
+// Untuk tampilkan pesan
+// **********************
 function showMessage(page, text, type) {
     const msgBoxId = (page === 3) ? "hasilAnalisa" : "formMessage" + page;
     const msgBox = document.getElementById(msgBoxId);
@@ -178,6 +188,9 @@ function showMessage(page, text, type) {
     }
 }
 
+// *************************
+// Untuk validasi halaman 1
+// *************************
 function validatePage1() {
     document.getElementById("formMessage1").innerHTML = "";
     const fields = ["mNama", "mNomorHp", "mUmur", "mBeratBadan", "mTinggiBadan", "mJenisKelamin", "mLingkarPerut", "mAktivitasFisik"];
@@ -191,6 +204,9 @@ function validatePage1() {
     navigate(1, 2);
 }
 
+// *************************
+// Untuk validasi halaman 2
+// *************************
 function validatePage2() {
     document.getElementById("formMessage2").innerHTML = "";
     const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
@@ -203,6 +219,9 @@ function validatePage2() {
     submitForm();
 }
 
+// ***********************************
+// Untuk mengirim data ke google sheet
+// ***********************************
 function submitForm() {
     try {
         const formData = {
@@ -265,6 +284,9 @@ function submitForm() {
     }
 }
 
+// **********************************************
+// Untuk menampilkan Hasil Evaluasi & Tombol CTA 
+// **********************************************
 function tampilkanHasilEvaluasi(data) {
     const hasilAnalisa = document.getElementById("hasilAnalisa");
     
@@ -280,34 +302,69 @@ function tampilkanHasilEvaluasi(data) {
     hasilAnalisa.innerHTML = `
         <div class="card-body">
             <table class="table table-bordered">
+              <!-- DATA PROFILE -->
               <tbody>
-                <tr><th style="background-color:#4d94ff;">Tgl Survey</th><td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td></tr>
-                <tr><td>Nama</td><td>${data.nama || "-"}</td></tr><tr><td>No. HP</td><td>${data.hp || "-"}</td></tr><tr><td>Email</td><td>${data.email || "Tidak diisi"}</td></tr>
-                <tr><td>Umur</td><td>${data.umur || "-"} tahun</td></tr><tr><td>Jenis Kelamin</td><td>${data.jk || "-"}</td></tr><tr><td>Berat Badan</td><td>${data.berat || "-"} kg</td></tr>
-                <tr><td>Tinggi Badan</td><td>${data.tinggi || "-"} cm</td></tr><tr><td>Lingkar Perut</td><td>${data.lingkar || "-"} cm</td></tr><tr><td>Aktivitas Fisik</td><td>${data.aktivitas || "-"}</td></tr>
+                <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                  <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
+                </tr>
+                <tr><td>Nama</td><td>${data.nama || "-"}</td></tr>
+                <tr><td>No. HP</td><td>${data.hp || "-"}</td></tr>
+                <tr><td>Email</td><td>${data.email || "Tidak diisi"}</td></tr>
+                <tr><td>Umur</td><td>${data.umur || "-"} tahun</td></tr>
+                <tr><td>Jenis Kelamin</td><td>${data.jk || "-"}</td></tr>
+                <tr><td>Berat Badan</td><td>${data.berat || "-"} kg</td></tr>
+                <tr><td>Tinggi Badan</td><td>${data.tinggi || "-"} cm</td></tr>
+                <tr><td>Lingkar Perut</td><td>${data.lingkar || "-"} cm</td></tr>
+                <tr><td>Aktivitas Fisik</td><td>${data.aktivitas || "-"}</td></tr>
               </tbody>
             </table>
+            
+            <!-- DATA FUNGSIONAL -->
             <h5 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h5>
             <table class="table table-bordered">
-              <thead><tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th><th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr></thead>
+              <thead>
+                <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+                <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
+              </thead>
               <tbody>${fungsionalHTML}</tbody>
             </table>
+
+            <!-- DATA EVALUASI -->
             <h5 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h5>
-            <div style="overflow-x: auto; width: 100%;"><table class="table table-bordered">
-              <thead><tr><th style="background-color:#4d94ff; width:25%;">Parameter</th><th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th><th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th><th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th><th style="background-color:#4d94ff; width:50%;">Keterangan</th></tr></thead>
-              <tbody>${evaluasiHTML}</tbody>
-            </table></div>
+            <div style="overflow-x: auto; width: 100%;">
+              <table class="table table-bordered">
+                <thead>
+                  <tr><th style="background-color:#4d94ff; width:25%;">Parameter</th>
+                  <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+                  <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+                  <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+                  <th style="background-color:#4d94ff; width:50%;">Keterangan</th></tr>
+                </thead>
+                <tbody>${evaluasiHTML}</tbody>
+              </table>
+            </div>
+            
+            <!-- DATA KESIMPULAN DAN REKOMENDASI -->
             <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
             <table class="table table-bordered">
               <tbody>
-                <tr><th style="background-color:#4d94ff; width:15%;">Skor</th><td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen || "0%"}</strong></td></tr>
-                <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th><td style="width:85%;">${data.kesimpulan || "-"}</td></tr>
-                <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th><td style="width:85%;">${data.rekomendasi || "-"}</td></tr>
+                <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+                  <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen || "0%"}</strong></td>
+                </tr>
+                <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                  <td style="width:85%;">${data.kesimpulan || "-"}</td>
+                </tr>
+                <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                  <td style="width:85%;">${data.rekomendasi || "-"}</td>
+                </tr>
               </tbody>
             </table>
         </div>`;
 }
 
+// ****************************************
+// Untuk menghandel pengiriman Hasil Survey 
+// ****************************************
 function handleKirimSurvey() {
   const btnKirim = document.getElementById("btnKirim");
   btnKirim.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...';
@@ -322,6 +379,7 @@ function handleKirimSurvey() {
 
   const payload = JSON.stringify({ action: "kirimHasilSurvey", data: window.dataTerakhir });
 
+  // Mengirim data ke server id Google Apps Script  
   fetch(URL_APPS_SCRIPT, {
     method: 'POST',
     mode: 'no-cors',
@@ -329,6 +387,7 @@ function handleKirimSurvey() {
     body: payload
   })
   .then(() => {
+    // Data berhasil terkirim
     alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
     resetForm();
   })
@@ -342,6 +401,9 @@ function handleKirimSurvey() {
   });
 }
 
+// ********************
+// Untuk mereset form  
+// ********************
 function resetForm() {
     document.getElementById("fitnessForm").reset();
     navigate(null, 1);
