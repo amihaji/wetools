@@ -68,48 +68,24 @@ body {
  .btn-custom, .btn-kirim { margin-bottom: 10px; }
 }
 
-/* Judul Title dan Menu */
 .brand-title {
   font-size: 1.2rem;
   font-weight: 700;
   color: #0d6efd; /* Warna biru primer Bootstrap */
   line-height: 1;
 }
-
 .brand-subtitle {
   font-size: 0.8rem;
   color: #6c757d; /* Warna abu-abu sekunder Bootstrap */
   line-height: 1;
 }
-
-/* Styling untuk Ikon Sosial Media */
-.social-icon i {
+.navbar-nav .nav-link i {
   color: #555;
-  transition: color 0.3s ease-in-out;
+  transition: color 0.3s;
 }
-
-/* Efek Hover warna merah untuk Ikon Sosial Media */
-.social-icon:hover i {
-  color: #dc3545; /* Warna merah standar Bootstrap (danger) */
+.navbar-nav .nav-link:hover i {
+  color: #0d6efd;
 }
-
-/* Styling untuk Menu Utama */
-.main-menu-link {
-    font-weight: 500;
-    transition: color 0.3s ease-in-out;
-}
-
-/* Efek Hover warna merah untuk Menu Utama */
-.main-menu-link:hover {
-    color: #dc3545 !important; /* !important untuk menimpa style Bootstrap */
-}
-
-/* Memberi sedikit padding pada navbar saat di dalam card */
-.card header .navbar {
-    border-top-left-radius: var(--bs-card-inner-border-radius);
-    border-top-right-radius: var(--bs-card-inner-border-radius);
-}
-
 </style>
 </head>
 
@@ -120,8 +96,9 @@ body {
 
         <!-- HAEDAER MENU -->
         <header>
-          <nav class="navbar navbar-expand-lg navbar-light bg-light"> <!-- bg-white diubah menjadi bg-light -->
+          <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container-fluid">
+
               <!-- Bagian 1: Logo dan Nama Brand -->
               <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="images/logo-beratidealku.png" alt="Logo" width="180" class="me-2">
@@ -138,24 +115,27 @@ body {
 
               <!-- Bagian 2 & 3: Menu dan Social Media (yang akan di-collapse) -->
               <div class="collapse navbar-collapse" id="mainNavbar">
+                
                 <!-- Social Media Icons (di tengah) -->
                 <ul class="navbar-nav mx-auto">
                   <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    <a class="nav-link" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://www.instagram.com/hestyamin" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a class="nav-link" href="https://www.instagram.com/hestyamin" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
+                    <a class="nav-link" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
                   </li>
                 </ul>
+
                 <!-- Menu Navigasi Utama (di kanan) -->
                 <ul class="navbar-nav">
-                  <li class="nav-item"><a class="nav-link main-menu-link active" href="#home">Home</a></li>
-                  <li class="nav-item"><a class="nav-link main-menu-link" href="#about">About</a></li>
-                  <li class="nav-item"><a class="nav-link main-menu-link" href="#login">Login</a></li>
+                  <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#login">Login</a></li>
                 </ul>
+
               </div>
             </div>
           </nav>
