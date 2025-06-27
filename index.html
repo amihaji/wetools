@@ -120,9 +120,12 @@ body {
 
         <!-- HAEDAER MENU -->
         <header>
-          <!-- bg-white diubah menjadi bg-light -->
-          <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #dbdbdb; margin-left: 1px; margin-right: 1px;">
-            <div class="container-fluid">
+        <!-- Menggunakan .card-header akan otomatis menyamakan padding dengan .card-body -->
+        <div class="card-header">
+          <!-- Navbar sekarang tidak perlu background atau padding sendiri, karena diwarisi dari .card-header -->
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container-fluid p-0"> <!-- p-0 untuk menghapus padding default container-fluid -->
+
               <!-- Bagian 1: Logo dan Nama Brand -->
               <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="images/logo-beratidealku.png" alt="Logo" width="180" class="me-2">
@@ -137,9 +140,9 @@ body {
                 <span class="navbar-toggler-icon"></span>
               </button>
 
-              <!-- Bagian 2 & 3: Menu dan Social Media (yang akan di-collapse) -->
+              <!-- Bagian 2 & 3: Menu dan Social Media -->
               <div class="collapse navbar-collapse" id="mainNavbar">
-                <!-- Social Media Icons (di tengah) -->
+                <!-- Social Media Icons -->
                 <ul class="navbar-nav mx-auto">
                   <li class="nav-item">
                     <a class="nav-link social-icon" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
@@ -151,7 +154,7 @@ body {
                     <a class="nav-link social-icon" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
                   </li>
                 </ul>
-                <!-- Menu Navigasi Utama (di kanan) -->
+                <!-- Menu Navigasi Utama -->
                 <ul class="navbar-nav">
                   <li class="nav-item"><a class="nav-link main-menu-link active" href="#home">Home</a></li>
                   <li class="nav-item"><a class="nav-link main-menu-link" href="#about">About</a></li>
@@ -160,6 +163,7 @@ body {
               </div>
             </div>
           </nav>
+        </div>
         </header>
    
         <!-- HEADER IMAGE -->
