@@ -68,7 +68,7 @@ body {
  .btn-custom, .btn-kirim { margin-bottom: 10px; }
 }
 
-/* Judul Title dan Menu */
+/* Judul Header dan Menu */
 .brand-title {
   font-size: 1.2rem;
   font-weight: 700;
@@ -104,10 +104,10 @@ body {
     color: #dc3545 !important; /* !important untuk menimpa style Bootstrap */
 }
 
-/* Memberi sedikit padding pada navbar saat di dalam card */
-.card header .navbar {
-    border-top-left-radius: var(--bs-card-inner-border-radius);
-    border-top-right-radius: var(--bs-card-inner-border-radius);
+/* == CSS KUNCI UNTUK MEMBUAT SUDUT NAVBAR MENGIKUTI CARD == */
+.card > header:first-child > .navbar {
+    border-top-left-radius: var(--bs-card-border-radius);
+    border-top-right-radius: var(--bs-card-border-radius);
 }
 
 </style>
@@ -120,12 +120,10 @@ body {
 
         <!-- HAEDAER MENU -->
         <header>
-        <!-- Menggunakan .card-header akan otomatis menyamakan padding dengan .card-body -->
-        <div class="card-header">
-          <!-- Navbar sekarang tidak perlu background atau padding sendiri, karena diwarisi dari .card-header -->
-          <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container-fluid p-0"> <!-- p-0 untuk menghapus padding default container-fluid -->
-
+          <!-- Navbar ini akan memiliki background abu-abu yang membentang penuh -->
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <!-- Container-fluid memberikan padding HANYA untuk KONTEN di dalamnya -->
+            <div class="container-fluid">
               <!-- Bagian 1: Logo dan Nama Brand -->
               <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="images/logo-beratidealku.png" alt="Logo" width="180" class="me-2">
@@ -144,15 +142,9 @@ body {
               <div class="collapse navbar-collapse" id="mainNavbar">
                 <!-- Social Media Icons -->
                 <ul class="navbar-nav mx-auto">
-                  <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://www.instagram.com/hestyamin" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link social-icon" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
-                  </li>
+                  <li class="nav-item"><a class="nav-link social-icon" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a></li>
+                  <li class="nav-item"><a class="nav-link social-icon" href="https://www.instagram.com/hestyamin" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a></li>
+                  <li class="nav-item"><a class="nav-link social-icon" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a></li>
                 </ul>
                 <!-- Menu Navigasi Utama -->
                 <ul class="navbar-nav">
@@ -163,7 +155,6 @@ body {
               </div>
             </div>
           </nav>
-        </div>
         </header>
    
         <!-- HEADER IMAGE -->
