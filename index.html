@@ -326,14 +326,14 @@ body {
 
             <!-- HALAMAN 3 -->
             <div class="page" id="page3">
-              <!-- TAMPILKAN HASIL EVALUASI -->
-              <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi</h5>
               <!-- Tampilkan Load spinner -->
               <div id="loadingSpinner" class="text-center my-3">
                   <div class="spinner-border text-primary" role="status"></div>
                   <p class="mt-2">Memproses data...</p>
               </div>
               <div id="hasilAnalisa" style="display: none;">
+                <!-- TAMPILKAN HASIL EVALUASI -->
+                <h5 class="mb-3"><i class="fas fa-chart-line form-icon"></i>Hasil Evaluasi</h5>
                 <!-- DISINI UNTUK MENAMPILKAN HASIL EVALUASI DGN JSCRIPT -->
               </div> 
 
@@ -364,7 +364,7 @@ body {
 // *************************
 // Deklarasi Public Variable
 // *************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzzrY_B4PBhdjOwUwhFDJTcnt-Ec0xDeqysBezmjhHHOwBNEIt-96ZfnCe_PfRP9gPS/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbz4hFDqNA3SxyAH5dNgHQ0xcqQ_BDA63k5pS-fR_rRkODbJy-t1cC3zbjtdGTfZUipp/exec';
 
 // ***********************
 // Untuk navigasi halaman
@@ -597,7 +597,8 @@ function handleKirimSurvey() {
   btnKirim.disabled = true;
 
   if (!window.dataTerakhir) {
-    alert("Data survey tidak ditemukan. Silakan submit ulang.");
+    //alert("Data survey tidak ditemukan. Silakan submit ulang.");
+    showMessage(3, "Data survey tidak ditemukan. Silakan submit ulang", "error");
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
     return;
@@ -620,7 +621,8 @@ function handleKirimSurvey() {
   })
   .catch(error => {
     console.error("Error:", error);
-    alert("Gagal mengirim permintaan: " + error.message);
+    showMessage(3, "Gagal mengirim permintaan: " + error.message, "error")
+    //alert("Gagal mengirim permintaan: " + error.message);
   })
   .finally(() => {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
