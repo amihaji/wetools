@@ -63,6 +63,11 @@ body {
 .footer a:hover { color: #ff4d4d !important; }
 #loadingSpinner { display: none; text-align: center; padding: 20px; }
 #loadingSpinner .spinner-border { width: 3rem; height: 3rem; border-width: 0.25em; }
+/* Untuk reponsive mobile */
+@media (max-width: 768px) {
+ .form-container { padding: 20px; margin: 15px auto; }
+ .btn-custom, .btn-kirim { margin-bottom: 10px; }
+}
 
 /* Judul Header dan Menu */
 .brand-title {
@@ -80,12 +85,12 @@ body {
 
 /* --- Styling untuk Ikon Sosial Media --- */
 .social-icon {
-  display: inline-flex;    /* Membuat link menjadi flex container */
+  display: inline-flex; /* Membuat link menjadi flex container */
   justify-content: center; /* Ikon di tengah horizontal */
-  align-items: center;     /* Ikon di tengah vertikal */
-  width: 40px;             /* Lebar link/lingkaran */
-  height: 40px;            /* Tinggi link/lingkaran */
-  border-radius: 50%;      /* Membuat bentuk menjadi lingkaran sempurna */
+  align-items: center; /* Ikon di tengah vertikal */
+  width: 40px; /* Lebar link/lingkaran */
+  height: 40px; /* Tinggi link/lingkaran */
+  border-radius: 50%; /* Membuat bentuk menjadi lingkaran sempurna */
   transition: background-color 0.3s ease-in-out;
 }
 
@@ -103,44 +108,47 @@ body {
   color: #dc3545; /* Warna merah saat di-hover */
 }
 
-/* Styling untuk Menu Utama  */
+
+/* --- Styling untuk Menu Utama --- */
 .main-menu-link {
     font-weight: 500;
     padding: 8px 12px !important; /* Memberi padding agar background terlihat bagus */
-    border-radius: 6px;           /* Memberi sedikit lengkungan sudut */
+    border-radius: 6px; /* Memberi sedikit lengkungan sudut */
     transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 /* Efek Hover untuk Menu Utama */
 .main-menu-link:hover,
-.main-menu-link.active {         /* Efek yang sama untuk menu yang sedang aktif */
+.main-menu-link.active { /* Efek yang sama untuk menu yang sedang aktif */
     color: #dc3545 !important; 
     background-color: #f0f0f0; /* Warna abu-abu muda */
 }
 
-/* Membuat item menu hanya selebar kontennya */
+/* --- Tampilan Mobile (Vertikal) --- */
+@media (max-width: 991.98px) { /* Ini adalah breakpoint 'lg' dari Bootstrap */
+  .navbar-collapse {
+    align-items: flex-start; /* Menu vertikal mulai dari kiri */
+    padding-top: 1rem; /* Beri sedikit jarak atas */
+  }
+
+  /* Membuat item menu hanya selebar kontennya */
   .navbar-nav .nav-item {
-    width: fit-content;              /* lebar item menyesuaikan isi teks */
+    width: fit-content; /* KUNCI UTAMA: lebar item menyesuaikan isi teks */
   }
 
   /* Mengatur ulang posisi ikon medsos di mobile */
   .navbar-collapse .mx-auto {
-      margin-left: 0 !important;     /* Hapus margin auto agar ke kiri */
+      margin-left: 0 !important; /* Hapus margin auto agar ke kiri */
       margin-right: 0 !important;
-      flex-direction: row;           /* Pastikan ikon tetap horizontal */
-      margin-bottom: 1rem;           /* Beri jarak bawah */
+      flex-direction: row; /* Pastikan ikon tetap horizontal */
+      margin-bottom: 1rem; /* Beri jarak bawah */
   }
+}
 
-/* Membuat sudut navbar mengikuti card */
+/* CSS KUNCI UNTUK MEMBUAT SUDUT NAVBAR MENGIKUTI CARD */
 .card > header:first-child > .navbar {
     border-top-left-radius: var(--bs-card-border-radius);
     border-top-right-radius: var(--bs-card-border-radius);
-}
-
-/* Untuk reponsive mobile */
-@media (max-width: 768px) {
- .form-container { padding: 20px; margin: 15px auto; }
- .btn-custom, .btn-kirim { margin-bottom: 10px; }
 }
 
 </style>
