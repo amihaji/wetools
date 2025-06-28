@@ -118,24 +118,6 @@ body {
     background-color: #f0f0f0; /* Warna abu-abu muda */
 }
 
-/* Perbaikan untuk Tampilan Mobile (Vertikal) */
-@media (max-width: 991.98px) {      /* Ini adalah breakpoint 'lg' dari Bootstrap */
-.form-container { padding: 20px; margin: 15px auto; }
-.btn-custom, .btn-kirim { margin-bottom: 10px; }
-
-.navbar-collapse {
-    align-items: flex-start;        /* Menu vertikal mulai dari kiri */
-    padding-top: 1rem;              /* Beri sedikit jarak atas */
-  }
-}
-
-/*
-@media (max-width: 768px) {
- .form-container { padding: 20px; margin: 15px auto; }
- .btn-custom, .btn-kirim { margin-bottom: 10px; }
-}
-*/
-
 /* Membuat item menu hanya selebar kontennya */
   .navbar-nav .nav-item {
     width: fit-content;              /* lebar item menyesuaikan isi teks */
@@ -148,12 +130,17 @@ body {
       flex-direction: row;           /* Pastikan ikon tetap horizontal */
       margin-bottom: 1rem;           /* Beri jarak bawah */
   }
-}
 
-/* CSS KUNCI UNTUK MEMBUAT SUDUT NAVBAR MENGIKUTI CARD */
+/* Membuat sudut navbar mengikuti card */
 .card > header:first-child > .navbar {
     border-top-left-radius: var(--bs-card-border-radius);
     border-top-right-radius: var(--bs-card-border-radius);
+}
+
+/* Untuk reponsive mobile */
+@media (max-width: 768px) {
+ .form-container { padding: 20px; margin: 15px auto; }
+ .btn-custom, .btn-kirim { margin-bottom: 10px; }
 }
 
 </style>
