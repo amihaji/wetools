@@ -130,21 +130,29 @@ body {
   .btn-custom, .btn-kirim { margin-bottom: 10px; }
 
   .navbar-collapse {
-    align-items: flex-start;
+    align-items: stretch;   /* stretch agar item bisa membentang penuh */
     padding-top: 1rem;
   }
 
-  .navbar-nav .nav-item {
-    width: fit-content; /* KUNCI: lebar item menyesuaikan isi teks */
-  }
-
+  /* Mengatur ulang posisi ikon medsos di mobile agar tetap di atas */
   .navbar-collapse .mx-auto {
       margin-left: 0 !important;
       margin-right: 0 !important;
       flex-direction: row;
       margin-bottom: 1rem;
   }
+
+  /* KUNCI: Membuat item menu utama vertikal membentang penuh */
+  .navbar-nav:not(.mx-auto) .nav-item {
+      width: 100%;        /* Item <li> sekarang akan selebar container */
+  }
+  
+  .navbar-nav:not(.mx-auto) .main-menu-link {
+      width: 100%;       /* Link <a> di dalamnya juga ikut membentang */
+      text-align: left;  /* Pastikan teks tetap rata kiri */
+  }
 }
+
 </style>
 </head>
 
