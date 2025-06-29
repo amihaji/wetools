@@ -34,8 +34,8 @@ Fitur Aplikasi:
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    
 <style>
+/* Style body */    
 body {
-  /* background-image: url('https://lh3.googleusercontent.com/d/1xkWUSf4IUFav2aLaSfzmSIch8ywwagc7'); */
   background-image: url('../images/Header_WETools.jpg');
   background-size: cover;
   background-repeat: no-repeat;
@@ -45,86 +45,88 @@ body {
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+/* Style Imege header */
 .header-image { text-align: center; margin-top: 30px; margin-bottom: 10px; margin-left: 20px; margin-right: 20px; }
 .header-image img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+
+/* Style Form dan Page */
 .form-container { background-color: white; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 30px; }
 .page { display: none; }
 .page.active { display: block; }
 .progress-bar { background-color: #0b5ed7; }
 .form-icon { margin-right: 10px; }
+
+/* Style message box */
 .message-box { padding: 10px; border-radius: 5px; font-size: 0.95rem; margin-top: 1rem; }
 .message-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
 .message-success { background-color: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+
+/* Style button */
 .btn-custom { background-color: #002266; color: white; width: 100%; }
 .btn-custom:hover { background-color: #0b5ed7; color: white; }
 .btn-kirim { background-color: #002266; color: white; width: 100%; }
 .btn-kirim:hover { background-color: #0b5ed7; color: white; }
+
+/* Styel footer */
 .footer { font-size: 14px; border-radius: 5px; }
 .footer a:hover { color: #ff4d4d !important; }
+
+/* Style spinner */
 #loadingSpinner { display: none; text-align: center; padding: 20px; }
 #loadingSpinner .spinner-border { width: 3rem; height: 3rem; border-width: 0.25em; }
 
-/* Untuk reponsive mobile */
-/*
-@media (max-width: 768px) {
- .form-container { padding: 20px; margin: 15px auto; }
- .btn-custom, .btn-kirim { margin-bottom: 10px; }
-}
-*/
-
 /* Judul Header dan Menu */
 .brand-title {
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: #002864; /* Warna biru primer Bootstrap */
+  font-size: 10px;
+  /* font-weight: 300;*/
+  color: #002864;             /* Warna biru primer Bootstrap */
   line-height: 1;
 }
-
 .brand-subtitle {
-  font-size: 0.8rem;
-  color: #6c757d; /* Warna abu-abu sekunder Bootstrap */
+  font-size: 5px;
+  color: #6c757d;             /* Warna abu-abu sekunder Bootstrap */
   line-height: 1;
 }
 
-/* --- Styling untuk Ikon Sosial Media --- */
+/* Styling untuk Ikon Sosial Media */
 .social-icon {
-  display: inline-flex; /* Membuat link menjadi flex container */
-  justify-content: center; /* Ikon di tengah horizontal */
-  align-items: center; /* Ikon di tengah vertikal */
-  width: 40px; /* Lebar link/lingkaran */
-  height: 40px; /* Tinggi link/lingkaran */
-  border-radius: 50%; /* Membuat bentuk menjadi lingkaran sempurna */
+  display: inline-flex;         /* Membuat link menjadi flex container */
+  justify-content: center;      /* Ikon di tengah horizontal */
+  align-items: center;          /* Ikon di tengah vertikal */
+  width: 40px;                  /* Lebar lingkaran */
+  height: 40px;                 /* Tinggi lingkaran */
+  border-radius: 50%;           /* Membuat bentuk menjadi lingkaran sempurna */
   transition: background-color 0.3s ease-in-out;
 }
-
 .social-icon i {
   color: #555;
   transition: color 0.3s ease-in-out;
 }
-
-/* Efek Hover untuk Ikon Sosial Media */
-.social-icon:hover {
+.social-icon:hover {           /* Efek Hover untuk Ikon Sosial Media */  
   background-color: #f0f0f0; /* Warna abu-abu muda untuk background lingkaran */
 }
-
 .social-icon:hover i {
-  color: #dc3545; /* Warna merah saat di-hover */
+  color: #dc3545;            /* Warna merah saat di-hover */
 }
 
-
-/* --- Styling untuk Menu Utama --- */
+/* Styling untuk Menu Utama  */
 .main-menu-link {
     font-weight: 500;
-    padding: 8px 12px !important; /* Memberi padding agar background terlihat bagus */
-    border-radius: 6px; /* Memberi sedikit lengkungan sudut */
+    padding: 8px 12px !important;    /* Memberi padding agar background terlihat bagus */
+    border-radius: 6px;              /* Memberi sedikit lengkungan sudut */
     transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
-
 /* Efek Hover untuk Menu Utama */
 .main-menu-link:hover,
-.main-menu-link.active { /* Efek yang sama untuk menu yang sedang aktif */
+.main-menu-link.active {            /* Efek yang sama untuk menu yang sedang aktif */
     color: #dc3545 !important; 
-    background-color: #f0f0f0; /* Warna abu-abu muda */
+    background-color: #f0f0f0;    /* Warna abu-abu muda */
+}
+
+/* Untuk membuat sudut navbar mengikuti card */
+.card > header:first-child > .navbar {
+    border-top-left-radius: var(--bs-card-border-radius);
+    border-top-right-radius: var(--bs-card-border-radius);
 }
 
 /* --- Tampilan Mobile (Vertikal) --- */
@@ -134,28 +136,22 @@ body {
 
   /* Ini adalah breakpoint 'lg' dari Bootstrap */
   .navbar-collapse {
-    align-items: flex-start; /* Menu vertikal mulai dari kiri */
-    padding-top: 1rem; /* Beri sedikit jarak atas */
+    align-items: flex-start;       /* Menu vertikal mulai dari kiri */
+    padding-top: 1rem;             /* Beri sedikit jarak atas */
   }
 
   /* Membuat item menu hanya selebar kontennya */
   .navbar-nav .nav-item {
-    width: fit-content; /* KUNCI UTAMA: lebar item menyesuaikan isi teks */
+    width: fit-content;            /* lebar item menyesuaikan isi teks */
   }
 
   /* Mengatur ulang posisi ikon medsos di mobile */
   .navbar-collapse .mx-auto {
-      margin-left: 0 !important; /* Hapus margin auto agar ke kiri */
+      margin-left: 0 !important;   /* Hapus margin auto agar ke kiri */
       margin-right: 0 !important;
-      flex-direction: row; /* Pastikan ikon tetap horizontal */
-      margin-bottom: 1rem; /* Beri jarak bawah */
+      flex-direction: row;         /* Pastikan ikon tetap horizontal */
+      margin-bottom: 1rem;         /* Beri jarak bawah */
   }
-}
-
-/* CSS KUNCI UNTUK MEMBUAT SUDUT NAVBAR MENGIKUTI CARD */
-.card > header:first-child > .navbar {
-    border-top-left-radius: var(--bs-card-border-radius);
-    border-top-right-radius: var(--bs-card-border-radius);
 }
 
 </style>
@@ -190,15 +186,15 @@ body {
               <div class="collapse navbar-collapse" id="mainNavbar">
                 <!-- Social Media Icons -->
                 <ul class="navbar-nav mx-auto">
-                  <li class="nav-item"><a class="nav-link social-icon" href="https://facebook.com/beratidealku" target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a></li>
+                  <li class="nav-item"><a class="nav-link social-icon" href="https://facebook.com/beratidealku"   target="_blank" title="Facebook"><i class="fab fa-facebook-f fa-lg"></i></a></li>
                   <li class="nav-item"><a class="nav-link social-icon" href="https://www.instagram.com/hestyamin" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a></li>
-                  <li class="nav-item"><a class="nav-link social-icon" href="https://www.youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a></li>
+                  <li class="nav-item"><a class="nav-link social-icon" href="https://www.youtube.com"             target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a></li>
                 </ul>
                 <!-- Menu Navigasi Utama -->
                 <ul class="navbar-nav">
                   <li class="nav-item"><a class="nav-link main-menu-link active" href="#home">Home</a></li>
-                  <li class="nav-item"><a class="nav-link main-menu-link" href="#about">About</a></li>
-                  <li class="nav-item"><a class="nav-link main-menu-link" href="#login">Login</a></li>
+                  <li class="nav-item"><a class="nav-link main-menu-link"        href="#about">About</a></li>
+                  <li class="nav-item"><a class="nav-link main-menu-link"        href="#login">Login</a></li>
                 </ul>
               </div>
             </div>
@@ -207,8 +203,7 @@ body {
    
         <!-- HEADER IMAGE -->
         <div class="header-image">
-          <!-- <img src="https://lh3.googleusercontent.com/d/1r77jSjWy6WHbGG05QWYFFqQ-xKxe87Cc" alt="Header Image" class="img-fluid"> -->
-          <img src="images/Header_WETools.jpg" alt="Header Image" class="img-fluid">
+            <img src="images/Header_WETools.jpg" alt="Header Image" class="img-fluid">
         </div>       
         
         <div class="card-body">
@@ -216,9 +211,8 @@ body {
             <h4 class="card-title mb-0"><i class="fas fa-dumbbell me-2"></i>SURVEY KEBUGARAN</h4>
           </div>
 
-          <div><p> </p></div>
           <div class="progress mb-4">
-            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div>
+            <p><div id="progressBar" class="progress-bar" role="progressbar" style="width: 33%"></div></p>
           </div>
 
           <form id="fitnessForm" class="needs-validation" novalidate>
