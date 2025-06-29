@@ -45,16 +45,10 @@ body {
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-/* Style Imege header */
-/*
-.header-image { text-align: center; margin-top: 30px; margin-bottom: 10px; margin-left: 20px; margin-right: 20px; }
-.header-image img { max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-*/
-.header-image { text-align: center; margin-left: -10px; margin-right: -10px; }
-.header-image img { max-width: 100%; height: auto; border-radius: 0px; }
+/* Hapus style .header-image, karena padding sudah diatur oleh class Bootstrap */
+.header-image img { max-width: 100%; height: auto; }
 
 /* Style Form dan Page */
-.form-container { background-color: white; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); padding: 30px; }
 .page { display: none; }
 .page.active { display: block; }
 .progress-bar { background-color: #0b5ed7; }
@@ -72,7 +66,6 @@ body {
 .btn-kirim:hover { background-color: #0b5ed7; color: white; }
 
 /* Styel footer */
-.footer { font-size: 14px; border-radius: 5px; }
 .footer a:hover { color: #ff4d4d !important; }
 
 /* Style spinner */
@@ -81,50 +74,49 @@ body {
 
 /* Judul Header dan Menu */
 .brand-title {
-  font-size: 14px;
-  font:bold;  
-  color: #002864;             /* Warna biru primer Bootstrap */
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0d6efd;
   line-height: 1;
 }
 .brand-subtitle {
-  font-size: 10px;
-  font:bold;
-  color: #6c757d;             /* Warna abu-abu sekunder Bootstrap */
+  font-size: 0.8rem;
+  color: #6c757d;
   line-height: 1;
 }
 
 /* Styling untuk Ikon Sosial Media */
 .social-icon {
-  display: inline-flex;         /* Membuat link menjadi flex container */
-  justify-content: center;      /* Ikon di tengah horizontal */
-  align-items: center;          /* Ikon di tengah vertikal */
-  width: 40px;                  /* Lebar lingkaran */
-  height: 40px;                 /* Tinggi lingkaran */
-  border-radius: 50%;           /* Membuat bentuk menjadi lingkaran sempurna */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   transition: background-color 0.3s ease-in-out;
 }
 .social-icon i {
   color: #555;
   transition: color 0.3s ease-in-out;
 }
-.social-icon:hover {           /* Efek Hover untuk Ikon Sosial Media */  
-  background-color: #f0f0f0; /* Warna abu-abu muda untuk background lingkaran */
+.social-icon:hover {
+  background-color: #f0f0f0;
 }
 .social-icon:hover i {
-  color: #dc3545;            /* Warna merah saat di-hover */
+  color: #dc3545;
 }
 
-/* Styling untuk Menu Utama  */
+/* Styling untuk Menu Utama */
 .main-menu-link {
     font-weight: 500;
-    padding: 8px 12px !important;    /* Memberi padding agar background terlihat bagus */
-    border-radius: 6px;              /* Memberi sedikit lengkungan sudut */
+    padding: 8px 12px !important;
+    border-radius: 6px;
     transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
-/* Efek Hover untuk Menu Utama */
-.main-menu-link:hover {
+.main-menu-link:hover,
+.main-menu-link.active {
     color: #dc3545 !important; 
-    background-color: #f0f0f0;    /* Warna abu-abu muda */
+    background-color: #f0f0f0;
 }
 
 /* Untuk membuat sudut navbar mengikuti card */
@@ -134,42 +126,37 @@ body {
 }
 
 /* --- Tampilan Mobile (Vertikal) --- */
-@media (max-width: 991.98px) { 
-  .form-container { padding: 5px; margin: 5px auto; }
+@media (max-width: 991.98px) {
   .btn-custom, .btn-kirim { margin-bottom: 10px; }
 
-  /* Ini adalah breakpoint 'lg' dari Bootstrap */
   .navbar-collapse {
-    align-items: flex-start;        /* Menu vertikal mulai dari kiri */
-    padding-top: 1rem;              /* Beri sedikit jarak atas */
+    align-items: flex-start;
+    padding-top: 1rem;
   }
 
-  /* Membuat item menu lebar max */
   .navbar-nav .nav-item {
-    /*width: fit-content;            /* lebar item menyesuaikan isi teks */
-    width: 100%;
+    width: fit-content; /* KUNCI: lebar item menyesuaikan isi teks */
   }
 
-  /* Mengatur ulang posisi ikon medsos di mobile */
-  .navbar-collapse .mx-auto { 
-      flex-direction: row;             /* Pastikan ikon tetap horizontal */
-      margin-bottom: 1rem;             /* Beri jarak bawah */
-    }
+  .navbar-collapse .mx-auto {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      flex-direction: row;
+      margin-bottom: 1rem;
+  }
 }
-
 </style>
 </head>
 
 <body>
 <div class="container mt-5 mb-5">
   <div class="row justify-content-center">
-      <div class="card mx-auto card shadow" style="max-width:1024px";>
+      <div class="card mx-auto card shadow p-0" style="max-width:1024px">
 
         <!-- HAEDAER MENU -->
-        <header class="w-100">
-           <!-- Navbar ini akan memiliki background abu-abu yang membentang penuh -->
-           <nav class="navbar navbar-expand-lg navbar-light bg-light px-0">
-            <!-- Container-fluid memberikan padding HANYA untuk KONTEN di dalamnya -->
+        <header class=>
+          <!-- Navbar ini akan memiliki background abu-abu yang membentang penuh -->
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
               <!-- Bagian 1: Logo dan Nama Brand -->
               <a class="navbar-brand d-flex align-items-center" href="#">
