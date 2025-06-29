@@ -122,14 +122,6 @@ body {
     transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 /* Efek Hover untuk Menu Utama */
-/* .main-menu-link:hover,
-/* .main-menu-link.active {            /* Efek yang sama untuk menu yang sedang aktif */
-/*     color: #dc3545 !important; 
-/*     background-color: #f0f0f0;    /* Warna abu-abu muda */
-/* }
-*/
-
-/* Efek Hover untuk Menu Utama */
 .main-menu-link:hover {
     color: #dc3545 !important; 
     background-color: #f0f0f0;    /* Warna abu-abu muda */
@@ -150,7 +142,7 @@ body {
   .navbar-collapse {
     align-items: flex-start;        /* Menu vertikal mulai dari kiri */
     padding-top: 1rem;              /* Beri sedikit jarak atas */
-    margin-left: 5px !important;   /* Hapus margin auto agar ke kiri */
+    margin-left: 5px !important;    /* Hapus margin auto agar ke kiri */
     margin-right: 5px !important;
   }
 
@@ -165,8 +157,12 @@ body {
       margin-right: 10px !important;
       flex-direction: row;             /* Pastikan ikon tetap horizontal */
       margin-bottom: 1rem;             /* Beri jarak bawah */
-      width: max-content; 
   }
+
+  .main-menu-link {
+  max-width : 100%
+  }
+
 }
 
 </style>
