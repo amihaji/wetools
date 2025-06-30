@@ -128,12 +128,10 @@ body {
 /* --- Tampilan Mobile (Vertikal) --- */
 @media (max-width: 991.98px) {
   .btn-custom, .btn-kirim { margin-bottom: 10px; }
-
   .navbar-collapse {
     align-items: stretch;   /* stretch agar item bisa membentang penuh */
     padding-top: 1rem;
   }
-
   /* Mengatur ulang posisi ikon medsos di mobile agar tetap di atas */
   .navbar-collapse .mx-auto {
       margin-left: 0 !important;
@@ -141,12 +139,10 @@ body {
       flex-direction: row;
       margin-bottom: 1rem;
   }
-
-  /* KUNCI: Membuat item menu utama vertikal membentang penuh */
+  /* Membuat item menu utama vertikal membentang penuh */
   .navbar-nav:not(.mx-auto) .nav-item {
       width: 100%;        /* Item <li> sekarang akan selebar container */
   }
-  
   .navbar-nav:not(.mx-auto) .main-menu-link {
       width: 100%;       /* Link <a> di dalamnya juga ikut membentang */
       text-align: left;  /* Pastikan teks tetap rata kiri */
