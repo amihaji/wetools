@@ -753,6 +753,8 @@ function resetForm() {
     document.getElementById("loadingSpinner").style.display = "none";
     document.getElementById("hasilAnalisa").style.display = "none";
     document.getElementById("tampilCTA").style.display = "none";
+    btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
+    btnKirim.disabled = false;
     window.dataTerakhir = null;
     showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
 }
