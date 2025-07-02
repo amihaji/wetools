@@ -17,6 +17,7 @@ Fitur Aplikasi:
 - Menghasilkan file pdf
 - File pdf dapat dikirim ke email dan wa
 - Penambahan Inputan untuk Data Sponsor/Pengundang
+- Hasil Survey TIDAK Tampil ke layar
 - Tampilan lebih Responsive
 ------------------------------------------------------------------->
 <!DOCTYPE html>
@@ -471,7 +472,7 @@ body {
 // *************************
 // Deklarasi Public Variable
 // *************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxqCXzKGh4Qzm14skvpXMu7Dk_rh8xzpxN6Hez27dOZ9-6U5trUN-LM7H8ClwqthFEp/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbydtP05R1Ho8Bnkly1cBSyIWgWM-qP6jUJ1LH7mdakI6Pavz6fpiHmMfvlrl71nLW8/exec';
 
 // ***********************
 // Untuk navigasi halaman
@@ -598,7 +599,7 @@ function submitForm() {
                         
                         // **************************************************************
                         // Bagian ini untuk menampilkan Hasil Analisa "block" atau "none"
-                        document.getElementById("hasilAnalisa").style.display = "block";
+                        document.getElementById("hasilAnalisa").style.display = "none";
                         // **************************************************************
 
                         // Tampilkan Tombol CTA
