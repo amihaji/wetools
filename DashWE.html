@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - WETools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .table-hover tbody tr .actions { visibility: hidden; }
+        .table-hover tbody tr:hover .actions { visibility: visible; }
+        .actions a { color: #6c757d; text-decoration: none; margin-left: 10px; }
+        .actions a:hover { color: #0d6efd; }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.7); z-index: 1050;
+            display: flex; justify-content: center; align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    </div>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</a>
+            <div>
+                <span class="navbar-text me-3" id="welcomeUser"></span>
+                <button class="btn btn-outline-light" id="logoutButton">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Toolbar -->
+        <div class="card mb-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="input-group" style="max-width: 400px;">
+                    <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
+                    <button class="btn btn-outline-secondary" id="filterButton"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+                <div>
+                    <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export to Excel</button>
+                    <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tgl Survey</th>
+                        <th>Nama</th>
+                        <th>No. HP</th>
+                        <th>Sponsor</th>
+                        <th>HP Sponsor</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody">
+                    <!-- Data akan diisi oleh JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Data Sponsor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editRowIndex">
+                        <div class="mb-3">
+                            <label for="editSponsorName" class="form-label">Nama Sponsor</label>
+                            <input type="text" class="form-control" id="editSponsorName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSponsorHp" class="form-label">HP Sponsor</label>
+                            <input type="tel" class="form-control" id="editSponsorHp" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxDLt4_Qskvvil-pv4GBpJE52CmZM-DnjGmhEE9Itp-RATUZn1a62dM-qqVUb3NTtB2/exec'; // Ganti dengan URL deployment Anda
+    const userToken = sessionStorage.getItem('userToken');
+    const userLevel = sessionStorage.getItem('userLevel');
+    const userId = sessionStorage.getItem('userId');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!userToken) {
+            alert('Akses ditolak. Silakan login terlebih dahulu.');
+            window.location.href = 'FormUser.html';
+            return;
+        }
+        
+        document.getElementById('welcomeUser').textContent = `Selamat datang, ${userId} (${userLevel})`;
+        loadTableData();
+
+        // Event Listeners
+        document.getElementById('logoutButton').addEventListener('click', logout);
+        document.getElementById('filterButton').addEventListener('click', loadTableData);
+        // Tambahkan event listener untuk export, delete, edit nanti
+    });
+
+    function loadTableData() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'flex';
+        const filterValue = document.getElementById('filterSponsor').value;
+
+        const callbackName = 'data_cb_' + Date.now();
+        const script = document.createElement('script');
+        script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
+
+        script.onerror = () => {
+            alert('Gagal mengambil data.');
+            loadingOverlay.style.display = 'none';
+        };
+
+        window[callbackName] = (response) => {
+            const tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = '';
+            if (response.status === 'success') {
+                response.data.forEach((row, index) => {
+                    const tr = document.createElement('tr');
+                    // Kolom: No, Tgl, Nama, HP, Sponsor, HP Sponsor, Skor
+                    tr.innerHTML = `
+                        <td>
+                            ${index + 1}
+                            <span class="actions">
+                                ${userLevel === 'Admin' ? `<a href="#" onclick="openEditModal(${row[0]}, '${row[28]}', '${row[29]}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                                ${userLevel === 'Admin' ? `<a href="#" onclick="deleteRow(${row[0]})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                            </span>
+                        </td>
+                        <td>${row[1]}</td>
+                        <td>${row[2]}</td>
+                        <td>${row[3]}</td>
+                        <td>${row[28]}</td>
+                        <td>${row[29]}</td>
+                        <td>${row[38]}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } else {
+                alert(response.message);
+                if(response.message.includes('tidak valid')) logout();
+            }
+            loadingOverlay.style.display = 'none';
+            delete window[callbackName];
+            document.body.removeChild(script);
+        };
+        document.body.appendChild(script);
+    }
+    
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = 'FormUser.html';
+    }
+
+    // Fungsi untuk Delete, Edit, Export akan kita buat lebih detail jika diperlukan
+    function deleteRow(rowIndex) {
+        if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}?`)) return;
+        // Logika POST ke server untuk menghapus
+        alert(`Fungsi hapus untuk baris ${rowIndex} belum diimplementasikan.`);
+    }
+
+    function openEditModal(rowIndex, sponsorName, sponsorHp) {
+        const myModal = new bootstrap.Modal(document.getElementById('editModal'));
+        document.getElementById('editRowIndex').value = rowIndex;
+        document.getElementById('editSponsorName').value = sponsorName;
+        document.getElementById('editSponsorHp').value = sponsorHp;
+        myModal.show();
+    }
+</script>
+</body>
+</html>
