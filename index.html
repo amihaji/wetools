@@ -17,7 +17,6 @@ Fitur Aplikasi:
 - Menghasilkan file pdf
 - File pdf dapat dikirim ke email dan wa
 - Penambahan Inputan untuk Data Sponsor/Pengundang
-- Hasil Survey TIDAK Tampil ke layar
 - Tampilan lebih Responsive
 ------------------------------------------------------------------->
 <!DOCTYPE html>
@@ -471,7 +470,7 @@ body {
 // *************************
 // Deklarasi Public Variable
 // *************************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwML0q8h9xdJqQYOR2jZDtcXk8MRpklmBknn2ki7T3CvleBewLfTuXBLhqeeM6mTKBU/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxqCXzKGh4Qzm14skvpXMu7Dk_rh8xzpxN6Hez27dOZ9-6U5trUN-LM7H8ClwqthFEp/exec';
 
 // ***********************
 // Untuk navigasi halaman
@@ -727,15 +726,15 @@ function handleKirimSurvey() {
     body: payload
   })
   .then(() => {
+    setTimeout(() => {
     // Data berhasil terkirim
-    // alert("Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.");
-    showMessage(3, "Permintaan pengiriman hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
+    showMessage(3, "Hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
     resetForm();
+    }, 3000);
   })
   .catch(error => {
     console.error("Error:", error);
     showMessage(3, "Gagal mengirim permintaan: " + error.message, "error")
-    //alert("Gagal mengirim permintaan: " + error.message);
   })
   .finally(() => {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
