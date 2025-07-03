@@ -11,12 +11,33 @@
         /****************************************************
         * Pengaturan Untuk jumlah 5 baris dari tabel + header
         ****************************************************/
-        body { background-color: #f8f9fa; }
+       
+        /* Container untuk tabel agar bisa di-scroll */
         .table-container {
-            max-height: 350px; 
-            overflow-y: auto;
+            max-height: 350px; /* Batasi tinggi tabel (sekitar 5-6 baris) */
+            overflow-y: auto;  /* Tambahkan scrollbar vertikal jika konten melebihi max-height */
+            border: 1px solid #dee2e6; /* Beri sedikit border agar terlihat rapi */
+            border-radius: .375rem; /* Samakan lengkungan sudut dengan card */
         }
-              
+        /* Membuat header tabel menjadi "sticky" */
+        .table thead th {
+            position: sticky; /* KUNCI UTAMA: Membuat header tetap di posisinya */
+            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya */
+            z-index: 1;       /* Pastikan header berada di atas baris tabel saat di-scroll */
+        }
+        /* Mengubah warna header tabel menjadi biru tua */
+        .table-dark-custom {
+            --bs-table-bg: #002266;           /* Warna background biru tua */
+            --bs-table-color: white;          /* Warna teks putih */
+            --bs-table-border-color: #003388; /* Warna border yang sedikit lebih terang */
+            --bs-table-striped-bg: #f2f2f2;
+            --bs-table-striped-color: #000;
+            --bs-table-active-bg: #e9ecef;
+            --bs-table-active-color: #000;
+            --bs-table-hover-bg: #e2e6ea;
+            --bs-table-hover-color: #000;
+        }
+
         /************************************************
         /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
         /************************************************
@@ -97,7 +118,7 @@
         <div class="table-container shadow-sm bg-white">
             <div class="table-responsive">
                 <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark" style="position: sticky; top: 0;">
+                    <thead class="table-dark-custom">    
                         <tr>
                             <th>Tanggal</th>
                             <th>Nama</th>
