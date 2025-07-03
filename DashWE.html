@@ -17,30 +17,26 @@
         * Pengaturan Untuk jumlah 5 baris dari tabel + header
         ****************************************************/
        
-        /* Container untuk tabel agar bisa di-scroll */
-        .table-container {
-            max-height: 350px; /* Batasi tinggi tabel (sekitar 5-6 baris) */
-            overflow-y: auto;  /* Tambahkan scrollbar vertikal jika konten melebihi max-height */
-            border: 1px solid #dee2e6; /* Beri sedikit border agar terlihat rapi */
-            border-radius: .375rem; /* Samakan lengkungan sudut dengan card */
+        /* 1. Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
+        .table-wrapper {
+            max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
+            overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
+            border: 1px solid #dee2e6;
+            border-radius: .375rem;
         }
-        /* Membuat header tabel menjadi "sticky" */
-        .table thead th {
+
+        /* 2. Membuat header tabel menjadi "sticky" */
+        .table-wrapper thead th {
             position: sticky; /* KUNCI UTAMA: Membuat header tetap di posisinya */
-            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya */
-            z-index: 1;       /* Pastikan header berada di atas baris tabel saat di-scroll */
+            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
+            z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
         }
-        /* Mengubah warna header tabel menjadi biru tua */
+
+        /* 3. Mengubah warna header tabel (Tetap sama, tapi disertakan untuk kelengkapan) */
         .table-dark-custom {
-            --bs-table-bg: #002266;           /* Warna background biru tua */
-            --bs-table-color: white;          /* Warna teks putih */
-            --bs-table-border-color: #003388; /* Warna border yang sedikit lebih terang */
-            --bs-table-striped-bg: #f2f2f2;
-            --bs-table-striped-color: #000;
-            --bs-table-active-bg: #e9ecef;
-            --bs-table-active-color: #000;
-            --bs-table-hover-bg: #e2e6ea;
-            --bs-table-hover-color: #000;
+            --bs-table-bg: #002266;
+            --bs-table-color: white;
+            --bs-table-border-color: #003388;
         }
 
         /************************************************
@@ -122,9 +118,9 @@
 
         <!-- Tabel Data -->
         <div class="table-container shadow-sm bg-white">
-            <div class="table-responsive">
+            <div class="table-wrapper shadow-sm">
                 <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark-custom">    
+                    <thead class="table-dark-custom">            
                         <tr>
                             <th>Tanggal</th>
                             <th>Nama</th>
@@ -135,7 +131,9 @@
                             <th class="actions-col">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody"></tbody>
+                    <tbody id="dataTableBody">
+                       <!-- Data akan diisi oleh JavaScript di sini -->  
+                    </tbody>
                 </table>
             </div>
         </div>
