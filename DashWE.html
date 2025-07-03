@@ -12,12 +12,14 @@
             max-height: 350px; /* Kira-kira untuk 5 baris + header */
             overflow-y: auto;
         }
-        .table > :not(caption) > * > * {
-            white-space: nowrap; /* Mencegah teks wrap dan mengaktifkan scroll horizontal */
-        }
+       /* .table > :not(caption) > * > * {
+       /*     white-space: nowrap; /* Mencegah teks wrap dan mengaktifkan scroll horizontal */
+       /* } 
+       */
+       
         .actions-col { text-align: right; }
         .actions a { color: #6c757d; text-decoration: none; margin-left: 15px; }
-        .actions a:hover { color: #0d6efd; }
+        .actions a:hover { color: #a72700; }
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
@@ -270,8 +272,8 @@
 
                 viewBody.innerHTML = `
                     <!-- DATA PROFILE -->
-                    <h6>Data Profile</h6>
-                    <table class="table table-sm table-bordered">
+                    <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
+                    <table class="table table-bordered">
                         <tr><th width="30%">Tgl Survey</th><td>${data.tanggal}</td></tr>
                         <tr><td>Nama</td><td>${data.nama}</td></tr>
                         <tr><td>No. HP</td><td>${data.hp}</td></tr>
@@ -296,7 +298,7 @@
 
                     <!-- DATA EVALUASI -->
                     <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
-                    <table class="table table-sm table-bordered">
+                    <table class="table table-bordered">
                         <thead>
                            <tr><th style="background-color:#4d94ff; width:25%;">Parameter</th>
                            <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
