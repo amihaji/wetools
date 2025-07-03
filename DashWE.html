@@ -16,23 +16,21 @@
         /****************************************************
         * Pengaturan Untuk jumlah 5 baris dari tabel + header
         ****************************************************/
-       
-        /* 1. Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
+
+        /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
         .table-wrapper {
             max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
             overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
             border: 1px solid #dee2e6;
             border-radius: .375rem;
         }
-
-        /* 2. Membuat header tabel menjadi "sticky" */
+        /* Membuat header tabel menjadi "sticky" */
         .table-wrapper thead th {
-            position: sticky; /* KUNCI UTAMA: Membuat header tetap di posisinya */
+            position: sticky; /* Membuat header tetap di posisinya */
             top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
             z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
         }
-
-        /* 3. Mengubah warna header tabel (Tetap sama, tapi disertakan untuk kelengkapan) */
+        /* Mengubah warna header tabel */
         .table-dark-custom {
             --bs-table-bg: #002266;
             --bs-table-color: white;
