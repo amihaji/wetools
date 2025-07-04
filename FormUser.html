@@ -58,7 +58,7 @@
 
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw5zwPVKr398zsnsg1EuMpYGOrq6C836vz4Vy1czkE85RqVWfoEh83ej44I7jnYYBdE/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyFXvc5SiEEs5zyw5D9ZGe-d2uIZs3EezxF4vgMqd_stYnRnRT7yMY-c6td-y2kVGFc/exec';
     const loginForm       = document.getElementById('loginForm');
     const loginButton     = document.getElementById('loginButton');
     const spinner         = loginButton.querySelector('.spinner-border');
@@ -84,28 +84,18 @@
             headers: {'Content-Type': 'text/plain;charset=utf-8'},
             body: JSON.stringify(payload)
         })
-        .then(() => checkLoginStatus(payload.userId, payload.password))
+        .then(() => checkLoginStatus(payload.userId))
         .catch(err => {
             showMessage('Gagal terhubung ke server.', 'danger');
             resetButton();
         });
     });
 
-    // GANTI FUNGSI checkLoginStatus ANDA DENGAN INI
-    function checkLoginStatus(userId, password) { // Tambahkan parameter 'password'
+    function checkLoginStatus(userId) {
         const callbackName = 'login_status_cb_' + Date.now();
         const script = document.createElement('script');
+        script.src = `${URL_APPS_SCRIPT}?action=checkLogin&userId=${userId}&callback=${callbackName}`;
 
-        // Tambahkan parameter password ke URL
-        const params = new URLSearchParams({
-            action: 'checkLogin',
-            userId: userId,
-            password: password, 
-            callback: callbackName
-        });
-    
-        script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
-    
         window[callbackName] = (response) => {
             if (response.status === 'success' && response.loggedIn) {
                 sessionStorage.setItem('userToken', response.token);
@@ -115,19 +105,23 @@
                 if (response.level === 'Admin') {
                     window.location.href = 'DashWE.html';
                 } else {
-                    // Jika login berhasil tapi bukan admin
-                    showMessage('Login berhasil, namun Anda tidak memiliki hak akses Admin.', 'warning');
+                    showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
                     resetButton();
                 }
             } else {
-                // Jika login gagal dari server
                 showMessage(response.message || 'User ID atau Password salah.', 'danger');
                 resetButton();
             }
             cleanup(script, callbackName);
-        };  
-    } 
-
+        };
+        script.onerror = () => {
+            showMessage('Gagal memverifikasi status login.', 'danger');
+            resetButton();
+            cleanup(script, callbackName);
+        };
+        document.body.appendChild(script);
+    }
+    
     function cleanup(script, callbackName) {
         if (script.parentNode) script.parentNode.removeChild(script);
         delete window[callbackName];
