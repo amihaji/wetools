@@ -108,18 +108,31 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Toolbar -->
-        <div class="card mb-4">
+        <!-- TOOLBAR -->
+         <div class="card mb-4">
             <div class="card-body">
-                <div class="row gy-2">
-                    <div class="col-lg-6">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
-                            <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
-                        </div>
+                <div class="row gy-3 align-items-end">
+                    <!-- Filter Tanggal -->
+                    <div class="col-md-5 col-lg-4">
+                        <label for="startDate" class="form-label mb-0">Dari Tanggal</label>
+                        <input type="date" class="form-control" id="startDate">
                     </div>
-                    <div class="col-lg-6">
-                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                    <div class="col-md-5 col-lg-4">
+                        <label for="endDate" class="form-label mb-0">Sampai Tanggal</label>
+                        <input type="date" class="form-control" id="endDate">
+                    </div>
+
+                    <!-- Filter Sponsor -->
+                    <div class="col-md-5 col-lg-4">
+                        <label for="filterSponsor" class="form-label mb-0">Nama Sponsor</label>
+                        <input type="text" class="form-control" id="filterSponsor" placeholder="Filter sponsor...">
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="col-md-7 col-lg-12">
+                        <div class="d-grid d-lg-flex justify-content-lg-end gap-2 mt-3">
+                            <button class="btn btn-primary" id="filterButton" type="button"><i class="fas fa-filter"></i> Terapkan Filter</button>
+                            <button class="btn btn-secondary" id="resetFilterButton" type="button"><i class="fas fa-undo"></i> Reset</button>
                             <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
                             <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
                         </div>
@@ -229,14 +242,27 @@
     /* Tampilkan Tabel Data */
     function loadTableData() {
         showLoading(true);
-        const filterValue = document.getElementById('filterSponsor').value;
+            // Ambil semua nilai filter
+            const filterSponsor = document.getElementById('filterSponsor').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
 
-        const callbackName = 'data_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
-
-        script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
-
+            const callbackName = 'data_cb_' + Date.now();
+            const script = document.createElement('script');
+            
+            // Bangun parameter URL dengan semua filter
+            const params = new URLSearchParams({
+                action: 'getDataWE',
+                token: userToken,
+                filter: encodeURIComponent(filterSponsor),
+                startDate: startDate,
+                endDate: endDate,
+                callback: callbackName
+            });
+            
+            script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
+            script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
+      
         window[callbackName] = (response) => {
             const tableBody = document.getElementById('dataTableBody');
             tableBody.innerHTML = '';
