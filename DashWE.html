@@ -243,23 +243,20 @@
             if (response.status === 'success') {
                 response.data.forEach(row => {
                     const tr = document.createElement('tr');
-                    
-                    // Indeks kolom dari Google Sheet
                     const rowIndex = row[0];
-                    const tgl = row[1] || '';
+                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
                     const nama = row[2] || '';
-                    const hp = row[3] || ''; // Awalnya bisa berupa angka atau string
+                    const hp = row[3] || '';
                     const email = row[4] || '';
                     const sponsor = row[29] || '';
-                    const hpSponsor = row[30] || ''; // Awalnya bisa berupa angka atau string
-
-                    // Ubah data menjadi string sebelum menggunakan .replace()
+                    const hpSponsor = row[30] || '';
+                    // Ubah data menjadi string sebelum menggunakan replace()
                     const safeNama = String(nama).replace(/'/g, "\\'");
                     const safeHp = String(hp).replace(/'/g, "\\'");
                     const safeEmail = String(email).replace(/'/g, "\\'");
                     const safeSponsor = String(sponsor).replace(/'/g, "\\'");
                     const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
-                    
+
                     tr.innerHTML = `
                         <td>${tgl}</td>
                         <td>${nama}</td>
@@ -283,7 +280,7 @@
         };
         document.body.appendChild(script);
     }
-    
+
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
@@ -452,6 +449,23 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+  
+    // Format penanggalan Indonesia
+    function formatTanggal(tanggalISO) {
+        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
+        
+        try {
+            const d = new Date(tanggalISO);
+            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
+            const hari = String(d.getDate()).padStart(2, '0');
+            const bulan = String(d.getMonth() + 1).padStart(2, '0');
+            const tahun = d.getFullYear();
+            return `${hari}-${bulan}-${tahun}`;
+        } catch (e) {
+            // Jika format tanggal tidak valid, kembalikan apa adanya
+            return tanggalISO;
+        }
     }
 </script>
 </body>
