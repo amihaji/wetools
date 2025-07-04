@@ -240,7 +240,8 @@ function loadTableData() {
                 // row[0] = Row Index, row[1]=Tgl, row[2]=Nama, row[3]=HP, row[4]=Email, row[29]=Sponsor, row[30]=HPSponsor
                 const rowIndex  = row[0];
                 // const tgl       = row[1] || '';
-                const tgl       = Utilities.formatDate(new Date(row[1]), Session.getScriptTimeZone(), "dd MMMM yyyy");
+                const tgl       = Utilities.formatDate(new Date(row[1]), Session.getScriptTimeZone(), "dd MMMM yyyy") || '';
+                //const tgl       = Utilities.formatDate(new Date(row[1]), Session.getScriptTimeZone(), "dd MMMM yyyy");
                 const nama      = row[2] || '';
                 const hp        = row[3] || '';
                 const email     = row[4] || '';
