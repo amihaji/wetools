@@ -84,19 +84,35 @@
             headers: {'Content-Type': 'text/plain;charset=utf-8'},
             body: JSON.stringify(payload)
         })
-        .then(() => checkLoginStatus(payload.userId))
+        .then(() => checkLoginStatus(payload.userId, payload.password))
         .catch(err => {
             showMessage('Gagal terhubung ke server.', 'danger');
             resetButton();
         });
     });
 
-    function checkLoginStatus(userId) {
+    // GANTI FUNGSI checkLoginStatus ANDA DENGAN INI
+    function checkLoginStatus(userId, password) { // Tambahkan parameter 'password'
         const callbackName = 'login_status_cb_' + Date.now();
         const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=checkLogin&userId=${userId}&callback=${callbackName}`;
 
+        // PERBAIKAN UTAMA DI SINI: Tambahkan parameter password ke URL
+        const params = new URLSearchParams({
+            action: 'checkLogin',
+            userId: userId,
+            password: password, // <-- INI YANG DITAMBAHKAN
+            callback: callbackName
+        });
+        script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
+        
         window[callbackName] = (response) => {
+            // Jika masih dalam mode debug, tampilkan pesan apa adanya
+            if (String(response.message).startsWith('[DEBUG MODE]')) {
+                showMessage(response.message, 'info'); // Tampilkan dengan warna netral
+                resetButton();
+                return; // Hentikan eksekusi di sini
+            }
+
             if (response.status === 'success' && response.loggedIn) {
                 sessionStorage.setItem('userToken', response.token);
                 sessionStorage.setItem('userLevel', response.level);
@@ -105,7 +121,7 @@
                 if (response.level === 'Admin') {
                     window.location.href = 'DashWE.html';
                 } else {
-                    showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
+                    showMessage('Anda berhasil login, namun tidak memiliki hak akses Admin.', 'warning');
                     resetButton();
                 }
             } else {
@@ -121,7 +137,7 @@
         };
         document.body.appendChild(script);
     }
-    
+
     function cleanup(script, callbackName) {
         if (script.parentNode) script.parentNode.removeChild(script);
         delete window[callbackName];
