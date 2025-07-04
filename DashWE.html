@@ -44,36 +44,45 @@
         /* Mengatur kolom Aksi agar teksnya rata kanan */
         .actions-col {
             text-align: right;
-            width: 120px; /* Beri lebar tetap agar ikon tidak bergeser */
+            width: 150px; /* Sedikit dilebarkan untuk memberi ruang pada 3 lingkaran */
         }
-        /* Menyembunyikan ikon secara default */
+        /* Menyembunyikan ikon-ikon di dalam span .actions secara default */
         .actions {
             visibility: hidden;
             opacity: 0;
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.2s ease-in-out, visibility 0.2s;
+            display: inline-flex; /* Membuat span menjadi flex container agar ikon sejajar */
+            align-items: center;
         }
         /* Memunculkan ikon saat baris (tr) di-hover */
         .table-hover > tbody > tr:hover .actions {
             visibility: visible;
             opacity: 1;
         }
-        /* Mengatur style default untuk setiap ikon */
+        /* Mengatur style default untuk setiap ikon (link <a>) */
         .actions a {
-            color: #adb5bd; /* Warna abu-abu muda */
+            display: inline-flex;       /* 1. Ubah link menjadi flex container */
+            justify-content: center;    /* 2. Ikon di tengah horizontal */
+            align-items: center;        /* 3. Ikon di tengah vertikal */
+            
+            width: 32px;                /* 4. Beri lebar yang sama */
+            height: 32px;               /* 5. Beri tinggi yang sama */
+            border-radius: 50%;         /* 6. Ini akan membuatnya menjadi LINGKARAN SEMPURNA */
+            
+            color: #6c757d;             /* Warna ikon abu-abu standar */
             text-decoration: none;
-            margin-left: 15px;
-            transition: color 0.2s ease-in-out;
+            margin-left: 8px;           /* Jarak antar ikon sedikit dikurangi */
+            
+            /* Transisi untuk semua perubahan agar halus */
+            transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
         }
-        /* Mengubah warna ikon menjadi MERAH saat ikon itu sendiri di-hover */
+        /* Efek saat ikon di-hover */
         .actions a:hover {
-            color: #dc3545; /* Warna merah (danger) */
-            align-items: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #adb5bd;   ;  /* Warna abu-abu muda */
-            transition: background-color 0.3s ease-in-out;
+            background-color: #e9ecef;  /* Warna background abu-abu muda */
+            color: #dc3545;             /* Warna ikon merah */
         }
+
+
 
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
