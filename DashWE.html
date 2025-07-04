@@ -187,7 +187,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzbVrAx-FT_aKGv0ECokUR5GXHx_VvNE926mpBuW7a4KZEwGfO_nPesuQ7EWecOvclz/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyFXvc5SiEEs5zyw5D9ZGe-d2uIZs3EezxF4vgMqd_stYnRnRT7yMY-c6td-y2kVGFc/exec';
     const userToken       = sessionStorage.getItem('userToken');
     const userLevel       = sessionStorage.getItem('userLevel');
     const userId          = sessionStorage.getItem('userId');
@@ -239,13 +239,13 @@ function loadTableData() {
                 // Indeks kolom berdasarkan file code.gs Anda
                 // row[0] = Row Index, row[1]=Tgl, row[2]=Nama, row[3]=HP, row[4]=Email, row[29]=Sponsor, row[30]=HPSponsor
                 const rowIndex  = row[0];
-                const tgl       = row[1] || '';
+                // const tgl       = row[1] || '';
+                const tgl       = Utilities.formatDate(new Date(row[1]), Session.getScriptTimeZone(), "dd MMMM yyyy")
                 const nama      = row[2] || '';
                 const hp        = row[3] || '';
                 const email     = row[4] || '';
                 const sponsor   = row[29] || '';
                 const hpSponsor = row[30] || '';
-
                 tr.innerHTML = `
                     <td>${tgl}</td>
                     <td>${nama}</td>
