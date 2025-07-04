@@ -45,44 +45,44 @@
         .actions-col {
             text-align: right;
             width: 140px; 
+            /* KUNCI #1: Mencegah ikon turun ke bawah */
+            white-space: nowrap; 
         }
 
         /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
         .action-icon {
-            /* 1. Mengatur bentuk dan posisi */
-            display: inline-flex;       /* Agar bisa diberi ukuran dan menengahkan konten */
-            justify-content: center;    /* Ikon di tengah horizontal */
-            align-items: center;        /* Ikon di tengah vertikal */
-            width: 32px;                /* Lebar lingkaran */
-            height: 32px;               /* Tinggi lingkaran */
-            border-radius: 50%;         /* Membuatnya menjadi lingkaran sempurna */
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             
-            /* 2. Mengatur tampilan default */
-            color: #6c757d;             /* Warna ikon abu-abu standar */
-            background-color: transparent; /* Tidak ada background secara default */
+            color: #6c757d;
+            background-color: transparent;
             text-decoration: none;
-            margin-left: 8px;           /* Jarak antar ikon */
+            margin-left: 8px;
             
-            /* 3. MENYEMBUNYIKAN secara default */
+            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
+            vertical-align: middle;
+            
             visibility: hidden;
             opacity: 0;
-            
-            /* 4. Transisi untuk semua perubahan agar halus */
             transition: all 0.2s ease-in-out;
         }
 
-        /* 5. MEMUNCULKAN ikon saat baris (tr) di-hover */
+        /* Memunculkan ikon saat baris (tr) di-hover */
         .table-hover > tbody > tr:hover .action-icon {
             visibility: visible;
             opacity: 1;
         }
 
-        /* 6. Efek saat ikon itu sendiri di-hover */
+        /* Efek saat ikon di-hover */
         .action-icon:hover {
-            background-color: #f0f0f0;  /* Latar lingkaran menjadi ABU-ABU */
-            color: #dc3545;             /* Ikon menjadi MERAH */
+            /* KUNCI #3: Menggunakan warna abu-abu yang lebih terlihat */
+            background-color: #d3d3d3;  /* Warna abu-abu (lightgray) yang lebih jelas */
+            color: #dc3545;             /* Warna ikon merah */
         }
-
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
