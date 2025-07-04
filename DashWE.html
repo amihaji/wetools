@@ -7,82 +7,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-
-        /* Pengaturan warna Navbar */    
-        .navbar-custom-blue {
-            background-color: #002266; 
-        }
-
-        /****************************************************
-        * Pengaturan Untuk jumlah 5 baris dari tabel + header
-        ****************************************************/
-
-        /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
-        .table-wrapper {
-            max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
-            overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
+        body { background-color: #f8f9fa; }
+        .navbar-custom-blue { background-color: #002266; }
+        .table-container {
+            max-height: 400px; /* Batasan tinggi untuk memicu scroll */
+            overflow: auto;
             border: 1px solid #dee2e6;
-            /* border-radius: .375rem; */
+            border-radius: .375rem;
         }
-        /* Membuat header tabel menjadi "sticky" */
         .table-wrapper thead th {
-            position: sticky; /* Membuat header tetap di posisinya */
-            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
-            z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
+            position: sticky; top: 0; z-index: 2;
         }
-        /* Mengubah warna header tabel */
         .table-dark-custom {
             --bs-table-bg: #002266;
             --bs-table-color: white;
             --bs-table-border-color: #003388;
         }
-
-        /************************************************
-        /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
-        /************************************************
-
-        /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
-        .actions-col {
-            text-align: right;
-            width: 140px; 
-            /* KUNCI #1: Mencegah ikon turun ke bawah */
-            white-space: nowrap; 
-        }
-
-        /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
+        .table > :not(caption) > * > * { white-space: nowrap; }
+        .actions-col { text-align: right; width: 140px; white-space: nowrap; }
         .action-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            
-            color: #6c757d;
-            background-color: transparent;
-            text-decoration: none;
-            margin-left: 8px;
-            
-            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
-            vertical-align: middle;
-            
-            visibility: hidden;
-            opacity: 0;
+            display: inline-flex; justify-content: center; align-items: center;
+            width: 32px; height: 32px; border-radius: 50%;
+            color: #6c757d; background-color: transparent; text-decoration: none;
+            margin-left: 8px; vertical-align: middle;
+            visibility: hidden; opacity: 0;
             transition: all 0.2s ease-in-out;
         }
-
-        /* Memunculkan ikon saat baris (tr) di-hover */
-        .table-hover > tbody > tr:hover .action-icon {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* Efek saat ikon di-hover */
-        .action-icon:hover {
-            /* KUNCI #3: Menggunakan warna abu-abu yang lebih terlihat */
-            background-color: #d3d3d3;  /* Warna abu-abu (lightgray) yang lebih jelas */
-            color: #dc3545;             /* Warna ikon merah */
-        }
+        .table-hover > tbody > tr:hover .action-icon { visibility: visible; opacity: 1; }
+        .action-icon:hover { background-color: #d3d3d3; color: #dc3545; }
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
@@ -96,8 +48,7 @@
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
 
-    <!-- Tampilan Baris Navbar Dasboard -->
-    <nav class="navbar navbar-dark navbar-custom-blue">    
+    <nav class="navbar navbar-dark navbar-custom-blue">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</a>
             <div>
@@ -108,28 +59,28 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- TOOLBAR -->
-         <div class="card mb-4">
+        <!-- Toolbar -->
+        <div class="card mb-4">
             <div class="card-body">
                 <div class="row gy-3 align-items-end">
                     <!-- Filter Tanggal -->
-                    <div class="col-md-5 col-lg-4">
-                        <label for="startDate" class="form-label mb-0">Dari Tanggal</label>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="startDate" class="form-label fw-bold mb-1">Dari Tanggal</label>
                         <input type="date" class="form-control" id="startDate">
                     </div>
-                    <div class="col-md-5 col-lg-4">
-                        <label for="endDate" class="form-label mb-0">Sampai Tanggal</label>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="endDate" class="form-label fw-bold mb-1">Sampai Tanggal</label>
                         <input type="date" class="form-control" id="endDate">
                     </div>
 
                     <!-- Filter Sponsor -->
-                    <div class="col-md-5 col-lg-4">
-                        <label for="filterSponsor" class="form-label mb-0">Nama Sponsor</label>
+                    <div class="col-lg-6">
+                        <label for="filterSponsor" class="form-label fw-bold mb-1">Nama Sponsor</label>
                         <input type="text" class="form-control" id="filterSponsor" placeholder="Filter sponsor...">
                     </div>
 
                     <!-- Tombol Aksi -->
-                    <div class="col-md-7 col-lg-12">
+                    <div class="col-12">
                         <div class="d-grid d-lg-flex justify-content-lg-end gap-2 mt-3">
                             <button class="btn btn-primary" id="filterButton" type="button"><i class="fas fa-filter"></i> Terapkan Filter</button>
                             <button class="btn btn-secondary" id="resetFilterButton" type="button"><i class="fas fa-undo"></i> Reset</button>
@@ -142,25 +93,16 @@
         </div>
 
         <!-- Tabel Data -->
-        <div class="table-container shadow-sm bg-white">
-            <div class="table-wrapper shadow-sm">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark-custom">            
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama</th>
-                            <th>Nomor HP</th>
-                            <th>Email</th>
-                            <th>Sponsor</th>
-                            <th>HP Sponsor</th>
-                            <th class="actions-col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTableBody">
-                       <!-- Data akan diisi oleh JavaScript di sini -->  
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-wrapper shadow-sm">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark-custom">
+                    <tr>
+                        <th>Tanggal</th> <th>Nama</th> <th>Nomor HP</th> <th>Email</th>
+                        <th>Sponsor</th> <th>HP Sponsor</th> <th class="actions-col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody"></tbody>
+            </table>
         </div>
     </div>
 
@@ -208,11 +150,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwekboHAnbXt5o75ueVc4KSh0f8bmkZoNcysNuGIKFQKOAjzoxDuKoIbCn55FzmB9xb/exec';
-    const userToken       = sessionStorage.getItem('userToken');
-    const userLevel       = sessionStorage.getItem('userLevel');
-    const userId          = sessionStorage.getItem('userId');
-    // ******************************************************
+   
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxCJIUyaoKVp-Jn0e32SaBuAEvO6e4VBcjCADK1OUTvvHnegqcdfn_pDwiGguMZ5NTj/exec'; // Ganti dengan URL Anda
+    const userToken = sessionStorage.getItem('userToken');
+    const userLevel = sessionStorage.getItem('userLevel');
+    const userId = sessionStorage.getItem('userId');
 
     // Cek otentikasi saat halaman dimuat
     if (!userToken || !userLevel) {
@@ -226,16 +168,17 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
-        document.getElementById('resetFilterButton').addEventListener('click', () => {
-        document.getElementById('filterSponsor').value = '';
-        document.getElementById('startDate').value = '';
-        document.getElementById('endDate').value = '';
-        loadTableData(); // Muat ulang data tanpa filter
-        });
+        loadTableData();
 
         // Event Listeners
         document.getElementById('logoutButton').addEventListener('click', logout);
         document.getElementById('filterButton').addEventListener('click', loadTableData);
+        document.getElementById('resetFilterButton').addEventListener('click', () => {
+            document.getElementById('filterSponsor').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            loadTableData();
+        });
         document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
         document.getElementById('exportButton').addEventListener('click', exportToExcel);
     });
@@ -244,44 +187,57 @@
         loadingOverlay.style.display = show ? 'flex' : 'none';
     }
     
-    /* Tampilkan Tabel Data */
+    function formatTanggal(tanggalISO) {
+        if (!tanggalISO) return '';
+        try {
+            const d = new Date(tanggalISO);
+            const hari = String(d.getDate()).padStart(2, '0');
+            const bulan = String(d.getMonth() + 1).padStart(2, '0');
+            const tahun = d.getFullYear();
+            return `${hari}-${bulan}-${tahun}`;
+        } catch (e) {
+            return tanggalISO;
+        }
+    }
+
     function loadTableData() {
         showLoading(true);
-            // Ambil semua nilai filter
-            const filterSponsor = document.getElementById('filterSponsor').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+        const filterSponsor = document.getElementById('filterSponsor').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
 
-            const callbackName = 'data_cb_' + Date.now();
-            const script = document.createElement('script');
-            
-            // Bangun parameter URL dengan semua filter
-            const params = new URLSearchParams({
-                action: 'getDataWE',
-                token: userToken,
-                filter: encodeURIComponent(filterSponsor),
-                startDate: startDate,
-                endDate: endDate,
-                callback: callbackName
-            });
-            
-            script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
-            script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
-      
+        const callbackName = 'data_cb_' + Date.now();
+        const script = document.createElement('script');
+        
+        const params = new URLSearchParams({
+            action: 'getDataWE',
+            token: userToken,
+            filter: filterSponsor,
+            startDate: startDate,
+            endDate: endDate,
+            callback: callbackName
+        });
+        
+        script.src = `${URL_APPS_SCRIPT}?${params.toString()}`;
+
+        script.onerror = () => { alert('Gagal mengambil data dari server.'); showLoading(false); };
+
         window[callbackName] = (response) => {
             const tableBody = document.getElementById('dataTableBody');
             tableBody.innerHTML = '';
             if (response.status === 'success') {
-                response.data.forEach(row => {
+                response.data.forEach(rowObject => {
                     const tr = document.createElement('tr');
-                    const rowIndex = row[0];
-                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
-                    const nama = row[2] || '';
-                    const hp = row[3] || '';
-                    const email = row[4] || '';
-                    const sponsor = row[29] || '';
-                    const hpSponsor = row[30] || '';
-                    // Ubah data menjadi string sebelum menggunakan replace()
+                    const rowData = rowObject.data;
+                    const rowIndex = rowObject.rowIndex;
+
+                    const tgl = formatTanggal(rowData[0]);
+                    const nama = rowData[1] || '';
+                    const hp = rowData[2] || '';
+                    const email = rowData[3] || '';
+                    const sponsor = rowData[28] || '';
+                    const hpSponsor = rowData[29] || '';
+
                     const safeNama = String(nama).replace(/'/g, "\\'");
                     const safeHp = String(hp).replace(/'/g, "\\'");
                     const safeEmail = String(email).replace(/'/g, "\\'");
@@ -289,29 +245,27 @@
                     const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
 
                     tr.innerHTML = `
-                        <td>${tgl}</td>
-                        <td>${nama}</td>
-                        <td>${hp}</td>
-                        <td>${email}</td>
-                        <td>${sponsor}</td>
-                        <td>${hpSponsor}</td>
+                        <td>${tgl}</td> <td>${nama}</td> <td>${hp}</td> <td>${email}</td>
+                        <td>${sponsor}</td> <td>${hpSponsor}</td>
                         <td class="actions-col">
-                            <a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                            <a href="#" class="action-icon" onclick="event.preventDefault(); viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 });
             } else {
                 alert(response.message);
-                if(response.message.includes('Sesi tidak valid')) logout();
+                if (response.message.includes('Sesi tidak valid')) logout();
             }
             showLoading(false);
+            if(window[callbackName]) delete window[callbackName];
+            if(script.parentNode) script.parentNode.removeChild(script);
         };
         document.body.appendChild(script);
     }
-
+    
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
@@ -482,22 +436,6 @@
         document.body.removeChild(link);
     }
   
-    // Format penanggalan Indonesia
-    function formatTanggal(tanggalISO) {
-        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
-        
-        try {
-            const d = new Date(tanggalISO);
-            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
-            const hari = String(d.getDate()).padStart(2, '0');
-            const bulan = String(d.getMonth() + 1).padStart(2, '0');
-            const tahun = d.getFullYear();
-            return `${hari}-${bulan}-${tahun}`;
-        } catch (e) {
-            // Jika format tanggal tidak valid, kembalikan apa adanya
-            return tanggalISO;
-        }
-    }
 </script>
 </body>
 </html>
