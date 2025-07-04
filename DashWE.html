@@ -41,45 +41,46 @@
         /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
         /************************************************
 
-        /* Mengatur kolom Aksi agar teksnya rata kanan */
+        /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
         .actions-col {
             text-align: right;
-            width: 150px; /* Sedikit dilebarkan untuk memberi ruang pada 3 lingkaran */
+            width: 140px; 
         }
-        /* Menyembunyikan ikon-ikon di dalam span .actions secara default */
-        .actions {
+
+        /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
+        .action-icon {
+            /* 1. Mengatur bentuk dan posisi */
+            display: inline-flex;       /* Agar bisa diberi ukuran dan menengahkan konten */
+            justify-content: center;    /* Ikon di tengah horizontal */
+            align-items: center;        /* Ikon di tengah vertikal */
+            width: 32px;                /* Lebar lingkaran */
+            height: 32px;               /* Tinggi lingkaran */
+            border-radius: 50%;         /* Membuatnya menjadi lingkaran sempurna */
+            
+            /* 2. Mengatur tampilan default */
+            color: #6c757d;             /* Warna ikon abu-abu standar */
+            background-color: transparent; /* Tidak ada background secara default */
+            text-decoration: none;
+            margin-left: 8px;           /* Jarak antar ikon */
+            
+            /* 3. MENYEMBUNYIKAN secara default */
             visibility: hidden;
             opacity: 0;
-            transition: opacity 0.2s ease-in-out, visibility 0.2s;
-            display: inline-flex; /* Membuat span menjadi flex container agar ikon sejajar */
-            align-items: center;
+            
+            /* 4. Transisi untuk semua perubahan agar halus */
+            transition: all 0.2s ease-in-out;
         }
-        /* Memunculkan ikon saat baris (tr) di-hover */
-        .table-hover > tbody > tr:hover .actions {
+
+        /* 5. MEMUNCULKAN ikon saat baris (tr) di-hover */
+        .table-hover > tbody > tr:hover .action-icon {
             visibility: visible;
             opacity: 1;
         }
-        /* Mengatur style default untuk setiap ikon (link <a>) */
-        .actions a {
-            display: inline-flex;       /* 1. Ubah link menjadi flex container */
-            justify-content: center;    /* 2. Ikon di tengah horizontal */
-            align-items: center;        /* 3. Ikon di tengah vertikal */
-            
-            width: 32px;                /* 4. Beri lebar yang sama */
-            height: 32px;               /* 5. Beri tinggi yang sama */
-            border-radius: 50%;         /* 6. Ini akan membuatnya menjadi LINGKARAN SEMPURNA */
-            
-            color: #6c757d;           /* Warna ikon abu-abu standar */
-            text-decoration: none;
-            margin-left: 8px;           /* Jarak antar ikon sedikit dikurangi */
-            
-            /* Transisi untuk semua perubahan agar halus */
-            transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-        }
-        /* Efek saat ikon di-hover */
-        .actions a:hover {
-            background-color: #e9ecef;  /* Warna background abu-abu muda */
-            color: #dc3545;             /* Warna ikon merah */
+
+        /* 6. Efek saat ikon itu sendiri di-hover */
+        .action-icon:hover {
+            background-color: #f0f0f0;  /* Latar lingkaran menjadi ABU-ABU */
+            color: #dc3545;             /* Ikon menjadi MERAH */
         }
 
         .loading-overlay {
