@@ -106,8 +106,8 @@
                     window.location.href = 'DashWE.html';
                 } else {
                     showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
-                    //resetButton();
-                    window.location.href = 'FormUser.html';
+                    resetButton();
+                    window.location.href = 'index.html';
                 }
             } else {
                 showMessage(response.message || 'User ID atau Password salah.', 'danger');
@@ -127,8 +127,15 @@
         if (script.parentNode) script.parentNode.removeChild(script);
         delete window[callbackName];
     }
-    function showMessage(msg, type) { messageDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`; }
-    function resetButton() { spinner.style.display = 'none'; loginButton.disabled = false; }
+    
+    function showMessage(msg, type) { 
+        messageDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    }
+    
+    function resetButton() { 
+        spinner.style.display = 'none'; 
+        loginButton.disabled = false;
+    }
 </script>
 </body>
 </html>
