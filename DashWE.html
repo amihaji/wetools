@@ -7,49 +7,46 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        body { background-color: #f8f9fa; }
 
-        /* Pengaturan warna Navbar */    
         .navbar-custom-blue {
             background-color: #002266; 
         }
 
-        /****************************************************
-        * Pengaturan Untuk jumlah 5 baris dari tabel + header
-        ****************************************************/
-
-        /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
         .table-wrapper {
-            max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
-            overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
+            max-height: 350px;
+            overflow: auto;
             border: 1px solid #dee2e6;
-            /* border-radius: .375rem; */
+            border-radius: .375rem;
         }
-        /* Membuat header tabel menjadi "sticky" */
+
         .table-wrapper thead th {
-            position: sticky; /* Membuat header tetap di posisinya */
-            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
-            z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
-        /* Mengubah warna header tabel */
+        
         .table-dark-custom {
             --bs-table-bg: #002266;
             --bs-table-color: white;
             --bs-table-border-color: #003388;
         }
+        
+        .table > :not(caption) > * > * {
+            white-space: nowrap;
+        }
 
-        /************************************************
-        /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
-        /************************************************
-
-        /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
+        .select-col {
+            width: 50px;
+            text-align: center;
+        }
+        
         .actions-col {
             text-align: right;
             width: 140px; 
-            /* KUNCI #1: Mencegah ikon turun ke bawah */
             white-space: nowrap; 
         }
 
-        /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
         .action-icon {
             display: inline-flex;
             justify-content: center;
@@ -57,32 +54,26 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            
             color: #6c757d;
             background-color: transparent;
             text-decoration: none;
             margin-left: 8px;
-            
-            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
             vertical-align: middle;
-            
             visibility: hidden;
             opacity: 0;
             transition: all 0.2s ease-in-out;
         }
 
-        /* Memunculkan ikon saat baris (tr) di-hover */
         .table-hover > tbody > tr:hover .action-icon {
             visibility: visible;
             opacity: 1;
         }
 
-        /* Efek saat ikon di-hover */
         .action-icon:hover {
-            /* KUNCI #3: Menggunakan warna abu-abu yang lebih terlihat */
-            background-color: #d3d3d3;  /* Warna abu-abu (lightgray) yang lebih jelas */
-            color: #dc3545;             /* Warna ikon merah */
+            background-color: #d3d3d3;
+            color: #dc3545;
         }
+
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
@@ -92,12 +83,11 @@
 </head>
 <body>
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
     </div>
 
-    <!-- Tampilan Baris Navbar Dasboard -->
-    <nav class="navbar navbar-dark navbar-custom-blue">    
+    <nav class="navbar navbar-dark navbar-custom-blue">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</a>
             <div>
@@ -119,126 +109,112 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                        <!-- Normal Toolbar -->
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2" id="normalToolbar">
+                            <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
                             <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
                             <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
+                        </div>
+                        <!-- Follow Up Toolbar (Awalnya tersembunyi) -->
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2" id="followUpToolbar" style="display: none;">
+                            <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
+                            <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Follow Up Message Box (Awalnya tersembunyi) -->
+        <div class="card mb-3" id="followUpMessageBox" style="display: none;">
+            <div class="card-body">
+                <label for="waMessage" class="form-label"><strong>Tulis Pesan Follow Up Anda:</strong></label>
+                <textarea class="form-control" id="waMessage" rows="4"></textarea>
+                <div class="form-text">Gunakan <code>{nama}</code> untuk menyebut nama customer, dan <code>{sponsor}</code> untuk nama sponsor.</div>
+                <div id="sendProgress" class="mt-2" style="display: none;">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+                    </div>
+                    <small class="text-muted" id="progressText"></small>
+                </div>
+            </div>
+        </div>
+
         <!-- Tabel Data -->
-        <div class="table-container shadow-sm bg-white">
-            <div class="table-wrapper shadow-sm">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark-custom">            
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama</th>
-                            <th>Nomor HP</th>
-                            <th>Email</th>
-                            <th>Sponsor</th>
-                            <th>HP Sponsor</th>
-                            <th class="actions-col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTableBody">
-                       <!-- Data akan diisi oleh JavaScript di sini -->  
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-wrapper shadow-sm">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark-custom">            
+                    <tr>
+                        <th class="select-col" style="display: none;"><input class="form-check-input" type="checkbox" id="selectAllCheckbox"></th>
+                        <th>Tanggal</th>
+                        <th>Nama</th>
+                        <th>Nomor HP</th>
+                        <th>Email</th>
+                        <th>Sponsor</th>
+                        <th>HP Sponsor</th>
+                        <th class="actions-col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody"></tbody>
+            </table>
         </div>
     </div>
 
-    <!-- TAMPILAN FORM MODALS -->
-    <!-- Modal Edit -->
-    <div class="modal fade" id="editModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header>
-                    <h5 class="modal-title">Edit Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="editRowIndex">
-                        <div class="mb-3"><label for="editNama" class="form-label">Nama</label><input type="text" class="form-control" id="editNama" required></div>
-                        <div class="mb-3"><label for="editNomorHp" class="form-label">Nomor HP</label><input type="tel" class="form-control" id="editNomorHp" required></div>
-                        <div class="mb-3"><label for="editEmail" class="form-label">Email</label><input type="email" class="form-control" id="editEmail"></div>
-                        <div class="mb-3"><label for="editSponsor" class="form-label">Sponsor</label><input type="text" class="form-control" id="editSponsor" required></div>
-                        <div class="mb-3"><label for="editHpSponsor" class="form-label">HP Sponsor</label><input type="tel" class="form-control" id="editHpSponsor" required></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal View -->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewModalLabel">Detail Hasil Analisa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="viewModalBody">
-                    <!-- Konten detail akan dimuat di sini -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Modals -->
+    <div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Edit Data</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><form id="editForm"><input type="hidden" id="editRowIndex"><div class="mb-3"><label for="editNama" class="form-label">Nama</label><input type="text" class="form-control" id="editNama" required></div><div class="mb-3"><label for="editNomorHp" class="form-label">Nomor HP</label><input type="tel" class="form-control" id="editNomorHp" required></div><div class="mb-3"><label for="editEmail" class="form-label">Email</label><input type="email" class="form-control" id="editEmail"></div><div class="mb-3"><label for="editSponsor" class="form-label">Sponsor</label><input type="text" class="form-control" id="editSponsor" required></div><div class="mb-3"><label for="editHpSponsor" class="form-label">HP Sponsor</label><input type="tel" class="form-control" id="editHpSponsor" required></div></form></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button></div></div></div></div>
+    <div class="modal fade" id="viewModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Detail Hasil Analisa</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="viewModalBody"></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxT0XZALufIa8SY3Y7UyeTtkNmr_haAR403wmziy-91wAmpF6mh4Q5e_BXXc_hVbH96/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwEfscL5gMO4sykuiadkwOwhrAlme7CKqZhtfTWZF-3JwqJnybMmcP881mhTkgwmktr/exec';
     const userToken       = sessionStorage.getItem('userToken');
     const userLevel       = sessionStorage.getItem('userLevel');
     const userId          = sessionStorage.getItem('userId');
-    // ******************************************************
 
-    // Cek otentikasi saat halaman dimuat
     if (!userToken || !userLevel) {
         alert('Akses ditolak. Silakan login terlebih dahulu.');
         window.location.href = 'FormUser.html';
     }
 
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+    const loadingOverlay       = document.getElementById('loadingOverlay');
+    const editModal            = new bootstrap.Modal(document.getElementById('editModal'));
+    const viewModal            = new bootstrap.Modal(document.getElementById('viewModal'));
+    const startFollowUpButton  = document.getElementById('startFollowUpButton');
+    const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
+    const sendWaButton         = document.getElementById('sendWaButton');
+    const normalToolbar        = document.getElementById('normalToolbar');
+    const followUpToolbar      = document.getElementById('followUpToolbar');
+    const followUpMessageBox   = document.getElementById('followUpMessageBox');
+    const selectAllCheckbox    = document.getElementById('selectAllCheckbox');
+    const sendProgress         = document.getElementById('sendProgress');
+    const progressBar          = sendProgress.querySelector('.progress-bar');
+    const progressText         = document.getElementById('progressText');
+    let isFollowUpMode         = false;
 
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
         loadTableData();
 
-        // Event Listeners
         document.getElementById('logoutButton').addEventListener('click', logout);
         document.getElementById('filterButton').addEventListener('click', loadTableData);
         document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
         document.getElementById('exportButton').addEventListener('click', exportToExcel);
+        startFollowUpButton.addEventListener('click', startFollowUpMode);
+        cancelFollowUpButton.addEventListener('click', endFollowUpMode);
+        selectAllCheckbox.addEventListener('click', toggleAllCheckboxes);
+        sendWaButton.addEventListener('click', sendFollowUpWA);
     });
 
     function showLoading(show) {
         loadingOverlay.style.display = show ? 'flex' : 'none';
     }
-    
-    /* Tampilkan Tabel Data */
+
     function loadTableData() {
         showLoading(true);
         const filterValue = document.getElementById('filterSponsor').value;
-
         const callbackName = 'data_cb_' + Date.now();
         const script = document.createElement('script');
         script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
-
         script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
         window[callbackName] = (response) => {
@@ -247,29 +223,26 @@
             if (response.status === 'success') {
                 response.data.forEach(row => {
                     const tr = document.createElement('tr');
-                    const rowIndex = row[0];
-                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
-                    const nama = row[2] || '';
-                    const hp = row[3] || '';
-                    const email = row[4] || '';
-                    const sponsor = row[29] || '';
-                    const hpSponsor = row[30] || '';
-                    // Ubah data menjadi string sebelum menggunakan replace()
-                    const safeNama = String(nama).replace(/'/g, "\\'");
-                    const safeHp = String(hp).replace(/'/g, "\\'");
-                    const safeEmail = String(email).replace(/'/g, "\\'");
-                    const safeSponsor = String(sponsor).replace(/'/g, "\\'");
-                    const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
+                    const rowIndex = row[0], tgl = formatTanggal(row[1]), nama = row[2] || '', hp = row[3] || '',
+                          email = row[4] || '', sponsor = row[29] || '', hpSponsor = row[30] || '';
+                    
+                    const safeNama = String(nama).replace(/'/g, "\\'"), safeHp = String(hp).replace(/'/g, "\\'"),
+                          safeEmail = String(email).replace(/'/g, "\\'"), safeSponsor = String(sponsor).replace(/'/g, "\\'"),
+                          safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
 
                     tr.innerHTML = `
+                        <td class="select-col" style="display: ${isFollowUpMode ? 'table-cell' : 'none'};">
+                            <input class="form-check-input row-checkbox" type="checkbox" 
+                                   data-hp="${safeHp}" data-nama="${safeNama}" data-sponsor="${safeSponsor}">
+                        </td>
                         <td>${tgl}</td>
                         <td>${nama}</td>
                         <td>${hp}</td>
                         <td>${email}</td>
                         <td>${sponsor}</td>
                         <td>${hpSponsor}</td>
-                        <td class="actions-col">
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
+                        <td class="actions-col" style="display: ${isFollowUpMode ? 'none' : 'table-cell'};">
+                            <a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>
                             ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
                             ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
                         </td>
@@ -283,6 +256,78 @@
             showLoading(false);
         };
         document.body.appendChild(script);
+    }
+    
+    function startFollowUpMode() {
+        isFollowUpMode = true;
+        normalToolbar.style.display = 'none';
+        followUpToolbar.style.display = 'flex';
+        followUpMessageBox.style.display = 'block';
+        document.querySelector('.select-col').style.display = 'table-cell';
+        document.querySelectorAll('.actions-col').forEach(el => el.style.display = 'none');
+        loadTableData();
+    }
+
+    function endFollowUpMode() {
+        isFollowUpMode = false;
+        normalToolbar.style.display = 'flex';
+        followUpToolbar.style.display = 'none';
+        followUpMessageBox.style.display = 'none';
+        sendProgress.style.display = 'none';
+        document.querySelector('.select-col').style.display = 'none';
+        document.querySelectorAll('.actions-col').forEach(el => el.style.display = 'table-cell');
+        sendWaButton.disabled = false;
+        sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
+        loadTableData();
+    }
+
+    function toggleAllCheckboxes() {
+        document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = selectAllCheckbox.checked);
+    }
+
+    async function sendFollowUpWA() {
+        const messageTemplate = document.getElementById('waMessage').value;
+        if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
+
+        const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
+        if (selectedCheckboxes.length === 0) return alert('Pilih minimal satu penerima.');
+        
+        if (!confirm(`Anda akan mengirim pesan ke ${selectedCheckboxes.length} penerima. Lanjutkan?`)) return;
+
+        sendWaButton.disabled = true;
+        sendWaButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
+        sendProgress.style.display = 'block';
+
+        let sentCount = 0;
+        const totalCount = selectedCheckboxes.length;
+
+        for (const checkbox of selectedCheckboxes) {
+            const payload = {
+                action: 'sendSingleWA', token: userToken,
+                nama: checkbox.dataset.nama, nomorHp: checkbox.dataset.hp,
+                sponsor: checkbox.dataset.sponsor, message: messageTemplate
+            };
+            
+            try {
+                // Menggunakan fetch untuk POST ke Apps Script
+                const response = await fetch(URL_APPS_SCRIPT, {
+                    method: 'POST', body: JSON.stringify(payload),
+                    headers: {'Content-Type': 'application/json'}
+                });
+                const result = await response.json(); // Menunggu dan membaca respons
+                if(result.status !== 'success') console.error('Gagal kirim ke', payload.nomorHp, result.message);
+                
+                sentCount++;
+                progressBar.style.width = `${(sentCount / totalCount) * 100}%`;
+                progressText.textContent = `Mengirim ${sentCount} dari ${totalCount}...`;
+
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Jeda antar pengiriman
+            } catch (error) {
+                console.error('Gagal mengirim ke', payload.nomorHp, error);
+            }
+        }
+        alert(`${sentCount} dari ${totalCount} pesan berhasil diproses untuk dikirim.`);
+        endFollowUpMode();
     }
 
     function logout() {
@@ -470,6 +515,7 @@
             return tanggalISO;
         }
     }
+
 </script>
 </body>
 </html>
