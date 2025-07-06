@@ -166,47 +166,123 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwEfscL5gMO4sykuiadkwOwhrAlme7CKqZhtfTWZF-3JwqJnybMmcP881mhTkgwmktr/exec';
-    const userToken       = sessionStorage.getItem('userToken');
-    const userLevel       = sessionStorage.getItem('userLevel');
-    const userId          = sessionStorage.getItem('userId');
-
-    if (!userToken || !userLevel) {
+    //***********  Deklarasi variabel global ****************
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbylCNDVacivQhC5sVXPQl2s-dHRQ1PEwVdy91bnjfznrW7zFC6S8-SXrQZVSZ8kFMAN/exec';
+    const userToken       = sessionStorage.getItem('userToken'), 
+          userLevel       = sessionStorage.getItem('userLevel'), 
+          userId          = sessionStorage.getItem('userId');
+   
+   if (!userToken || !userLevel) {
         alert('Akses ditolak. Silakan login terlebih dahulu.');
         window.location.href = 'FormUser.html';
     }
 
-    const loadingOverlay       = document.getElementById('loadingOverlay');
-    const editModal            = new bootstrap.Modal(document.getElementById('editModal'));
-    const viewModal            = new bootstrap.Modal(document.getElementById('viewModal'));
-    const startFollowUpButton  = document.getElementById('startFollowUpButton');
-    const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
-    const sendWaButton         = document.getElementById('sendWaButton');
-    const normalToolbar        = document.getElementById('normalToolbar');
-    const followUpToolbar      = document.getElementById('followUpToolbar');
-    const followUpMessageBox   = document.getElementById('followUpMessageBox');
-    const selectAllCheckbox    = document.getElementById('selectAllCheckbox');
-    const sendProgress         = document.getElementById('sendProgress');
-    const progressBar          = sendProgress.querySelector('.progress-bar');
-    const progressText         = document.getElementById('progressText');
-    let isFollowUpMode         = false;
+    const loadingOverlay     = document.getElementById('loadingOverlay'), 
+          editModal          = new bootstrap.Modal(document.getElementById('editModal')),
+          viewModal          = new bootstrap.Modal(document.getElementById('viewModal')), 
+          normalToolbar      = document.getElementById('normalToolbar'),
+          followUpToolbar    = document.getElementById('followUpToolbar'), 
+          followUpMessageBox = document.getElementById('followUpMessageBox'),
+          selectAllCheckbox  = document.getElementById('selectAllCheckbox'), 
+          sendProgress       = document.getElementById('sendProgress'),
+          progressBar        = sendProgress.querySelector('.progress-bar'), 
+          progressText       = document.getElementById('progressText');
+   
+    let isFollowUpMode = false;
+    // ******************************************************
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
         loadTableData();
-
+        // Event Listeners
         document.getElementById('logoutButton').addEventListener('click', logout);
         document.getElementById('filterButton').addEventListener('click', loadTableData);
         document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
         document.getElementById('exportButton').addEventListener('click', exportToExcel);
-        startFollowUpButton.addEventListener('click', startFollowUpMode);
-        cancelFollowUpButton.addEventListener('click', endFollowUpMode);
-        selectAllCheckbox.addEventListener('click', toggleAllCheckboxes);
-        sendWaButton.addEventListener('click', sendFollowUpWA);
+        document.getElementById('startFollowUpButton').addEventListener('click', startFollowUpMode);
+        document.getElementById('cancelFollowUpButton').addEventListener('click', endFollowUpMode);
+        selectAllCheckbox.addEventListener('click', () => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = selectAllCheckbox.checked));
+        document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
     });
 
-    function showLoading(show) {
-        loadingOverlay.style.display = show ? 'flex' : 'none';
+    function showLoading(show) { loadingOverlay.style.display = show ? 'flex' : 'none'; }
+
+    function toggleFollowUpMode(isStarting) {
+        isFollowUpMode = isStarting;
+        normalToolbar.style.display = isStarting ? 'none' : '';
+        followUpToolbar.style.display = isStarting ? '' : 'none';
+        followUpMessageBox.style.display = isStarting ? 'block' : 'none';
+        
+        document.querySelector('.select-col').style.display = isStarting ? 'table-cell' : 'none';
+        document.querySelectorAll('.actions-col').forEach(el => el.style.display = isStarting ? 'none' : 'table-cell');
+
+        if (!isStarting) { // Reset saat membatalkan
+            sendProgress.style.display = 'none';
+            progressBar.style.width = '0%';
+            document.getElementById('sendWaButton').disabled = false;
+            document.getElementById('sendWaButton').innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
+        }
+        loadTableData();
+    }
+    
+    function startFollowUpMode() { toggleFollowUpMode(true); }
+    function endFollowUpMode() { toggleFollowUpMode(false); }
+    
+    function sendFollowUpWA() {
+        const messageTemplate = document.getElementById('waMessage').value;
+        if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
+
+        const recipients = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => ({
+            nama: cb.dataset.nama,
+            hp: cb.dataset.hp,
+            sponsor: cb.dataset.sponsor
+        }));
+
+        if (recipients.length === 0) return alert('Pilih minimal satu penerima.');
+        if (!confirm(`Anda akan mengirim pesan ke ${recipients.length} penerima. Lanjutkan?`)) return;
+
+        const sendWaButton = document.getElementById('sendWaButton');
+        sendWaButton.disabled = true;
+        sendWaButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Memproses...';
+        sendProgress.style.display = 'block';
+        progressText.textContent = 'Mempersiapkan pengiriman...';
+        
+        const payload = JSON.stringify({
+            action: 'sendBulkWA',
+            token: userToken,
+            recipients: recipients,
+            message: messageTemplate
+        });
+        
+        // Satu kali POST besar ke server
+        fetch(URL_APPS_SCRIPT, {
+            method: 'POST', body: payload,
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                alert(result.message);
+                // Animasikan progress bar sebagai simulasi
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressBar.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        endFollowUpMode();
+                    }
+                }, 200);
+            } else {
+                alert(`Error: ${result.message}`);
+                endFollowUpMode();
+            }
+        })
+        .catch(error => {
+            alert('Terjadi kesalahan koneksi saat mengirim.');
+            console.error('Error:', error);
+            endFollowUpMode();
+        });
     }
 
     function loadTableData() {
@@ -258,78 +334,6 @@
         document.body.appendChild(script);
     }
     
-    function startFollowUpMode() {
-        isFollowUpMode = true;
-        normalToolbar.style.display = 'none';
-        followUpToolbar.style.display = 'flex';
-        followUpMessageBox.style.display = 'block';
-        document.querySelector('.select-col').style.display = 'table-cell';
-        document.querySelectorAll('.actions-col').forEach(el => el.style.display = 'none');
-        loadTableData();
-    }
-
-    function endFollowUpMode() {
-        isFollowUpMode = false;
-        normalToolbar.style.display = 'flex';
-        followUpToolbar.style.display = 'none';
-        followUpMessageBox.style.display = 'none';
-        sendProgress.style.display = 'none';
-        document.querySelector('.select-col').style.display = 'none';
-        document.querySelectorAll('.actions-col').forEach(el => el.style.display = 'table-cell');
-        sendWaButton.disabled = false;
-        sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
-        loadTableData();
-    }
-
-    function toggleAllCheckboxes() {
-        document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = selectAllCheckbox.checked);
-    }
-
-    async function sendFollowUpWA() {
-        const messageTemplate = document.getElementById('waMessage').value;
-        if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
-
-        const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
-        if (selectedCheckboxes.length === 0) return alert('Pilih minimal satu penerima.');
-        
-        if (!confirm(`Anda akan mengirim pesan ke ${selectedCheckboxes.length} penerima. Lanjutkan?`)) return;
-
-        sendWaButton.disabled = true;
-        sendWaButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
-        sendProgress.style.display = 'block';
-
-        let sentCount = 0;
-        const totalCount = selectedCheckboxes.length;
-
-        for (const checkbox of selectedCheckboxes) {
-            const payload = {
-                action: 'sendSingleWA', token: userToken,
-                nama: checkbox.dataset.nama, nomorHp: checkbox.dataset.hp,
-                sponsor: checkbox.dataset.sponsor, message: messageTemplate
-            };
-            
-            try {
-                // Menggunakan fetch untuk POST ke Apps Script
-                const response = await fetch(URL_APPS_SCRIPT, {
-                    method: 'POST', body: JSON.stringify(payload),
-                    headers: {'Content-Type': 'application/json'}
-                });
-                const result = await response.json(); // Menunggu dan membaca respons
-                if(result.status !== 'success') console.error('Gagal kirim ke', payload.nomorHp, result.message);
-                
-                sentCount++;
-                progressBar.style.width = `${(sentCount / totalCount) * 100}%`;
-                progressText.textContent = `Mengirim ${sentCount} dari ${totalCount}...`;
-
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Jeda antar pengiriman
-            } catch (error) {
-                console.error('Gagal mengirim ke', payload.nomorHp, error);
-            }
-        }
-        alert(`${sentCount} dari ${totalCount} pesan berhasil diproses untuk dikirim.`);
-        endFollowUpMode();
-    }
-
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
