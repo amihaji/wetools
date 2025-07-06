@@ -51,7 +51,7 @@
 
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxwVXKzEwcB_l5rLEPz8z9dCIK62sdpYa0Pyl4FRvvDWUmKBJeQS2Bu-UbvHIaC_P62/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbywl5Qo6It6J5RE0bodmwMhYVhJquTUr7gbqLQ2ytcNrHRRaiUNKF0YR_eqxwMhz-27/exec';
     const userToken = sessionStorage.getItem('userToken'), userLevel = sessionStorage.getItem('userLevel'), userId = sessionStorage.getItem('userId');
 
     let allDataCache = []; // Cache untuk menyimpan data tabel
@@ -353,139 +353,7 @@
             setTimeout(loadTableData, 500);
         });
     }
-
-    function viewRecord(rowIndex) {
-        showLoading(true);
-        const callbackName = 'view_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
-
-        window[callbackName] = (response) => {
-            if (response.status === 'success') {
-                const data = response.data;
-                const viewBody = document.getElementById('viewModalBody');
-
-                const fungsionalHTML = (data.fungsional || []).map(item => `
-                    <tr>
-                        <td>${item.label || "-"}</td>
-                        <td style="text-align:center;">${item.jawaban || "-"}</td>
-                    </tr>`).join('');
-
-                const evaluasiHTML = (data.evaluasi || []).map(item => `
-                    <tr>
-                        <td>${item.param || "-"}</td>
-                        <td class="text-center">${item.hasil || "-"}</td>
-                        <td class="text-center">${item.ideal || "-"}</td>
-                        <td class="text-center">${item.satuan || "-"}</td>
-                        <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
-                    </tr>`).join('');
-
-                viewBody.innerHTML = `
-                    <!-- DATA PROFILE -->
-                    <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
-                    <table class="table table-bordered">
-                        <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-                            <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
-                        </tr>
-                        <tr><td>Nama</td><td>${data.nama}</td></tr>
-                        <tr><td>No. HP</td><td>${data.hp}</td></tr>
-                        <tr><td>Email</td><td>${data.email}</td></tr>
-                        <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
-                        <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
-                        <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
-                        <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
-                        <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
-                        <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
-                    </table>
-
-                    <!-- DATA FUNGSIONAL -->
-                    <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-                            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
-                        </thead>
-                        <tbody>${fungsionalHTML}</tbody>
-                    </table>
-
-                    <!-- DATA EVALUASI -->
-                    <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                               <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-                               <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-                               <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>${evaluasiHTML}</tbody>
-                    </table>
-
-                    <!-- DATA KESIMPULAN DAN REKOMENDASI -->
-                    <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
-                              
-                    <table class="table table-bordered">
-                    <tbody>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
-                        <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen}</strong></td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-                        <td style="width:85%;">${data.kesimpulan}</td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-                        <td style="width:85%;">${data.rekomendasi}</td>
-                        </tr>
-                    </tbody>
-                    </table>`;
- 
-                viewModal.show();
-            } else {
-                alert(response.message);
-            }
-            showLoading(false);
-        };
-        document.body.appendChild(script);
-    }
-
-    function exportToExcel() {
-        const table = document.querySelector(".table-container table");
-        let csv = [];
-        for (const row of table.rows) {
-            let rowData = [];
-            // Ambil semua sel kecuali sel terakhir (Aksi)
-            for (let i = 0; i < row.cells.length - 1; i++) {
-                rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
-            }
-            csv.push(rowData.join(','));
-        }
-        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "DataSurvey.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
   
-    // Format penanggalan Indonesia
-    function formatTanggal(tanggalISO) {
-        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
-        
-        try {
-            const d = new Date(tanggalISO);
-            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
-            const hari = String(d.getDate()).padStart(2, '0');
-            const bulan = String(d.getMonth() + 1).padStart(2, '0');
-            const tahun = d.getFullYear();
-            return `${hari}-${bulan}-${tahun}`;
-        } catch (e) {
-            // Jika format tanggal tidak valid, kembalikan apa adanya
-            return tanggalISO;
-        }
-    }
 
 </script>
 </body>
