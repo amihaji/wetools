@@ -58,13 +58,12 @@
 
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbywl5Qo6It6J5RE0bodmwMhYVhJquTUr7gbqLQ2ytcNrHRRaiUNKF0YR_eqxwMhz-27/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbykVGomdJScqnuSCe3RscsExOUPRRFsdsL3-8W6ffezNxrbzKCnp7Q75iQEVBvIhmUH/exec';
     const loginForm       = document.getElementById('loginForm');
     const loginButton     = document.getElementById('loginButton');
     const spinner         = loginButton.querySelector('.spinner-border');
     const messageDiv      = document.getElementById('message');
     // ******************************************************
-
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -78,64 +77,52 @@
             password: document.getElementById('password').value
         };
 
+        // Menggunakan metode POST standar, bukan lagi JSONP atau no-cors
         fetch(URL_APPS_SCRIPT, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'text/plain;charset=utf-8'},
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
-        .then(() => checkLoginStatus(payload.userId))
+        .then(response => response.json()) // Langsung baca respons sebagai JSON
+        .then(result => {
+            if (result.status === 'success' && result.loggedIn) {
+                // Simpan data sesi yang diterima dari server
+                sessionStorage.setItem('userToken', result.token);
+                sessionStorage.setItem('userLevel', result.level);
+                sessionStorage.setItem('userId', result.userId);
+                
+                // Redirect jika levelnya Admin
+                if (result.level === 'Admin') {
+                    window.location.href = 'DashWE.html';
+                } else {
+                    showMessage('Login berhasil, namun Anda tidak memiliki hak akses Admin.', 'warning');
+                }
+            } else {
+                // Tampilkan pesan error dari server
+                showMessage(result.message || 'User ID atau Password salah.', 'danger');
+            }
+        })
         .catch(err => {
-            showMessage('Gagal terhubung ke server.', 'danger');
-            resetButton();
+            console.error('Fetch Error:', err);
+            showMessage('Gagal terhubung ke server. Periksa koneksi internet Anda.', 'danger');
+        })
+        .finally(() => {
+            // Selalu reset tombol setelah selesai
+            spinner.style.display = 'none';
+            loginButton.disabled = false;
         });
     });
 
-    function checkLoginStatus(userId) {
-        const callbackName = 'login_status_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=checkLogin&userId=${userId}&callback=${callbackName}`;
+    function showMessage(msg, type) {
+        messageDiv.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                                  ${msg}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>`;
+    }
 
-        window[callbackName] = (response) => {
-            if (response.status === 'success' && response.loggedIn) {
-                sessionStorage.setItem('userToken', response.token);
-                sessionStorage.setItem('userLevel', response.level);
-                sessionStorage.setItem('userId', response.userId);
-                
-                if (response.level === 'Admin') {
-                    window.location.href = 'DashWE.html';
-                } else {
-                    showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
-                    resetButton();
-                    window.location.href = 'index.html';
-                }
-            } else {
-                showMessage(response.message || 'User ID atau Password salah.', 'danger');
-                resetButton();
-            }
-            cleanup(script, callbackName);
-        };
-        script.onerror = () => {
-            showMessage('Gagal memverifikasi status login.', 'danger');
-            resetButton();
-            cleanup(script, callbackName);
-        };
-        document.body.appendChild(script);
-    }
-    
-    function cleanup(script, callbackName) {
-        if (script.parentNode) script.parentNode.removeChild(script);
-        delete window[callbackName];
-    }
-    
-    function showMessage(msg, type) { 
-        messageDiv.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
-    }
-    
-    function resetButton() { 
-        spinner.style.display = 'none'; 
-        loginButton.disabled = false;
-    }
 </script>
+    
 </body>
 </html>
