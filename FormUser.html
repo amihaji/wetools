@@ -107,6 +107,7 @@
                 } else {
                     showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
                     resetButton();
+                    window.location.href = 'FormUser.html';
                 }
             } else {
                 showMessage(response.message || 'User ID atau Password salah.', 'danger');
