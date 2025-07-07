@@ -7,24 +7,100 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* CSS Minimal untuk Debugging */
-        body { background-color: #f8f9fa; }
-        .navbar-custom-blue { background-color: #002266; }
-        .table-wrapper { max-height: 400px; overflow: auto; }
-        .table-wrapper thead th { position: sticky; top: 0; z-index: 1; }
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 1060; display: flex; justify-content: center; align-items: center; }
+
+        /* Pengaturan warna Navbar */    
+        .navbar-custom-blue {
+            background-color: #002266; 
+        }
+
+        /****************************************************
+        * Pengaturan Untuk jumlah 5 baris dari tabel + header
+        ****************************************************/
+
+        /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
+        .table-wrapper {
+            max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
+            overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
+            border: 1px solid #dee2e6;
+            /* border-radius: .375rem; */
+        }
+        /* Membuat header tabel menjadi "sticky" */
+        .table-wrapper thead th {
+            position: sticky; /* Membuat header tetap di posisinya */
+            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
+            z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
+        }
+        /* Mengubah warna header tabel */
+        .table-dark-custom {
+            --bs-table-bg: #002266;
+            --bs-table-color: white;
+            --bs-table-border-color: #003388;
+        }
+
+        /************************************************
+        /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
+        /************************************************
+
+        /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
+        .actions-col {
+            text-align: right;
+            width: 140px; 
+            /* KUNCI #1: Mencegah ikon turun ke bawah */
+            white-space: nowrap; 
+        }
+
+        /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
+        .action-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            
+            color: #6c757d;
+            background-color: transparent;
+            text-decoration: none;
+            margin-left: 8px;
+            
+            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
+            vertical-align: middle;
+            
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Memunculkan ikon saat baris (tr) di-hover */
+        .table-hover > tbody > tr:hover .action-icon {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Efek saat ikon di-hover */
+        .action-icon:hover {
+            /* KUNCI #3: Menggunakan warna abu-abu yang lebih terlihat */
+            background-color: #d3d3d3;  /* Warna abu-abu (lightgray) yang lebih jelas */
+            color: #dc3545;             /* Warna ikon merah */
+        }
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.7); z-index: 1060;
+            display: flex; justify-content: center; align-items: center;
+        }
     </style>
 </head>
-<body onload="initializeApp()">
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    </div>
 
-    <!-- Elemen penting untuk Inisialisasi -->
-    <div id="loadingOverlay" style="display: none;"><div class="spinner-border text-primary"></div></div>
-    
-    <nav class="navbar navbar-dark navbar-custom-blue">
+    <!-- Tampilan Baris Navbar Dasboard -->
+    <nav class="navbar navbar-dark navbar-custom-blue">    
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Dashboard Admin</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</a>
             <div>
-                <!-- INI ELEMEN YANG MENJADI MASALAH -->
                 <span class="navbar-text me-3" id="welcomeUser"></span>
                 <button class="btn btn-outline-light" id="logoutButton">Logout</button>
             </div>
@@ -32,91 +108,368 @@
     </nav>
 
     <div class="container mt-4">
-        <h1>Dashboard Data</h1>
-        <div class="table-wrapper shadow-sm mt-3">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Nama</th>
-                        <th>Nomor HP</th>
-                        <th>Sponsor</th>
-                    </tr>
-                </thead>
-                <tbody id="dataTableBody">
-                    <!-- Data akan diisi di sini -->
-                </tbody>
-            </table>
+        <!-- Toolbar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row gy-2">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
+                            <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                            <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
+                            <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="table-container shadow-sm bg-white">
+            <div class="table-wrapper shadow-sm">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark-custom">            
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nama</th>
+                            <th>Nomor HP</th>
+                            <th>Email</th>
+                            <th>Sponsor</th>
+                            <th>HP Sponsor</th>
+                            <th class="actions-col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                       <!-- Data akan diisi oleh JavaScript di sini -->  
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // --- DEKLARASI GLOBAL ---
-        const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxGAoxg3nDM24z48CbaNAC9xE7ezZ5zp6mXbWawuT8FXJafEnH9Vunapeu9nXYyo5tx/exec';
-        const userToken = sessionStorage.getItem('userToken');
-        const userId = sessionStorage.getItem('userId');
+    <!-- TAMPILAN FORM MODALS -->
+    <!-- Modal Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header>
+                    <h5 class="modal-title">Edit Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editRowIndex">
+                        <div class="mb-3"><label for="editNama" class="form-label">Nama</label><input type="text" class="form-control" id="editNama" required></div>
+                        <div class="mb-3"><label for="editNomorHp" class="form-label">Nomor HP</label><input type="tel" class="form-control" id="editNomorHp" required></div>
+                        <div class="mb-3"><label for="editEmail" class="form-label">Email</label><input type="email" class="form-control" id="editEmail"></div>
+                        <div class="mb-3"><label for="editSponsor" class="form-label">Sponsor</label><input type="text" class="form-control" id="editSponsor" required></div>
+                        <div class="mb-3"><label for="editHpSponsor" class="form-label">HP Sponsor</label><input type="tel" class="form-control" id="editHpSponsor" required></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // --- FUNGSI INISIALISASI ---
-        function initializeApp() {
-            // Debugging paling penting
-            const welcomeUserEl = document.getElementById('welcomeUser');
-            console.log("Mencari elemen 'welcomeUser' saat onload:", welcomeUserEl);
+    <!-- Modal View -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewModalLabel">Detail Hasil Analisa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="viewModalBody">
+                    <!-- Konten detail akan dimuat di sini -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if (welcomeUserEl) {
-                welcomeUserEl.textContent = `Welcome, ${userId}`;
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    //***********  Deklarasi variabel global ****************
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyGKGcNrdYUm0KpxETX478i4Na6UzgEXDucYo51yZZBaJqmphVY1p8XuYs5CKjA4OHD/exec';
+    const userToken       = sessionStorage.getItem('userToken');
+    const userLevel       = sessionStorage.getItem('userLevel');
+    const userId          = sessionStorage.getItem('userId');
+    // ******************************************************
+
+    // Cek otentikasi saat halaman dimuat
+    if (!userToken || !userLevel) {
+        alert('Akses ditolak. Silakan login terlebih dahulu.');
+        window.location.href = 'FormUser.html';
+    }
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
+        loadTableData();
+
+        // Event Listeners
+        document.getElementById('logoutButton').addEventListener('click', logout);
+        document.getElementById('filterButton').addEventListener('click', loadTableData);
+        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+        document.getElementById('exportButton').addEventListener('click', exportToExcel);
+    });
+
+    function showLoading(show) {
+        loadingOverlay.style.display = show ? 'flex' : 'none';
+    }
+    
+    /* Tampilkan Tabel Data */
+    function loadTableData() {
+        showLoading(true);
+        const filterValue = document.getElementById('filterSponsor').value;
+
+        const callbackName = 'data_cb_' + Date.now();
+        const script = document.createElement('script');
+        script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
+
+        script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
+
+        window[callbackName] = (response) => {
+            const tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = '';
+            if (response.status === 'success') {
+                response.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const rowIndex = row[0];
+                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
+                    const nama = row[2] || '';
+                    const hp = row[3] || '';
+                    const email = row[4] || '';
+                    const sponsor = row[29] || '';
+                    const hpSponsor = row[30] || '';
+                    // Ubah data menjadi string sebelum menggunakan replace()
+                    const safeNama = String(nama).replace(/'/g, "\\'");
+                    const safeHp = String(hp).replace(/'/g, "\\'");
+                    const safeEmail = String(email).replace(/'/g, "\\'");
+                    const safeSponsor = String(sponsor).replace(/'/g, "\\'");
+                    const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
+
+                    tr.innerHTML = `
+                        <td>${tgl}</td>
+                        <td>${nama}</td>
+                        <td>${hp}</td>
+                        <td>${email}</td>
+                        <td>${sponsor}</td>
+                        <td>${hpSponsor}</td>
+                        <td class="actions-col">
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
             } else {
-                alert("FATAL ERROR: Elemen 'welcomeUser' tidak dapat ditemukan setelah halaman dimuat. Periksa file HTML di GitHub.");
-                return;
+                alert(response.message);
+                if(response.message.includes('Sesi tidak valid')) logout();
             }
+            showLoading(false);
+        };
+        document.body.appendChild(script);
+    }
 
-            // Pengecekan sesi
-            if (!userToken) {
-                alert('Akses ditolak. Silakan login.');
-                window.location.href = 'FormUser.html';
-                return;
-            }
+    function logout() {
+        showLoading(true);
+        const payload = JSON.stringify({ action: "logoutUser", token: userToken });
+        fetch(URL_APPS_SCRIPT, {
+            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: payload
+        }).finally(() => {
+            sessionStorage.clear();
+            window.location.href = 'FormUser.html';
+        });
+    }
 
-            // Muat data awal
-            loadTableData();
+    function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
+        document.getElementById('editRowIndex').value = rowIndex;
+        document.getElementById('editNama').value = nama;
+        document.getElementById('editNomorHp').value = hp;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editSponsor').value = sponsor;
+        document.getElementById('editHpSponsor').value = hpSponsor;
+        editModal.show();
+    }
 
-            // Event listener
-            document.getElementById('logoutButton').addEventListener('click', () => {
-                sessionStorage.clear();
-                window.location.href = 'index.html';
-            });
-        }
+    function saveChanges() {
+        showLoading(true);
+        const payload = {
+            action: 'editData',
+            token: userToken,
+            rowIndex: document.getElementById('editRowIndex').value,
+            nama: document.getElementById('editNama').value,
+            nomorHp: document.getElementById('editNomorHp').value,
+            email: document.getElementById('editEmail').value,
+            sponsor: document.getElementById('editSponsor').value,
+            hpSponsor: document.getElementById('editHpSponsor').value,
+        };
         
-        async function loadTableData() {
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            const url = new URL(URL_APPS_SCRIPT);
-            url.searchParams.append('action', 'getDataWE');
-            url.searchParams.append('token', userToken);
-            
-            try {
-                const response = await fetch(url);
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    const tableBody = document.getElementById('dataTableBody');
-                    tableBody.innerHTML = '';
-                    result.data.forEach(row => {
-                        const tr = document.createElement('tr');
-                        // Tampilkan data minimal untuk debugging
-                        tr.innerHTML = `<td>${row[2] || ''}</td><td>${row[3] || ''}</td><td>${row[29] || ''}</td>`;
-                        tableBody.appendChild(tr);
-                    });
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                alert('Gagal memuat data: ' + error.message);
-                if (error.message.includes('Sesi tidak valid')) {
-                    window.location.href = 'FormUser.html';
-                }
-            } finally {
-                document.getElementById('loadingOverlay').style.display = 'none';
+        fetch(URL_APPS_SCRIPT, {
+            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
+        }).finally(() => {
+            editModal.hide();
+            setTimeout(loadTableData, 500); // Beri jeda agar server sempat update
+        });
+    }
+
+    function deleteRow(rowIndex) {
+        if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}? Aksi ini tidak bisa dibatalkan.`)) return;
+        showLoading(true);
+        const payload = { action: 'deleteData', token: userToken, rowIndex: rowIndex };
+        fetch(URL_APPS_SCRIPT, {
+            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
+        }).finally(() => {
+            setTimeout(loadTableData, 500);
+        });
+    }
+
+    function viewRecord(rowIndex) {
+        showLoading(true);
+        const callbackName = 'view_cb_' + Date.now();
+        const script = document.createElement('script');
+        script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
+
+        window[callbackName] = (response) => {
+            if (response.status === 'success') {
+                const data = response.data;
+                const viewBody = document.getElementById('viewModalBody');
+
+                const fungsionalHTML = (data.fungsional || []).map(item => `
+                    <tr>
+                        <td>${item.label || "-"}</td>
+                        <td style="text-align:center;">${item.jawaban || "-"}</td>
+                    </tr>`).join('');
+
+                const evaluasiHTML = (data.evaluasi || []).map(item => `
+                    <tr>
+                        <td>${item.param || "-"}</td>
+                        <td class="text-center">${item.hasil || "-"}</td>
+                        <td class="text-center">${item.ideal || "-"}</td>
+                        <td class="text-center">${item.satuan || "-"}</td>
+                        <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
+                    </tr>`).join('');
+
+                viewBody.innerHTML = `
+                    <!-- DATA PROFILE -->
+                    <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
+                    <table class="table table-bordered">
+                        <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                            <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
+                        </tr>
+                        <tr><td>Nama</td><td>${data.nama}</td></tr>
+                        <tr><td>No. HP</td><td>${data.hp}</td></tr>
+                        <tr><td>Email</td><td>${data.email}</td></tr>
+                        <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
+                        <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
+                        <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
+                        <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
+                        <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
+                        <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
+                    </table>
+
+                    <!-- DATA FUNGSIONAL -->
+                    <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+                            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
+                        </thead>
+                        <tbody>${fungsionalHTML}</tbody>
+                    </table>
+
+                    <!-- DATA EVALUASI -->
+                    <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                               <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+                               <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+                               <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>${evaluasiHTML}</tbody>
+                    </table>
+
+                    <!-- DATA KESIMPULAN DAN REKOMENDASI -->
+                    <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
+                              
+                    <table class="table table-bordered">
+                    <tbody>
+                        <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+                        <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen}</strong></td>
+                        </tr>
+                        <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                        <td style="width:85%;">${data.kesimpulan}</td>
+                        </tr>
+                        <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                        <td style="width:85%;">${data.rekomendasi}</td>
+                        </tr>
+                    </tbody>
+                    </table>`;
+ 
+                viewModal.show();
+            } else {
+                alert(response.message);
             }
+            showLoading(false);
+        };
+        document.body.appendChild(script);
+    }
+
+    function exportToExcel() {
+        const table = document.querySelector(".table-container table");
+        let csv = [];
+        for (const row of table.rows) {
+            let rowData = [];
+            // Ambil semua sel kecuali sel terakhir (Aksi)
+            for (let i = 0; i < row.cells.length - 1; i++) {
+                rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
+            }
+            csv.push(rowData.join(','));
         }
-    </script>
+        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "DataSurvey.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+  
+    // Format penanggalan Indonesia
+    function formatTanggal(tanggalISO) {
+        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
+        
+        try {
+            const d = new Date(tanggalISO);
+            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
+            const hari = String(d.getDate()).padStart(2, '0');
+            const bulan = String(d.getMonth() + 1).padStart(2, '0');
+            const tahun = d.getFullYear();
+            return `${hari}-${bulan}-${tahun}`;
+        } catch (e) {
+            // Jika format tanggal tidak valid, kembalikan apa adanya
+            return tanggalISO;
+        }
+    }
+</script>
 </body>
 </html>
