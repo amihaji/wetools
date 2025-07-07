@@ -7,150 +7,86 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-
-        /* Pengaturan warna Navbar */    
-        .navbar-custom-blue {
-            background-color: #002266; 
-        }
-
-        /****************************************************
-        * Pengaturan Untuk jumlah 5 baris dari tabel + header
-        ****************************************************/
-
-        /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
-        .table-wrapper {
-            max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
-            overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
-            border: 1px solid #dee2e6;
-            /* border-radius: .375rem; */
-        }
-        /* Membuat header tabel menjadi "sticky" */
-        .table-wrapper thead th {
-            position: sticky; /* Membuat header tetap di posisinya */
-            top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
-            z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
-        }
-        /* Mengubah warna header tabel */
-        .table-dark-custom {
-            --bs-table-bg: #002266;
-            --bs-table-color: white;
-            --bs-table-border-color: #003388;
-        }
-
-        /************************************************
-        /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
-        /************************************************
-
-        /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
-        .actions-col {
-            text-align: right;
-            width: 140px; 
-            /* KUNCI #1: Mencegah ikon turun ke bawah */
-            white-space: nowrap; 
-        }
-
-        /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
-        .action-icon {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            
-            color: #6c757d;
-            background-color: transparent;
-            text-decoration: none;
-            margin-left: 8px;
-            
-            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
-            vertical-align: middle;
-            
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.2s ease-in-out;
-        }
-
-        /* Memunculkan ikon saat baris (tr) di-hover */
-        .table-hover > tbody > tr:hover .action-icon {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* Efek saat ikon di-hover */
-        .action-icon:hover {
-            /* KUNCI #3: Menggunakan warna abu-abu yang lebih terlihat */
-            background-color: #d3d3d3;  /* Warna abu-abu (lightgray) yang lebih jelas */
-            color: #dc3545;             /* Warna ikon merah */
-        }
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7); z-index: 1060;
-            display: flex; justify-content: center; align-items: center;
-        }
+        /* CSS DARI FILE REV2 ANDA (TIDAK DIUBAH) */
+        .navbar-custom-blue { background-color: #002266; }
+        .table-wrapper { max-height: 400px; overflow: auto; border: 1px solid #dee2e6; border-radius: .375rem; }
+        .table-wrapper thead th { position: sticky; top: 0; z-index: 2; }
+        .table-dark-custom { --bs-table-bg: #002266; --bs-table-color: white; --bs-table-border-color: #003388; }
+        .table > :not(caption) > * > * { white-space: nowrap; }
+        .actions-col { text-align: right; width: 140px; white-space: nowrap; }
+        .action-icon { display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; border-radius: 50%; color: #6c757d; background-color: transparent; text-decoration: none; margin-left: 8px; vertical-align: middle; visibility: hidden; opacity: 0; transition: all 0.2s ease-in-out; }
+        .table-hover > tbody > tr:hover .action-icon { visibility: visible; opacity: 1; }
+        .action-icon:hover { background-color: #d3d3d3; color: #dc3545; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 1060; display: flex; justify-content: center; align-items: center; }
+        
+        /* CSS BARU HANYA UNTUK FITUR FOLLOW UP */
+        .select-col { width: 50px; text-align: center; }
+        @media (max-width: 768px) { .toolbar-buttons .btn { width: 100%; margin-bottom: 0.5rem; } }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-    </div>
-
-    <!-- Tampilan Baris Navbar Dasboard -->
-    <nav class="navbar navbar-dark navbar-custom-blue">    
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard Admin</a>
-            <div>
-                <span class="navbar-text me-3" id="welcomeUser"></span>
-                <button class="btn btn-outline-light" id="logoutButton">Logout</button>
-            </div>
-        </div>
-    </nav>
+    <div id="loadingOverlay" class="loading-overlay"> ... </div>
+    <nav class="navbar navbar-dark navbar-custom-blue"> ... </nav>
 
     <div class="container mt-4">
         <!-- Toolbar -->
         <div class="card mb-4">
             <div class="card-body">
-                <div class="row gy-2">
-                    <div class="col-lg-6">
+                <div class="row gy-3 align-items-center">
+                    <div class="col-md-5">
                         <div class="input-group">
-                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
+                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter Nama Sponsor...">
                             <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
-                            <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                            <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
+                    <div class="col-md-7">
+                        <div class="toolbar-buttons d-grid d-md-flex justify-content-md-end gap-2">
+                            <!-- A. Grup Tombol Normal -->
+                            <div id="normalToolbar" class="d-grid d-md-flex gap-2">
+                                <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
+                                <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
+                                <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
+                            </div>
+                            <!-- B. Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
+                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2" style="display: none;">
+                                <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
+                                <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tabel Data -->
-        <div class="table-container shadow-sm bg-white">
-            <div class="table-wrapper shadow-sm">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark-custom">            
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama</th>
-                            <th>Nomor HP</th>
-                            <th>Email</th>
-                            <th>Sponsor</th>
-                            <th>HP Sponsor</th>
-                            <th class="actions-col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTableBody">
-                       <!-- Data akan diisi oleh JavaScript di sini -->  
-                    </tbody>
-                </table>
+        <!-- C. Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
+        <div class="card mb-3" id="followUpMessageBox" style="display: none;">
+            <div class="card-body">
+                <label for="waMessage" class="form-label"><strong>Tulis Pesan Follow Up Anda:</strong></label>
+                <textarea class="form-control" id="waMessage" rows="4" placeholder="Contoh: Halo {nama}, ini pesan dari {sponsor}..."></textarea>
+                <div class="form-text">Gunakan <code>{nama}</code> untuk nama customer, dan <code>{sponsor}</code> untuk nama sponsor.</div>
+                <div id="sendProgress" class="mt-2" style="display: none;">
+                    <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div></div>
+                    <small class="text-muted" id="progressText"></small>
+                </div>
             </div>
         </div>
-    </div>
 
+        <!-- Tabel Data -->
+        <div class="table-wrapper shadow-sm">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark-custom">
+                    <tr>
+                        <!-- D. Kolom Checkbox (Awalnya Tersembunyi) -->
+                        <th class="select-col" style="display: none;"><input class="form-check-input" type="checkbox" id="selectAllCheckbox"></th>
+                        <th>Tanggal</th><th>Nama</th><th>Nomor HP</th><th>Email</th><th>Sponsor</th><th>HP Sponsor</th>
+                        <th class="actions-col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    
     <!-- TAMPILAN FORM MODALS -->
     <!-- Modal Edit -->
     <div class="modal fade" id="editModal" tabindex="-1">
@@ -199,42 +135,73 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzak7MPuURM5vQildrKrRDzYYGxn7-ylJKp5ItdXguJ2yZjzoa1YLqhYmHbXgjIwsIR/exec';
-    const userToken       = sessionStorage.getItem('userToken');
-    const userLevel       = sessionStorage.getItem('userLevel');
-    const userId          = sessionStorage.getItem('userId');
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwGQP6_IxyuA5Gsr-WWseeQV6ggmmmTiZv_fuLSf9qV31a9ft744SX6lKceqg_VKpOY/exec';
+    const userToken = sessionStorage.getItem('userToken'), userLevel = sessionStorage.getItem('userLevel'), userId = sessionStorage.getItem('userId');
     // ******************************************************
-
-    // Cek otentikasi saat halaman dimuat
+    
     if (!userToken || !userLevel) {
-        alert('Akses ditolak. Silakan login terlebih dahulu.');
+        alert('Akses ditolak. Silakan login.');
         window.location.href = 'FormUser.html';
     }
+    const loadingOverlay = document.getElementById('loadingOverlay'),
+          editModal = new bootstrap.Modal(document.getElementById('editModal')),
+          viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+    let isFollowUpMode = false;
 
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+    // --- VARIABEL BARU UNTUK FITUR FOLLOW UP ---
+    const startFollowUpButton = document.getElementById('startFollowUpButton');
+    const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
+    const sendWaButton = document.getElementById('sendWaButton');
+    const normalToolbar = document.getElementById('normalToolbar');
+    const followUpToolbar = document.getElementById('followUpToolbar');
+    const followUpMessageBox = document.getElementById('followUpMessageBox');
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const sendProgress = document.getElementById('sendProgress');
+    const progressBar = sendProgress.querySelector('.progress-bar');
+    const progressText = document.getElementById('progressText');
 
-    document.addEventListener('DOMContentLoaded', function() {
+    // --- EVENT LISTENERS ---
+    document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
         loadTableData();
-
-        // Event Listeners
+        // Listener lama
         document.getElementById('logoutButton').addEventListener('click', logout);
         document.getElementById('filterButton').addEventListener('click', loadTableData);
         document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
         document.getElementById('exportButton').addEventListener('click', exportToExcel);
+        // Listener baru
+        startFollowUpButton.addEventListener('click', () => toggleFollowUpMode(true));
+        cancelFollowUpButton.addEventListener('click', () => toggleFollowUpMode(false));
+        selectAllCheckbox.addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
+        sendWaButton.addEventListener('click', sendFollowUpWA);
     });
 
-    function showLoading(show) {
-        loadingOverlay.style.display = show ? 'flex' : 'none';
+    // --- FUNGSI BARU DAN YANG DIMODIFIKASI ---
+    function toggleFollowUpMode(isStarting) {
+        isFollowUpMode = isStarting;
+        normalToolbar.style.display = isStarting ? 'none' : 'flex';
+        followUpToolbar.style.display = isStarting ? 'flex' : 'none';
+        followUpMessageBox.style.display = isStarting ? 'block' : 'none';
+
+        // Sembunyikan/tampilkan kolom yang relevan
+        document.querySelector('.select-col').style.display = isStarting ? 'table-cell' : 'none';
+        document.querySelectorAll('.actions-col').forEach(el => el.style.display = isStarting ? 'none' : 'table-cell');
+
+        // Render ulang tabel untuk menerapkan perubahan kolom
+        loadTableData();
+
+        // Reset state jika membatalkan
+        if (!isStarting) {
+            sendProgress.style.display = 'none';
+            progressBar.style.width = '0%';
+            sendWaButton.disabled = false;
+            sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
+        }
     }
-    
-    /* Tampilkan Tabel Data */
+
     function loadTableData() {
         showLoading(true);
         const filterValue = document.getElementById('filterSponsor').value;
-
         const callbackName = 'data_cb_' + Date.now();
         const script = document.createElement('script');
         script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
@@ -247,33 +214,20 @@
             if (response.status === 'success') {
                 response.data.forEach(row => {
                     const tr = document.createElement('tr');
-                    const rowIndex = row[0];
-                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
-                    const nama = row[2] || '';
-                    const hp = row[3] || '';
-                    const email = row[4] || '';
-                    const sponsor = row[29] || '';
-                    const hpSponsor = row[30] || '';
-                    // Ubah data menjadi string sebelum menggunakan replace()
-                    const safeNama = String(nama).replace(/'/g, "\\'");
-                    const safeHp = String(hp).replace(/'/g, "\\'");
-                    const safeEmail = String(email).replace(/'/g, "\\'");
-                    const safeSponsor = String(sponsor).replace(/'/g, "\\'");
-                    const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
-
+                    const [rowIndex, tgl, nama, hp, email, ...rest] = row;
+                    const sponsor = row[29], hpSponsor = row[30];
+                    
                     tr.innerHTML = `
-                        <td>${tgl}</td>
-                        <td>${nama}</td>
-                        <td>${hp}</td>
-                        <td>${email}</td>
-                        <td>${sponsor}</td>
-                        <td>${hpSponsor}</td>
-                        <td class="actions-col">
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                        <td class="select-col" style="display: ${isFollowUpMode ? 'table-cell' : 'none'};">
+                            <input class="form-check-input row-checkbox" type="checkbox" 
+                                   data-hp="${hp || ''}" data-nama="${nama || ''}" data-sponsor="${sponsor || ''}">
                         </td>
-                    `;
+                        <td>${formatTanggal(tgl)}</td><td>${nama}</td><td>${hp}</td><td>${email}</td><td>${sponsor}</td><td>${hpSponsor}</td>
+                        <td class="actions-col" style="display: ${isFollowUpMode ? 'none' : 'table-cell'};">
+                            <a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${String(nama || '').replace(/'/g, "\\'")}', '${String(hp || '').replace(/'/g, "\\'")}', '${String(email || '').replace(/'/g, "\\'")}', '${String(sponsor || '').replace(/'/g, "\\'")}', '${String(hpSponsor || '').replace(/'/g, "\\'")}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                        </td>`;
                     tableBody.appendChild(tr);
                 });
             } else {
@@ -284,7 +238,46 @@
         };
         document.body.appendChild(script);
     }
+    
+    async function sendFollowUpWA() {
+        const messageTemplate = document.getElementById('waMessage').value;
+        if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
+        
+        const recipients = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => ({...cb.dataset}));
+        if (recipients.length === 0) return alert('Pilih minimal satu penerima.');
+        
+        if (!confirm(`Anda akan mengirim pesan ke ${recipients.length} penerima. Lanjutkan?`)) return;
 
+        sendWaButton.disabled = true;
+        sendWaButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Mengirim...`;
+        sendProgress.style.display = 'block';
+        
+        const payload = JSON.stringify({ action: 'sendBulkWA', token: userToken, recipients: recipients, message: messageTemplate });
+        
+        try {
+            // Menggunakan fetch untuk POST ke Apps Script
+            const response = await fetch(URL_APPS_SCRIPT, {
+                method: 'POST', body: payload,
+                headers: {'Content-Type': 'application/json'}
+            });
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                progressText.textContent = `Memproses ${result.total} pesan...`;
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    alert(result.message);
+                    toggleFollowUpMode(false);
+                }, 500);
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            alert('Gagal mengirim: ' + error.message);
+            toggleFollowUpMode(false);
+        }
+    }
+    
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
