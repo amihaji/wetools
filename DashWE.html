@@ -273,10 +273,10 @@
         document.getElementById('filterButton').addEventListener('click', loadTableData);
         document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
         document.getElementById('exportButton').addEventListener('click', exportToExcel);
-
-        normalToolbar.style.display = 'block';
-        //followUpToolbar.style.display = 'flex';
-        followUpMessageBox.style.display = 'block';
+        
+        normalToolbar.style.display = 'flex';
+        followUpMessageBox.style.display = 'none';
+        followUpToolbar.style.display = 'none';
 
         // Listener Tombol Follow Up
         startFollowUpButton.addEventListener('click', () => {
