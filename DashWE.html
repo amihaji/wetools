@@ -153,166 +153,198 @@
     let allDataCache = [];
     let isFollowUpMode = false;
 
-    // --- EVENT LISTENER UTAMA ---
-    // Menunggu seluruh HTML siap sebelum menjalankan kode manipulasi DOM
-    document.addEventListener('DOMContentLoaded', () => {
-        // Inisialisasi semua elemen DOM di sini
-        loadingOverlay = document.getElementById('loadingOverlay');
-        editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-        normalToolbar = document.getElementById('normalToolbar');
-        followUpToolbar = document.getElementById('followUpToolbar');
-        followUpMessageBox = document.getElementById('followUpMessageBox');
-        selectAllCheckbox = document.getElementById('selectAllCheckbox');
-        sendProgress = document.getElementById('sendProgress');
-        progressBar = sendProgress.querySelector('.progress-bar');
-        progressText = document.getElementById('progressText');
-        
-        // Sekarang aman untuk memanipulasi elemen
-        document.getElementById('welcomeUser').textContent = `Welcome, ${userId}`;
-        
-        // Muat data awal
-        loadTableData();
+        // --- EVENT LISTENER UTAMA ---
+        // Menunggu seluruh HTML siap sebelum menjalankan kode manipulasi DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inisialisasi semua elemen DOM di sini
+            loadingOverlay = document.getElementById('loadingOverlay');
+            editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+            normalToolbar = document.getElementById('normalToolbar');
+            followUpToolbar = document.getElementById('followUpToolbar');
+            followUpMessageBox = document.getElementById('followUpMessageBox');
+            selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            sendProgress = document.getElementById('sendProgress');
+            progressBar = sendProgress.querySelector('.progress-bar');
+            progressText = document.getElementById('progressText');
+            
+            // Sekarang aman untuk memanipulasi elemen
+            document.getElementById('welcomeUser').textContent = `Welcome, ${userId}`;
+            
+            // Muat data awal
+            loadTableData();
 
-        // Daftarkan semua event listener
-        document.getElementById('logoutButton').addEventListener('click', logout);
-        document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
-        document.getElementById('exportButton').addEventListener('click', exportToExcel);
-        document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
-        document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
-        document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
-        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-        selectAllCheckbox.addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
-    });
+            // Daftarkan semua event listener
+            document.getElementById('logoutButton').addEventListener('click', logout);
+            document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
+            document.getElementById('exportButton').addEventListener('click', exportToExcel);
+            document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
+            document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
+            document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
+            document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+            selectAllCheckbox.addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
+        });
  
-    // Fungsi untuk membuat request ke server
-    async function apiRequest(action, params = {}) {
-        showLoading(true);
-        const url = new URL(URL_APPS_SCRIPT);
-        url.searchParams.append('action', action);
-        url.searchParams.append('token', userToken);
-        for(const key in params) { url.searchParams.append(key, params[key]); }
-        
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const result = await response.json();
-            if (result.status === 'error') {
-                 if (result.message.includes('Sesi tidak valid')) logout();
-                 throw new Error(result.message);
+        // Fungsi untuk membuat request ke server
+        async function apiRequest(action, params = {}) {
+            showLoading(true);
+            const url = new URL(URL_APPS_SCRIPT);
+            url.searchParams.append('action', action);
+            url.searchParams.append('token', userToken);
+            for(const key in params) { url.searchParams.append(key, params[key]); }
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const result = await response.json();
+                if (result.status === 'error') {
+                    if (result.message.includes('Sesi tidak valid')) logout();
+                    throw new Error(result.message);
+                }
+                return result;
+            } catch (error) {
+                console.error('API Request Error:', error);
+                alert(`Terjadi kesalahan: ${error.message}`);
+                throw error;
+            } finally {
+                showLoading(false);
             }
-            return result;
-        } catch (error) {
-            console.error('API Request Error:', error);
-            alert(`Terjadi kesalahan: ${error.message}`);
-            throw error;
-        } finally {
-            showLoading(false);
         }
-    }
 
-    // Fungsi untuk POST data
-    async function apiPost(payload) {
-        showLoading(true);
-        try {
-            const response = await fetch(URL_APPS_SCRIPT, {
-                method: 'POST',
-                body: JSON.stringify({...payload, token: userToken}),
-                headers: {'Content-Type': 'application/json'}
-            });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error('API POST Error:', error);
-            alert(`Terjadi kesalahan: ${error.message}`);
-            throw error;
-        } finally {
-            showLoading(false);
+        // Fungsi untuk POST data
+        async function apiPost(payload) {
+            showLoading(true);
+            try {
+                const response = await fetch(URL_APPS_SCRIPT, {
+                    method: 'POST',
+                    body: JSON.stringify({...payload, token: userToken}),
+                    headers: {'Content-Type': 'application/json'}
+                });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error('API POST Error:', error);
+                alert(`Terjadi kesalahan: ${error.message}`);
+                throw error;
+            } finally {
+                showLoading(false);
+            }
         }
-    }
 
-    function showLoading(show) {
-        if(loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
-    }
-
-    async function loadTableData(forceRefresh = false) {
-        const filterValue = document.getElementById('filterSponsor').value;
-        if (!forceRefresh && allDataCache.length > 0 && !filterValue) {
-            renderTable(allDataCache);
-            return;
+        function showLoading(show) {
+            if(loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
         }
-        try {
-            const result = await apiRequest('getDataWE', { filter: encodeURIComponent(filterValue) });
-            allDataCache = result.data;
-            renderTable(allDataCache);
-        } catch (error) {
-            // Error sudah ditangani
+
+        async function loadTableData(forceRefresh = false) {
+            const filterValue = document.getElementById('filterSponsor').value;
+            if (!forceRefresh && allDataCache.length > 0 && !filterValue) {
+                renderTable(allDataCache);
+                return;
+            }
+            try {
+                const result = await apiRequest('getDataWE', { filter: encodeURIComponent(filterValue) });
+                allDataCache = result.data;
+                renderTable(allDataCache);
+            } catch (error) {
+                // Error sudah ditangani
+            }
         }
-    }
 
-    // --- FUNGSI BARU DAN YANG DIMODIFIKASI ---
-    function toggleFollowUpMode(isStarting) {
-        isFollowUpMode = isStarting;
-        normalToolbar.style.display = isStarting ? 'none' : 'flex';
-        followUpToolbar.style.display = isStarting ? 'flex' : 'none';
-        followUpMessageBox.style.display = isStarting ? 'block' : 'none';
+        // --- FUNGSI BARU DAN YANG DIMODIFIKASI ---
+        function toggleFollowUpMode(isStarting) {
+            isFollowUpMode = isStarting;
+            normalToolbar.style.display = isStarting ? 'none' : 'flex';
+            followUpToolbar.style.display = isStarting ? 'flex' : 'none';
+            followUpMessageBox.style.display = isStarting ? 'block' : 'none';
 
-        // Sembunyikan/tampilkan kolom yang relevan
-        document.querySelector('.select-col').style.display = isStarting ? 'table-cell' : 'none';
-        document.querySelectorAll('.actions-col').forEach(el => el.style.display = isStarting ? 'none' : 'table-cell');
+            // Sembunyikan/tampilkan kolom yang relevan
+            document.querySelector('.select-col').style.display = isStarting ? 'table-cell' : 'none';
+            document.querySelectorAll('.actions-col').forEach(el => el.style.display = isStarting ? 'none' : 'table-cell');
 
-        // Render ulang tabel untuk menerapkan perubahan kolom
-        loadTableData();
+            // Render ulang tabel untuk menerapkan perubahan kolom
+            loadTableData();
 
-        // Reset state jika membatalkan
-        if (!isStarting) {
-            sendProgress.style.display = 'none';
-            progressBar.style.width = '0%';
-            sendWaButton.disabled = false;
-            sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
+            // Reset state jika membatalkan
+            if (!isStarting) {
+                sendProgress.style.display = 'none';
+                progressBar.style.width = '0%';
+                sendWaButton.disabled = false;
+                sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
+            }
         }
-    }
 
     
-    async function sendFollowUpWA() {
-        const messageTemplate = document.getElementById('waMessage').value;
-        if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
-        
-        const recipients = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => ({...cb.dataset}));
-        if (recipients.length === 0) return alert('Pilih minimal satu penerima.');
-        
-        if (!confirm(`Anda akan mengirim pesan ke ${recipients.length} penerima. Lanjutkan?`)) return;
+        async function sendFollowUpWA() {
+            const messageTemplate = document.getElementById('waMessage').value;
+            if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
+            
+            const recipients = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => ({...cb.dataset}));
+            if (recipients.length === 0) return alert('Pilih minimal satu penerima.');
+            
+            if (!confirm(`Anda akan mengirim pesan ke ${recipients.length} penerima. Lanjutkan?`)) return;
 
-        sendWaButton.disabled = true;
-        sendWaButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Mengirim...`;
-        sendProgress.style.display = 'block';
-        
-        const payload = JSON.stringify({ action: 'sendBulkWA', token: userToken, recipients: recipients, message: messageTemplate });
-        
-        try {
-            // Menggunakan fetch untuk POST ke Apps Script
-            const response = await fetch(URL_APPS_SCRIPT, {
-                method: 'POST', body: payload,
-                headers: {'Content-Type': 'application/json'}
-            });
-            const result = await response.json();
+            sendWaButton.disabled = true;
+            sendWaButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Mengirim...`;
+            sendProgress.style.display = 'block';
+            
+            const payload = JSON.stringify({ action: 'sendBulkWA', token: userToken, recipients: recipients, message: messageTemplate });
+            
+            try {
+                // Menggunakan fetch untuk POST ke Apps Script
+                const response = await fetch(URL_APPS_SCRIPT, {
+                    method: 'POST', body: payload,
+                    headers: {'Content-Type': 'application/json'}
+                });
+                const result = await response.json();
 
-            if (result.status === 'success') {
-                progressText.textContent = `Memproses ${result.total} pesan...`;
-                progressBar.style.width = '100%';
-                setTimeout(() => {
-                    alert(result.message);
-                    toggleFollowUpMode(false);
-                }, 500);
-            } else {
-                throw new Error(result.message);
+                if (result.status === 'success') {
+                    progressText.textContent = `Memproses ${result.total} pesan...`;
+                    progressBar.style.width = '100%';
+                    setTimeout(() => {
+                        alert(result.message);
+                        toggleFollowUpMode(false);
+                    }, 500);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                alert('Gagal mengirim: ' + error.message);
+                toggleFollowUpMode(false);
             }
-        } catch (error) {
-            alert('Gagal mengirim: ' + error.message);
-            toggleFollowUpMode(false);
         }
-    }
-    
+        
+   
+
+       function renderTable(data) {
+            const tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = ''; // Kosongkan tabel
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="7" class="text-center p-4">Tidak ada data untuk ditampilkan.</td></tr>';
+                return;
+            }
+            
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                const [rowIndex, tgl, nama, hp, email, ...rest] = row;
+                const sponsor = row[29] || '', hpSponsor = row[30] || '';
+                
+                const safeNama = String(nama).replace(/'/g, "\\'"), safeHp = String(hp).replace(/'/g, "\\'"),
+                      safeEmail = String(email).replace(/'/g, "\\'"), safeSponsor = String(sponsor).replace(/'/g, "\\'"),
+                      safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
+
+                tr.innerHTML = `
+                    <td class="select-col" style="display: ${isFollowUpMode ? 'table-cell' : 'none'};"><input class="form-check-input row-checkbox" type="checkbox" data-hp="${safeHp}" data-nama="${safeNama}" data-sponsor="${safeSponsor}"></td>
+                    <td>${formatTanggal(tgl)}</td><td>${nama}</td><td>${hp}</td><td>${email}</td><td>${sponsor}</td><td>${hpSponsor}</td>
+                    <td class="actions-col" style="display: ${isFollowUpMode ? 'none' : 'table-cell'};">
+                        <a href="#" class="action-icon" onclick="event.preventDefault(); viewRecord(${rowIndex});" title="Lihat"><i class="fas fa-eye"></i></a>
+                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}');" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); deleteRow(${rowIndex});" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                    </td>`;
+                tableBody.appendChild(tr);
+            });
+        }
+
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
