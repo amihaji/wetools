@@ -103,7 +103,8 @@
                 sessionStorage.setItem('userId', response.userId);
                 
                 if (response.level === 'Admin') {
-                    window.location.href = 'DashWE.html';
+                    //window.location.href = 'DashWE.html';
+                    window.location.href = 'DashWE.html?v=' + Date.now();
                 } else {
                     showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
                     resetButton();
