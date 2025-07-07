@@ -7,539 +7,116 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* CSS DARI FILE REV2 ANDA (TIDAK DIUBAH) */
+        /* CSS Minimal untuk Debugging */
+        body { background-color: #f8f9fa; }
         .navbar-custom-blue { background-color: #002266; }
-        .table-wrapper { max-height: 400px; overflow: auto; border: 1px solid #dee2e6; border-radius: .375rem; }
-        .table-wrapper thead th { position: sticky; top: 0; z-index: 2; }
-        .table-dark-custom { --bs-table-bg: #002266; --bs-table-color: white; --bs-table-border-color: #003388; }
-        .table > :not(caption) > * > * { white-space: nowrap; }
-        .actions-col { text-align: right; width: 140px; white-space: nowrap; }
-        .action-icon { display: inline-flex; justify-content: center; align-items: center; width: 32px; height: 32px; border-radius: 50%; color: #6c757d; background-color: transparent; text-decoration: none; margin-left: 8px; vertical-align: middle; visibility: hidden; opacity: 0; transition: all 0.2s ease-in-out; }
-        .table-hover > tbody > tr:hover .action-icon { visibility: visible; opacity: 1; }
-        .action-icon:hover { background-color: #d3d3d3; color: #dc3545; }
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.7); z-index: 1060; display: flex; justify-content: center; align-items: center; }
-        
-        /* CSS BARU HANYA UNTUK FITUR FOLLOW UP */
-        .select-col { width: 50px; text-align: center; }
-        @media (max-width: 768px) { .toolbar-buttons .btn { width: 100%; margin-bottom: 0.5rem; } }
+        .table-wrapper { max-height: 400px; overflow: auto; }
+        .table-wrapper thead th { position: sticky; top: 0; z-index: 1; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 1060; display: flex; justify-content: center; align-items: center; }
     </style>
 </head>
 <body onload="initializeApp()">
 
-    <div id="loadingOverlay" class="loading-overlay"> ... </div>
-    <nav class="navbar navbar-dark navbar-custom-blue"> ... </nav>
+    <!-- Elemen penting untuk Inisialisasi -->
+    <div id="loadingOverlay" style="display: none;"><div class="spinner-border text-primary"></div></div>
+    
+    <nav class="navbar navbar-dark navbar-custom-blue">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dashboard Admin</a>
+            <div>
+                <!-- INI ELEMEN YANG MENJADI MASALAH -->
+                <span class="navbar-text me-3" id="welcomeUser"></span>
+                <button class="btn btn-outline-light" id="logoutButton">Logout</button>
+            </div>
+        </div>
+    </nav>
 
     <div class="container mt-4">
-        <!-- Toolbar -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row gy-3 align-items-center">
-                    <div class="col-md-5">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter Nama Sponsor...">
-                            <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="toolbar-buttons d-grid d-md-flex justify-content-md-end gap-2">
-                            <!-- A. Grup Tombol Normal -->
-                            <div id="normalToolbar" class="d-grid d-md-flex gap-2">
-                                <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
-                                <button class="btn btn-success" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                                <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
-                            </div>
-                            <!-- B. Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
-                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2" style="display: none;">
-                                <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
-                                <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- C. Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
-        <div class="card mb-3" id="followUpMessageBox" style="display: none;">
-            <div class="card-body">
-                <label for="waMessage" class="form-label"><strong>Tulis Pesan Follow Up Anda:</strong></label>
-                <textarea class="form-control" id="waMessage" rows="4" placeholder="Contoh: Halo {nama}, ini pesan dari {sponsor}..."></textarea>
-                <div class="form-text">Gunakan <code>{nama}</code> untuk nama customer, dan <code>{sponsor}</code> untuk nama sponsor.</div>
-                <div id="sendProgress" class="mt-2" style="display: none;">
-                    <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div></div>
-                    <small class="text-muted" id="progressText"></small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabel Data -->
-        <div class="table-wrapper shadow-sm">
-            <table class="table table-hover table-striped mb-0">
-                <thead class="table-dark-custom">
+        <h1>Dashboard Data</h1>
+        <div class="table-wrapper shadow-sm mt-3">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
                     <tr>
-                        <!-- D. Kolom Checkbox (Awalnya Tersembunyi) -->
-                        <th class="select-col" style="display: none;"><input class="form-check-input" type="checkbox" id="selectAllCheckbox"></th>
-                        <th>Tanggal</th><th>Nama</th><th>Nomor HP</th><th>Email</th><th>Sponsor</th><th>HP Sponsor</th>
-                        <th class="actions-col">Aksi</th>
+                        <th>Nama</th>
+                        <th>Nomor HP</th>
+                        <th>Sponsor</th>
                     </tr>
                 </thead>
-                <tbody id="dataTableBody"></tbody>
+                <tbody id="dataTableBody">
+                    <!-- Data akan diisi di sini -->
+                </tbody>
             </table>
         </div>
     </div>
-    
-    <!-- TAMPILAN FORM MODALS -->
-    <!-- Modal Edit -->
-    <div class="modal fade" id="editModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header>
-                    <h5 class="modal-title">Edit Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editForm">
-                        <input type="hidden" id="editRowIndex">
-                        <div class="mb-3"><label for="editNama" class="form-label">Nama</label><input type="text" class="form-control" id="editNama" required></div>
-                        <div class="mb-3"><label for="editNomorHp" class="form-label">Nomor HP</label><input type="tel" class="form-control" id="editNomorHp" required></div>
-                        <div class="mb-3"><label for="editEmail" class="form-label">Email</label><input type="email" class="form-control" id="editEmail"></div>
-                        <div class="mb-3"><label for="editSponsor" class="form-label">Sponsor</label><input type="text" class="form-control" id="editSponsor" required></div>
-                        <div class="mb-3"><label for="editHpSponsor" class="form-label">HP Sponsor</label><input type="tel" class="form-control" id="editHpSponsor" required></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Modal View -->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewModalLabel">Detail Hasil Analisa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="viewModalBody">
-                    <!-- Konten detail akan dimuat di sini -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- DEKLARASI GLOBAL ---
+        const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzD8pBvpcgljkn0SHw4JaYSBUtBFgx4NuziMv6NMNgOP90DSzo6ErT-gBb9DQTz3bvd/exec';
+        const userToken = sessionStorage.getItem('userToken');
+        const userId = sessionStorage.getItem('userId');
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-   // --- DEKLARASI KONSTANTA DAN OTENTIKASI AWAL ---
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzD8pBvpcgljkn0SHw4JaYSBUtBFgx4NuziMv6NMNgOP90DSzo6ErT-gBb9DQTz3bvd/exec';
-    const userToken       = sessionStorage.getItem('userToken');
-    const userLevel       = sessionStorage.getItem('userLevel');
-    const userId          = sessionStorage.getItem('userId');
+        // --- FUNGSI INISIALISASI ---
+        function initializeApp() {
+            // Debugging paling penting
+            const welcomeUserEl = document.getElementById('welcomeUser');
+            console.log("Mencari elemen 'welcomeUser' saat onload:", welcomeUserEl);
 
-    if (!userToken || !userLevel) {
-        alert('Akses ditolak. Silakan login terlebih dahulu.');
-        window.location.href = 'FormUser.html';
-    }
+            if (welcomeUserEl) {
+                welcomeUserEl.textContent = `Welcome, ${userId}`;
+            } else {
+                alert("FATAL ERROR: Elemen 'welcomeUser' tidak dapat ditemukan setelah halaman dimuat. Periksa file HTML di GitHub.");
+                return;
+            }
 
-    // --- DEKLARASI VARIABEL UNTUK ELEMEN DOM ---
-    // Variabel ini akan diisi setelah DOM siap
-    let loadingOverlay, editModal, viewModal, normalToolbar, followUpToolbar,
-        followUpMessageBox, selectAllCheckbox, sendProgress, progressBar, progressText;
-    
-    let allDataCache = [];
-    let isFollowUpMode = false;
+            // Pengecekan sesi
+            if (!userToken) {
+                alert('Akses ditolak. Silakan login.');
+                window.location.href = 'FormUser.html';
+                return;
+            }
 
-    // Menunggu seluruh HTML siap sebelum menjalankan kode manipulasi DOM
-    // GANTI FUNGSI initializeApp DI DashWE.html DENGAN INI
+            // Muat data awal
+            loadTableData();
 
-function initializeApp() {
-    // Langkah 1: Mencari elemen
-    const welcomeUserEl = document.getElementById('welcomeUser');
-    
-    // Langkah 2: Lakukan DEBUGGING. Cek apa yang kita dapatkan.
-    console.log("Mencoba inisialisasi aplikasi...");
-    console.log("Mencari elemen dengan ID 'welcomeUser':", welcomeUserEl);
-
-    // Langkah 3: Hanya jalankan kode JIKA elemennya ditemukan
-    if (welcomeUserEl) {
-        console.log("Elemen 'welcomeUser' DITEMUKAN. Mengatur textContent.");
-        welcomeUserEl.textContent = `Welcome, ${userId}`;
-    } else {
-        // Jika tidak ditemukan, ini adalah akar masalahnya.
-        console.error("KRITIS: Elemen dengan ID 'welcomeUser' TIDAK DITEMUKAN di DOM!");
-        alert("Terjadi kesalahan inisialisasi halaman (Error Code: UI-INIT-01). Silakan coba hard refresh.");
-        return; // Hentikan eksekusi lebih lanjut jika elemen penting tidak ada
-    }
-
-    // Lanjutkan inisialisasi sisa elemen DOM
-    loadingOverlay = document.getElementById('loadingOverlay');
-    editModal = new bootstrap.Modal(document.getElementById('editModal'));
-    viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-
-    // Muat data awal
-    loadTableData();
-
-    // Daftarkan semua event listener
-    document.getElementById('logoutButton').addEventListener('click', logout);
-    document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
-    document.getElementById('exportButton').addEventListener('click', exportToExcel);
-    document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
-    document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
-    document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
-    document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-    document.getElementById('selectAllCheckbox').addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
-}
-
-        // Fungsi untuk membuat request ke server
-        async function apiRequest(action, params = {}) {
-            showLoading(true);
+            // Event listener
+            document.getElementById('logoutButton').addEventListener('click', () => {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+        
+        async function loadTableData() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
             const url = new URL(URL_APPS_SCRIPT);
-            url.searchParams.append('action', action);
+            url.searchParams.append('action', 'getDataWE');
             url.searchParams.append('token', userToken);
-            for(const key in params) { url.searchParams.append(key, params[key]); }
             
             try {
                 const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const result = await response.json();
-                if (result.status === 'error') {
-                    if (result.message.includes('Sesi tidak valid')) logout();
-                    throw new Error(result.message);
-                }
-                return result;
-            } catch (error) {
-                console.error('API Request Error:', error);
-                alert(`Terjadi kesalahan: ${error.message}`);
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        // Fungsi untuk POST data
-        async function apiPost(payload) {
-            showLoading(true);
-            try {
-                const response = await fetch(URL_APPS_SCRIPT, {
-                    method: 'POST',
-                    body: JSON.stringify({...payload, token: userToken}),
-                    headers: {'Content-Type': 'application/json'}
-                });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                return await response.json();
-            } catch (error) {
-                console.error('API POST Error:', error);
-                alert(`Terjadi kesalahan: ${error.message}`);
-                throw error;
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function showLoading(show) {
-            if(loadingOverlay) loadingOverlay.style.display = show ? 'flex' : 'none';
-        }
-
-        async function loadTableData(forceRefresh = false) {
-            const filterValue = document.getElementById('filterSponsor').value;
-            if (!forceRefresh && allDataCache.length > 0 && !filterValue) {
-                renderTable(allDataCache);
-                return;
-            }
-            try {
-                const result = await apiRequest('getDataWE', { filter: encodeURIComponent(filterValue) });
-                allDataCache = result.data;
-                renderTable(allDataCache);
-            } catch (error) {
-                // Error sudah ditangani
-            }
-        }
-
-        // --- FUNGSI BARU DAN YANG DIMODIFIKASI ---
-        function toggleFollowUpMode(isStarting) {
-            isFollowUpMode = isStarting;
-            normalToolbar.style.display = isStarting ? 'none' : 'flex';
-            followUpToolbar.style.display = isStarting ? 'flex' : 'none';
-            followUpMessageBox.style.display = isStarting ? 'block' : 'none';
-
-            // Sembunyikan/tampilkan kolom yang relevan
-            document.querySelector('.select-col').style.display = isStarting ? 'table-cell' : 'none';
-            document.querySelectorAll('.actions-col').forEach(el => el.style.display = isStarting ? 'none' : 'table-cell');
-
-            // Render ulang tabel untuk menerapkan perubahan kolom
-            loadTableData();
-
-            // Reset state jika membatalkan
-            if (!isStarting) {
-                sendProgress.style.display = 'none';
-                progressBar.style.width = '0%';
-                sendWaButton.disabled = false;
-                sendWaButton.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim WA';
-            }
-        }
-
-    
-        async function sendFollowUpWA() {
-            const messageTemplate = document.getElementById('waMessage').value;
-            if (!messageTemplate) return alert('Pesan WA tidak boleh kosong.');
-            
-            const recipients = Array.from(document.querySelectorAll('.row-checkbox:checked')).map(cb => ({...cb.dataset}));
-            if (recipients.length === 0) return alert('Pilih minimal satu penerima.');
-            
-            if (!confirm(`Anda akan mengirim pesan ke ${recipients.length} penerima. Lanjutkan?`)) return;
-
-            sendWaButton.disabled = true;
-            sendWaButton.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Mengirim...`;
-            sendProgress.style.display = 'block';
-            
-            const payload = JSON.stringify({ action: 'sendBulkWA', token: userToken, recipients: recipients, message: messageTemplate });
-            
-            try {
-                // Menggunakan fetch untuk POST ke Apps Script
-                const response = await fetch(URL_APPS_SCRIPT, {
-                    method: 'POST', body: payload,
-                    headers: {'Content-Type': 'application/json'}
-                });
-                const result = await response.json();
-
+                
                 if (result.status === 'success') {
-                    progressText.textContent = `Memproses ${result.total} pesan...`;
-                    progressBar.style.width = '100%';
-                    setTimeout(() => {
-                        alert(result.message);
-                        toggleFollowUpMode(false);
-                    }, 500);
+                    const tableBody = document.getElementById('dataTableBody');
+                    tableBody.innerHTML = '';
+                    result.data.forEach(row => {
+                        const tr = document.createElement('tr');
+                        // Tampilkan data minimal untuk debugging
+                        tr.innerHTML = `<td>${row[2] || ''}</td><td>${row[3] || ''}</td><td>${row[29] || ''}</td>`;
+                        tableBody.appendChild(tr);
+                    });
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
-                alert('Gagal mengirim: ' + error.message);
-                toggleFollowUpMode(false);
+                alert('Gagal memuat data: ' + error.message);
+                if (error.message.includes('Sesi tidak valid')) {
+                    window.location.href = 'FormUser.html';
+                }
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
             }
         }
-        
-   
-
-       function renderTable(data) {
-            const tableBody = document.getElementById('dataTableBody');
-            tableBody.innerHTML = ''; // Kosongkan tabel
-            
-            if (data.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="7" class="text-center p-4">Tidak ada data untuk ditampilkan.</td></tr>';
-                return;
-            }
-            
-            data.forEach(row => {
-                const tr = document.createElement('tr');
-                const [rowIndex, tgl, nama, hp, email, ...rest] = row;
-                const sponsor = row[29] || '', hpSponsor = row[30] || '';
-                
-                const safeNama = String(nama).replace(/'/g, "\\'"), safeHp = String(hp).replace(/'/g, "\\'"),
-                      safeEmail = String(email).replace(/'/g, "\\'"), safeSponsor = String(sponsor).replace(/'/g, "\\'"),
-                      safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
-
-                tr.innerHTML = `
-                    <td class="select-col" style="display: ${isFollowUpMode ? 'table-cell' : 'none'};"><input class="form-check-input row-checkbox" type="checkbox" data-hp="${safeHp}" data-nama="${safeNama}" data-sponsor="${safeSponsor}"></td>
-                    <td>${formatTanggal(tgl)}</td><td>${nama}</td><td>${hp}</td><td>${email}</td><td>${sponsor}</td><td>${hpSponsor}</td>
-                    <td class="actions-col" style="display: ${isFollowUpMode ? 'none' : 'table-cell'};">
-                        <a href="#" class="action-icon" onclick="event.preventDefault(); viewRecord(${rowIndex});" title="Lihat"><i class="fas fa-eye"></i></a>
-                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}');" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); deleteRow(${rowIndex});" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
-                    </td>`;
-                tableBody.appendChild(tr);
-            });
-        }
-
-    function logout() {
-        showLoading(true);
-        const payload = JSON.stringify({ action: "logoutUser", token: userToken });
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: payload
-        }).finally(() => {
-            sessionStorage.clear();
-            window.location.href = 'FormUser.html';
-        });
-    }
-
-    function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
-        document.getElementById('editRowIndex').value = rowIndex;
-        document.getElementById('editNama').value = nama;
-        document.getElementById('editNomorHp').value = hp;
-        document.getElementById('editEmail').value = email;
-        document.getElementById('editSponsor').value = sponsor;
-        document.getElementById('editHpSponsor').value = hpSponsor;
-        editModal.show();
-    }
-
-    function saveChanges() {
-        showLoading(true);
-        const payload = {
-            action: 'editData',
-            token: userToken,
-            rowIndex: document.getElementById('editRowIndex').value,
-            nama: document.getElementById('editNama').value,
-            nomorHp: document.getElementById('editNomorHp').value,
-            email: document.getElementById('editEmail').value,
-            sponsor: document.getElementById('editSponsor').value,
-            hpSponsor: document.getElementById('editHpSponsor').value,
-        };
-        
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
-        }).finally(() => {
-            editModal.hide();
-            setTimeout(loadTableData, 500); // Beri jeda agar server sempat update
-        });
-    }
-
-    function deleteRow(rowIndex) {
-        if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}? Aksi ini tidak bisa dibatalkan.`)) return;
-        showLoading(true);
-        const payload = { action: 'deleteData', token: userToken, rowIndex: rowIndex };
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
-        }).finally(() => {
-            setTimeout(loadTableData, 500);
-        });
-    }
-
-    function viewRecord(rowIndex) {
-        showLoading(true);
-        const callbackName = 'view_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
-
-        window[callbackName] = (response) => {
-            if (response.status === 'success') {
-                const data = response.data;
-                const viewBody = document.getElementById('viewModalBody');
-
-                const fungsionalHTML = (data.fungsional || []).map(item => `
-                    <tr>
-                        <td>${item.label || "-"}</td>
-                        <td style="text-align:center;">${item.jawaban || "-"}</td>
-                    </tr>`).join('');
-
-                const evaluasiHTML = (data.evaluasi || []).map(item => `
-                    <tr>
-                        <td>${item.param || "-"}</td>
-                        <td class="text-center">${item.hasil || "-"}</td>
-                        <td class="text-center">${item.ideal || "-"}</td>
-                        <td class="text-center">${item.satuan || "-"}</td>
-                        <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
-                    </tr>`).join('');
-
-                viewBody.innerHTML = `
-                    <!-- DATA PROFILE -->
-                    <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
-                    <table class="table table-bordered">
-                        <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-                            <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
-                        </tr>
-                        <tr><td>Nama</td><td>${data.nama}</td></tr>
-                        <tr><td>No. HP</td><td>${data.hp}</td></tr>
-                        <tr><td>Email</td><td>${data.email}</td></tr>
-                        <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
-                        <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
-                        <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
-                        <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
-                        <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
-                        <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
-                    </table>
-
-                    <!-- DATA FUNGSIONAL -->
-                    <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-                            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
-                        </thead>
-                        <tbody>${fungsionalHTML}</tbody>
-                    </table>
-
-                    <!-- DATA EVALUASI -->
-                    <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                               <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-                               <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-                               <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>${evaluasiHTML}</tbody>
-                    </table>
-
-                    <!-- DATA KESIMPULAN DAN REKOMENDASI -->
-                    <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
-                              
-                    <table class="table table-bordered">
-                    <tbody>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
-                        <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen}</strong></td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-                        <td style="width:85%;">${data.kesimpulan}</td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
-                        <td style="width:85%;">${data.rekomendasi}</td>
-                        </tr>
-                    </tbody>
-                    </table>`;
- 
-                viewModal.show();
-            } else {
-                alert(response.message);
-            }
-            showLoading(false);
-        };
-        document.body.appendChild(script);
-    }
-
-    function exportToExcel() {
-        const table = document.querySelector(".table-container table");
-        let csv = [];
-        for (const row of table.rows) {
-            let rowData = [];
-            // Ambil semua sel kecuali sel terakhir (Aksi)
-            for (let i = 0; i < row.cells.length - 1; i++) {
-                rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
-            }
-            csv.push(rowData.join(','));
-        }
-        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "DataSurvey.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-  
-    // Format penanggalan Indonesia
-    function formatTanggal(tanggalISO) {
-        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
-        
-        try {
-            const d = new Date(tanggalISO);
-            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
-            const hari = String(d.getDate()).padStart(2, '0');
-            const bulan = String(d.getMonth() + 1).padStart(2, '0');
-            const tahun = d.getFullYear();
-            return `${hari}-${bulan}-${tahun}`;
-        } catch (e) {
-            // Jika format tanggal tidak valid, kembalikan apa adanya
-            return tanggalISO;
-        }
-    }
-</script>
+    </script>
 </body>
 </html>
