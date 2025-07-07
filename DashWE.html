@@ -88,6 +88,10 @@
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
             display: flex; justify-content: center; align-items: center;
         }
+
+        .d-none-force {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -142,7 +146,7 @@
                                 <a href="index.html" class="btn btn-danger"><i class="fas fa-times"></i> Close</a>
                             </div>
                             <!-- Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
-                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2" style="display: none;">
+                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
                                 <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                                 <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                             </div>
@@ -248,58 +252,31 @@
     const normalToolbar = document.getElementById('normalToolbar');
     const followUpToolbar = document.getElementById('followUpToolbar');
     const followUpMessageBox = document.getElementById('followUpMessageBox');
+    
+    // --- DAFTARKAN SEMUA EVENT LISTENER DI SINI ---
+    document.getElementById('logoutButton').addEventListener('click', logout);
+    document.getElementById('filterButton').addEventListener('click', loadTableData);
+    document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+    document.getElementById('exportButton').addEventListener('click', exportToExcel);
+      
+    // --- INISIALISASI HALAMAN ---
+    document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
+    loadTableData(); // Panggil fungsi untuk memuat data
 
-    // --- FUNGSI UTAMA YANG DIJALANKAN SETELAH HTML SIAP ---
-    document.addEventListener('DOMContentLoaded', function() {
-        // KUNCI UTAMA: Semua variabel elemen DOM dideklarasikan DI DALAM ini
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-        
-        // Variabel untuk Fitur Follow Up
-        const startFollowUpButton = document.getElementById('startFollowUpButton');
-        const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
-        const sendWaButton = document.getElementById('sendWaButton');
-        const normalToolbar = document.getElementById('normalToolbar');
-        const followUpToolbar = document.getElementById('followUpToolbar');
-        const followUpMessageBox = document.getElementById('followUpMessageBox');
-
-        // --- INISIALISASI HALAMAN ---
-        document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
-        loadTableData(); // Panggil fungsi untuk memuat data
-
-        // --- DAFTARKAN SEMUA EVENT LISTENER DI SINI ---
-        document.getElementById('logoutButton').addEventListener('click', logout);
-        document.getElementById('filterButton').addEventListener('click', loadTableData);
-        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-        document.getElementById('exportButton').addEventListener('click', exportToExcel);
-        
-        normalToolbar.style.display = 'block';
-        normalToolbar.style.display = 'flex';
-        followUpMessageBox.style.display = 'none';
-        followUpToolbar.style.display = 'none';
-
-        // Listener Tombol Follow Up
-        startFollowUpButton.addEventListener('click', () => {
-            normalToolbar.style.display = 'none';
-            followUpToolbar.style.display = 'flex';
-            followUpMessageBox.style.display = 'block';
-        });
-
-        // Listener Tombol Batal Follow Up
-        cancelFollowUpButton.addEventListener('click', () => {
-            normalToolbar.style.display = 'flex';
-            followUpToolbar.style.display = 'none';
-            followUpMessageBox.style.display = 'none';
-        });
-
-        // Listener lainnya (tidak berubah)
-        document.getElementById('logoutButton').addEventListener('click', logout);
-        document.getElementById('filterButton').addEventListener('click', loadTableData);
-        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-        document.getElementById('exportButton').addEventListener('click', exportToExcel);
+    // --- EVENT LISTENERS ---
+    document.getElementById('startFollowUpButton').addEventListener('click', () => {
+        // Logika untuk menampilkan/menyembunyikan dengan class
+        normalToolbar.classList.add('d-none-force');
+        followUpToolbar.classList.remove('d-none-force');
+        followUpMessageBox.style.display = 'block'; // style.display masih ok untuk ini
     });
 
+    document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
+        // Logika untuk menampilkan/menyembunyikan dengan class
+        followUpToolbar.classList.add('d-none-force');
+        normalToolbar.classList.remove('d-none-force');
+        followUpMessageBox.style.display = 'none';
+    });
     
     function showLoading(show) {
         loadingOverlay.style.display = show ? 'flex' : 'none';
