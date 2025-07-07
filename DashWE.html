@@ -155,35 +155,45 @@
     let isFollowUpMode = false;
 
     // Menunggu seluruh HTML siap sebelum menjalankan kode manipulasi DOM
-    function initializeApp() {    
-        // Inisialisasi semua elemen DOM di sini
-        loadingOverlay     = document.getElementById('loadingOverlay');
-        editModal          = new bootstrap.Modal(document.getElementById('editModal'));
-        viewModal          = new bootstrap.Modal(document.getElementById('viewModal'));
-        normalToolbar      = document.getElementById('normalToolbar');
-        followUpToolbar    = document.getElementById('followUpToolbar');
-        followUpMessageBox = document.getElementById('followUpMessageBox');
-        selectAllCheckbox  = document.getElementById('selectAllCheckbox');
-        sendProgress       = document.getElementById('sendProgress');
-        progressBar        = sendProgress.querySelector('.progress-bar');
-        progressText       = document.getElementById('progressText');
-            
-        // Sekarang aman untuk memanipulasi elemen
-        document.getElementById('welcomeUser').textContent = `Welcome, ${userId}`;
-            
-        // Muat data awal
-        loadTableData();
+    // GANTI FUNGSI initializeApp DI DashWE.html DENGAN INI
 
-        // Daftarkan semua event listener
-        document.getElementById('logoutButton').addEventListener('click', logout);
-        document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
-        document.getElementById('exportButton').addEventListener('click', exportToExcel);
-        document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
-        document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
-        document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
-        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-        document.getElementById('selectAllCheckbox').addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
+function initializeApp() {
+    // Langkah 1: Mencari elemen
+    const welcomeUserEl = document.getElementById('welcomeUser');
+    
+    // Langkah 2: Lakukan DEBUGGING. Cek apa yang kita dapatkan.
+    console.log("Mencoba inisialisasi aplikasi...");
+    console.log("Mencari elemen dengan ID 'welcomeUser':", welcomeUserEl);
+
+    // Langkah 3: Hanya jalankan kode JIKA elemennya ditemukan
+    if (welcomeUserEl) {
+        console.log("Elemen 'welcomeUser' DITEMUKAN. Mengatur textContent.");
+        welcomeUserEl.textContent = `Welcome, ${userId}`;
+    } else {
+        // Jika tidak ditemukan, ini adalah akar masalahnya.
+        console.error("KRITIS: Elemen dengan ID 'welcomeUser' TIDAK DITEMUKAN di DOM!");
+        alert("Terjadi kesalahan inisialisasi halaman (Error Code: UI-INIT-01). Silakan coba hard refresh.");
+        return; // Hentikan eksekusi lebih lanjut jika elemen penting tidak ada
     }
+
+    // Lanjutkan inisialisasi sisa elemen DOM
+    loadingOverlay = document.getElementById('loadingOverlay');
+    editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+
+    // Muat data awal
+    loadTableData();
+
+    // Daftarkan semua event listener
+    document.getElementById('logoutButton').addEventListener('click', logout);
+    document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
+    document.getElementById('exportButton').addEventListener('click', exportToExcel);
+    document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
+    document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
+    document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
+    document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+    document.getElementById('selectAllCheckbox').addEventListener('click', (e) => document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = e.target.checked));
+}
 
         // Fungsi untuk membuat request ke server
         async function apiRequest(action, params = {}) {
