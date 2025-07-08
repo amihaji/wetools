@@ -299,23 +299,6 @@
         loadingOverlay.style.display = show ? 'flex' : 'none';
     }
 
-    //  FUNGSI UNTUK MENGATUR MODE FOLLOW-UP 
-    function BACKUP_startFollowUpMode() {
-        // Sembunyikan toolbar normal
-        normalToolbar.style.display = 'none';
-        // Tampilkan toolbar follow-up dan kotak pesan
-        followUpToolbar.style.display = 'flex'; // Gunakan 'flex' agar sejajar di desktop
-        followUpMessageBox.style.display = 'block';
-    }
-
-    function BACKUP_endFollowUpMode() {
-        // Sembunyikan toolbar follow-up dan kotak pesan
-        followUpToolbar.style.display = 'none';
-        followUpMessageBox.style.display = 'none';
-        // Tampilkan kembali toolbar normal
-        normalToolbar.style.display = 'flex';
-    }
-
     /* Tampilkan Tabel Data */
     function loadTableData() {
         showLoading(true);
