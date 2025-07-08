@@ -266,21 +266,21 @@
 
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
-        // Menampilkan Nomral Toolbar dan Message Box
+        // Menampilkan Toolbar filter, followup dan Message Box
+        filterToolbar.classList.add('d-none-force');
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
-        // Menyembunyikan Toolbar Filter, Followup dan checkbox
-        filterToolbar.classList.remove('d-none-force');
+        // Menyembunyikan Toolbar Followup dan checkbox
         followUpToolbar.classList.remove('d-none-force');
         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
-        // Menyembunyikan Toolbar Filter, Followup dan checkbox
+        // Menyembunyikan Toolbar Filter, Followup dan message box
+        filterToolbar.classList.remove('d-none-force');
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
-        // Menampilkan Toolbar Filter, Followup dan checkbox
-        filterToolbar.classList.add('d-none-force');
+        // Menampilkan Toolbar Followup dan checkbox
         followUpToolbar.classList.add('d-none-force');
         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
     });
