@@ -113,32 +113,30 @@
 
     <div class="container mt-4">
         <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
-            <div class="card mb-3" id="followUpMessageBox" style="display: none;">
-                <div class="card-body">
-                    <label for="waMessage" class="form-label">
-                        <strong>Tulis Pesan Follow Up Anda:</strong>
-                    </label>
-                    <textarea class="form-control" id="waMessage" rows="4" placeholder="Contoh: Halo {nama}, ini pesan dari {sponsor}..."></textarea>
-                    <div class="form-text">
-                        Gunakan <code>{nama}</code> untuk nama customer, dan <code>{sponsor}</code> untuk nama sponsor.
-                    </div>
+        <div class="card mb-3" id="followUpMessageBox" style="display: none;">
+            <div class="card-body">
+                <label for="waMessage" class="form-label">
+                    <strong>Tulis Pesan Follow Up Anda:</strong>
+                </label>
+                <textarea class="form-control" id="waMessage" rows="4" placeholder="Contoh: Halo {nama}, ini pesan dari {sponsor}..."></textarea>
+                <div class="form-text">
+                    Gunakan <code>{nama}</code> untuk nama customer, dan <code>{sponsor}</code> untuk nama sponsor.
                 </div>
             </div>
+        </div>
         
-        <!-- Toolbar -->
+        <!-- Toolbar Filter, FollowUp, Export, Close, Batal dan Kirim WA -->
         <div class="card mb-4">
-            
-            
-            
             <div class="card-body">
                 <div class="row gy-2">
+                    <!-- Tombnol Filter -->
                     <div class="col-lg-6">
-                        <div class="input-group">
+                        <div class="input-group" id="filterToolbar">
                             <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
                             <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
                         </div>
                     </div>
-                    <!-- Tombol Followup Export Close -->
+                    <!-- Tombol Followup, Export, Close, Batal dan Kirim WA -->
                     <div class="col-lg-6">
                         <div class="d-grid d-md-flex justify-content-md-end gap-2">
                             <!-- Grup Tombol Normal (Awalnya Terlihat) -->
@@ -154,8 +152,7 @@
                             </div>
                         </div>
                     </div>
-
-                </div>
+                 </div>
             </div>
         </div>
 
@@ -249,6 +246,7 @@
     const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
 
     // Variabel untuk fitur follow up
+    const filterToolbar = document.getElementById('filterToolbar');
     const startFollowUpButton = document.getElementById('startFollowUpButton');
     const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
     const sendWaButton = document.getElementById('sendWaButton');
@@ -269,6 +267,7 @@
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Logika untuk menampilkan/menyembunyikan dengan class
+        filterToolbar.classList.add('d-none-force');
         normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'block'; 
