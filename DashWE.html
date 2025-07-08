@@ -240,10 +240,11 @@
         window.location.href = 'FormUser.html';
     }
 
-    // --- VARIABEL GLOBAL ---
-    let editModal, viewModal;
-    let allDataCache = [];
-    let isFollowUpMode = false; // Status mode follow-up
+    // Variabel untuk loading dan modals 
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+
     // Variabel untuk fitur follow up
     const startFollowUpButton = document.getElementById('startFollowUpButton');
     const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
@@ -252,33 +253,16 @@
     const followUpToolbar = document.getElementById('followUpToolbar');
     const followUpMessageBox = document.getElementById('followUpMessageBox');
     
-   
-    // --- INISIALISASI SETELAH DOM SIAP ---
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inisialisasi Modals
-        editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-        
-        // Inisialisasi Elemen Lain
-        document.getElementById('welcomeUser').textContent = `Welcome, ${userId}`;
-        loadTableData();
+    // --- DAFTARKAN SEMUA EVENT LISTENER DI SINI ---
+    document.getElementById('logoutButton').addEventListener('click', logout);
+    document.getElementById('filterButton').addEventListener('click', loadTableData);
+    document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+    document.getElementById('exportButton').addEventListener('click', exportToExcel);
+      
+    // --- INISIALISASI HALAMAN ---
+    document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
+    loadTableData(); // Panggil fungsi untuk memuat data
 
-        // --- EVENT LISTENERS ---
-        document.getElementById('logoutButton').addEventListener('click', logout);
-        document.getElementById('filterButton').addEventListener('click', () => loadTableData(true));
-        document.getElementById('exportButton').addEventListener('click', exportToExcel);
-        document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-        
-        // Listener untuk fitur Follow Up
-        document.getElementById('startFollowUpButton').addEventListener('click', () => toggleFollowUpMode(true));
-        document.getElementById('cancelFollowUpButton').addEventListener('click', () => toggleFollowUpMode(false));
-        document.getElementById('selectAllCheckbox').addEventListener('click', (e) => {
-            document.querySelectorAll('.row-checkbox').forEach(cb => { cb.checked = e.target.checked; });
-        });
-        document.getElementById('sendWaButton').addEventListener('click', sendFollowUpWA);
-    });
-
-    
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Logika untuk menampilkan/menyembunyikan dengan class
@@ -293,85 +277,7 @@
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
     });
-
-     function toggleFollowUpMode(isStarting) {
-        isFollowUpMode = isStarting;
-        document.getElementById('normalToolbar').style.display = isStarting ? 'none' : 'flex';
-        document.getElementById('followUpToolbar').style.display = isStarting ? 'flex' : 'none';
-        document.getElementById('followUpMessageBox').style.display = isStarting ? 'block' : 'none';
-
-        // PENTING: Render ulang tabel untuk menerapkan perubahan tampilan kolom
-        renderTable(allDataCache);
-    }
-
-    function loadTableData(forceRefresh = false) {
-        // ... (Fungsi ini sudah benar dari file REV2 Anda, tidak perlu diubah) ...
-    }
-
-    // ==========================================================
-    // == FUNGSI renderTable YANG SUDAH DIPERBAIKI ==
-    // ==========================================================
-    function renderTable(data) {
-        const tableBody = document.getElementById('dataTableBody');
-        const tableHeaderCheckbox = document.querySelector('.select-col');
-        const tableHeaderActions = document.querySelector('.actions-col');
-        
-        tableBody.innerHTML = '';
-        
-        // Tampilkan/sembunyikan kolom di header berdasarkan mode
-        if(tableHeaderCheckbox) tableHeaderCheckbox.style.display = isFollowUpMode ? 'table-cell' : 'none';
-        if(tableHeaderActions) tableHeaderActions.style.display = isFollowUpMode ? 'none' : 'table-cell';
-
-        if (!data || data.length === 0) {
-            const colspan = isFollowUpMode ? 8 : 7; // Sesuaikan colspan
-            tableBody.innerHTML = `<tr><td colspan="${colspan}" class="text-center p-4">Tidak ada data.</td></tr>`;
-            return;
-        }
-
-        data.forEach(row => {
-            const tr = document.createElement('tr');
-            // Pastikan Anda mengambil data dari array dengan benar
-            const rowIndex = row[0];
-            const tgl = formatTanggal(row[1]);
-            const nama = row[2] || '';
-            const hp = row[3] || '';
-            const email = row[4] || '';
-            const sponsor = row[29] || '';
-            const hpSponsor = row[30] || '';
-            
-            const safeNama = String(nama).replace(/'/g, "\\'"),
-                  safeHp = String(hp).replace(/'/g, "\\'"),
-                  safeEmail = String(email).replace(/'/g, "\\'"),
-                  safeSponsor = String(sponsor).replace(/'/g, "\\'"),
-                  safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
-
-            // HTML sekarang memiliki logika untuk menampilkan kolom yang benar
-            tr.innerHTML = `
-                <!-- Kolom Checkbox (hanya tampil di mode follow-up) -->
-                <td class="select-col" style="display: ${isFollowUpMode ? 'table-cell' : 'none'};">
-                    <input class="form-check-input row-checkbox" type="checkbox" 
-                           data-hp="${safeHp}" data-nama="${safeNama}" data-sponsor="${safeSponsor}">
-                </td>
-                
-                <!-- Kolom Data -->
-                <td>${tgl}</td>
-                <td>${nama}</td>
-                <td>${hp}</td>
-                <td>${email}</td>
-                <td>${sponsor}</td>
-                <td>${hpSponsor}</td>
-
-                <!-- Kolom Aksi (hanya tampil di mode normal) -->
-                <td class="actions-col" style="display: ${isFollowUpMode ? 'none' : 'table-cell'};">
-                    <a href="#" class="action-icon" onclick="event.preventDefault(); viewRecord(${rowIndex});" title="Lihat"><i class="fas fa-eye"></i></a>
-                    ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}');" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                    ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="event.preventDefault(); deleteRow(${rowIndex});" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
+    
     function showLoading(show) {
         loadingOverlay.style.display = show ? 'flex' : 'none';
     }
@@ -395,7 +301,61 @@
         normalToolbar.style.display = 'flex';
     }
 
-    
+    /* Tampilkan Tabel Data */
+    function loadTableData() {
+        showLoading(true);
+        const filterValue = document.getElementById('filterSponsor').value;
+
+        const callbackName = 'data_cb_' + Date.now();
+        const script = document.createElement('script');
+        script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
+
+        script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
+
+        window[callbackName] = (response) => {
+            const tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = '';
+            if (response.status === 'success') {
+                response.data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    const rowIndex = row[0];
+                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
+                    const nama = row[2] || '';
+                    const hp = row[3] || '';
+                    const email = row[4] || '';
+                    const sponsor = row[29] || '';
+                    const hpSponsor = row[30] || '';
+                    // Ubah data menjadi string sebelum menggunakan replace()
+                    const safeNama = String(nama).replace(/'/g, "\\'");
+                    const safeHp = String(hp).replace(/'/g, "\\'");
+                    const safeEmail = String(email).replace(/'/g, "\\'");
+                    const safeSponsor = String(sponsor).replace(/'/g, "\\'");
+                    const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
+
+                    tr.innerHTML = `
+                        <td>${tgl}</td>
+                        <td>${nama}</td>
+                        <td>${hp}</td>
+                        <td>${email}</td>
+                        <td>${sponsor}</td>
+                        <td>${hpSponsor}</td>
+                        <td class="actions-col">
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } else {
+                alert(response.message);
+                if(response.message.includes('Sesi tidak valid')) logout();
+            }
+            showLoading(false);
+        };
+        document.body.appendChild(script);
+    }
+
     function logout() {
         showLoading(true);
         const payload = JSON.stringify({ action: "logoutUser", token: userToken });
