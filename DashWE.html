@@ -245,8 +245,7 @@
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
     const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
 
-    // Variabel untuk fitur follow up
-    //const filterToolbar = document.getElementById('filterToolbar');
+    // Defenisikan semua constanta
     const startFollowUpButton = document.getElementById('startFollowUpButton');
     const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
     const sendWaButton = document.getElementById('sendWaButton');
@@ -254,22 +253,22 @@
     const followUpToolbar = document.getElementById('followUpToolbar');
     const followUpMessageBox = document.getElementById('followUpMessageBox');
     
-    // --- DAFTARKAN SEMUA EVENT LISTENER DI SINI ---
+    // --- Daftar Semua Event Listener  ---
     document.getElementById('logoutButton').addEventListener('click', logout);
     document.getElementById('filterButton').addEventListener('click', loadTableData);
     document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
     document.getElementById('exportButton').addEventListener('click', exportToExcel);
       
-    // --- INISIALISASI HALAMAN ---
+    // --- Inisialisasi Dashboard dan Panggail data 
     document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
-    loadTableData(); // Panggil fungsi untuk memuat data
+    loadTableData(); 
 
-    // --- EVENT LISTENERS ---
+    // --- Aktif dan Non Aktifkan Event Listener ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
-        // Menampilkan Toolbar filter, followup dan Message Box
-        //filterToolbar.classList.add('d-none-force');
+        // Non Aktifkan Toolbar Filter dan Button Filter
         document.getElementById('filterSponsor').disabled = true;
         document.getElementById('filterButton').disabled = true;
+        // Menampilkan Toolbar Normal dan MessageBox
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
         // Menyembunyikan Toolbar Followup dan checkbox
@@ -277,11 +276,12 @@
         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
 
+    // --- Aktif dan Non Aktifkan Event Listener ---
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
-        // Menyembunyikan Toolbar Filter, Followup dan message box
-        document.getElementById('filterSponsor').disabled = true;
-        document.getElementById('filterButton').disabled = true;
-        //filterToolbar.classList.remove('d-none-force');
+        // Aktifkan Toolbar Filter dan Button Filter
+        document.getElementById('filterSponsor').disabled = false;
+        document.getElementById('filterButton').disabled = false;
+        // Menyembunyikan Toolbar Normal dan MessageBox
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
         // Menampilkan Toolbar Followup dan checkbox
