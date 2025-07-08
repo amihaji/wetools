@@ -112,10 +112,7 @@
     </nav>
 
     <div class="container mt-4">
-        <!-- Toolbar -->
-        <div class="card mb-4">
-            
-            <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
+        <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
             <div class="card mb-3" id="followUpMessageBox" style="display: none;">
                 <div class="card-body">
                     <label for="waMessage" class="form-label">
@@ -127,6 +124,11 @@
                     </div>
                 </div>
             </div>
+        
+        <!-- Toolbar -->
+        <div class="card mb-4">
+            
+            
             
             <div class="card-body">
                 <div class="row gy-2">
@@ -269,7 +271,7 @@
         // Logika untuk menampilkan/menyembunyikan dengan class
         normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
-        followUpMessageBox.style.display = 'block'; // style.display masih ok untuk ini
+        followUpMessageBox.style.display = 'block'; 
         // Toggle tampil/hidden checkbox saat follow up
         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
@@ -296,7 +298,6 @@
     function startFollowUpMode() {
         // Sembunyikan toolbar normal
         normalToolbar.style.display = 'none';
-        
         // Tampilkan toolbar follow-up dan kotak pesan
         followUpToolbar.style.display = 'flex'; // Gunakan 'flex' agar sejajar di desktop
         followUpMessageBox.style.display = 'block';
@@ -306,7 +307,6 @@
         // Sembunyikan toolbar follow-up dan kotak pesan
         followUpToolbar.style.display = 'none';
         followUpMessageBox.style.display = 'none';
-
         // Tampilkan kembali toolbar normal
         normalToolbar.style.display = 'flex';
     }
@@ -393,12 +393,12 @@
     }
 
     const TokenFonnte = "Ekjb4bsxt4W6BcXHr4vE";
-    const url = "https://api.fonnte.com/send";
-    const tanggal = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    const url         = "https://api.fonnte.com/send";
+    const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 
     selectedRows.forEach(row => {
-        const message = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
-        const noWaUser = "62" + row.nomor.replace(/^0+/, "");
+        const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
+        const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
         const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
 
         const payloadUser = {
