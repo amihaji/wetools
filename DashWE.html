@@ -268,7 +268,8 @@
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Menampilkan Toolbar filter, followup dan Message Box
         //filterToolbar.classList.add('d-none-force');
-        document.getElementById('filterToolbar').disabled = true;
+        document.getElementById('filterSponsor').disabled = true;
+        document.getElementById('filterButton').disabled = true;
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
         // Menyembunyikan Toolbar Followup dan checkbox
@@ -278,7 +279,8 @@
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
         // Menyembunyikan Toolbar Filter, Followup dan message box
-        document.getElementById('filterToolbar').disabled = false;
+        document.getElementById('filterSponsor').disabled = true;
+        document.getElementById('filterButton').disabled = true;
         //filterToolbar.classList.remove('d-none-force');
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
