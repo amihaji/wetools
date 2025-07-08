@@ -163,6 +163,7 @@
                 <table class="table table-hover table-striped mb-0">
                     <thead class="table-dark-custom">            
                         <tr>
+                            <th><input type="checkbox" id="checkAll"></th>
                             <th>Tanggal</th>
                             <th>Nama</th>
                             <th>Nomor HP</th>
@@ -269,6 +270,8 @@
         normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'block'; // style.display masih ok untuk ini
+        // Toggle tampil/hidden checkbox saat follow up
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
@@ -276,8 +279,15 @@
         followUpToolbar.classList.add('d-none-force');
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
     });
-    
+
+    // Check all
+    document.getElementById('checkAll').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = isChecked);
+    });
+
     function showLoading(show) {
         loadingOverlay.style.display = show ? 'flex' : 'none';
     }
@@ -333,6 +343,7 @@
                     const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
 
                     tr.innerHTML = `
+                        <td><input type="checkbox" class="rowCheckbox d-none"></td>
                         <td>${tgl}</td>
                         <td>${nama}</td>
                         <td>${hp}</td>
@@ -355,6 +366,34 @@
         };
         document.body.appendChild(script);
     }
+
+    // Kirim WA hanya ke record tercentang
+    document.getElementById('sendWaButton').addEventListener('click', () => {
+        const messageTemplate = document.getElementById('waMessage').value.trim();
+        if (!messageTemplate) {
+            alert('Silakan isi pesan follow up.');
+            return;
+        }
+        const selectedRows = [];
+        document.querySelectorAll('.rowCheckbox').forEach((cb, idx) => {
+            if (cb.checked) {
+                const tr = cb.closest('tr');
+                const nama = tr.children[2].textContent.trim();
+                const nomor = tr.children[3].textContent.trim();
+                const sponsor = tr.children[5].textContent.trim();
+                selectedRows.push({ nama, nomor, sponsor });
+            }
+        });
+        if (selectedRows.length === 0) {
+            alert('Pilih minimal satu record.');
+            return;
+        }
+        selectedRows.forEach(row => {
+            let message = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
+            const waUrl = `https://wa.me/${row.nomor.replace(/^0/, '62')}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        });
+    });
 
     function logout() {
         showLoading(true);
