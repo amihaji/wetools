@@ -267,7 +267,7 @@
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Logika untuk menampilkan/menyembunyikan dengan class
-        filterToolbar.classList.add('d-none-force');
+        filterToolbar.disabled = true;
         normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'block'; 
