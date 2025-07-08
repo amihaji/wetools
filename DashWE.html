@@ -267,7 +267,8 @@
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Menampilkan Toolbar filter, followup dan Message Box
-        filterToolbar.classList.add('d-none-force');
+        //filterToolbar.classList.add('d-none-force');
+        document.getElementById('filterToolbar').disabled = true;
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
         // Menyembunyikan Toolbar Followup dan checkbox
@@ -277,12 +278,15 @@
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
         // Menyembunyikan Toolbar Filter, Followup dan message box
-        filterToolbar.classList.remove('d-none-force');
+        document.getElementById('filterToolbar').disabled = false;
+        //filterToolbar.classList.remove('d-none-force');
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
         // Menampilkan Toolbar Followup dan checkbox
         followUpToolbar.classList.add('d-none-force');
         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
+        // Kosongkan inputan text area
+        document.getElementById('waMessage').value = '';
     });
 
     // Check all
