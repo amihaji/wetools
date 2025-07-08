@@ -266,22 +266,23 @@
 
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
-        // Menyembunyikan Filter Toolbar dan Followup
-        filterToolbar.style.display = 'none';
-        followUpToolbar.classList.remove('d-none-force');
         // Menampilkan Nomral Toolbar dan Message Box
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
-        // Toggle tampil/hidden checkbox saat follow up
-        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
+        // Menyembunyikan Toolbar Filter, Followup dan checkbox
+        filterToolbar.style.display = 'none';
+        followUpToolbar.classList.remove('d-none-force');
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none-force'));
     });
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
-        // Logika untuk menampilkan/menyembunyikan dengan class
-        followUpToolbar.classList.add('d-none-force');
+        // Menyembunyikan Toolbar Filter, Followup dan checkbox
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
-        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
+        // Menampilkan Toolbar Filter, Followup dan checkbox
+        filterToolbar.style.display = 'block';
+        followUpToolbar.classList.add('d-none-force');
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none-force'));
     });
 
     // Check all
