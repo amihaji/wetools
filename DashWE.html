@@ -267,7 +267,7 @@
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Logika untuk menampilkan/menyembunyikan dengan class
-        filterToolbar.disabled = true;
+        //filterToolbar.disabled = true;
         normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'block'; 
@@ -294,7 +294,7 @@
     }
 
     //  FUNGSI UNTUK MENGATUR MODE FOLLOW-UP 
-    function startFollowUpMode() {
+    function BACKUP_startFollowUpMode() {
         // Sembunyikan toolbar normal
         normalToolbar.style.display = 'none';
         // Tampilkan toolbar follow-up dan kotak pesan
@@ -302,7 +302,7 @@
         followUpMessageBox.style.display = 'block';
     }
 
-    function endFollowUpMode() {
+    function BACKUP_endFollowUpMode() {
         // Sembunyikan toolbar follow-up dan kotak pesan
         followUpToolbar.style.display = 'none';
         followUpMessageBox.style.display = 'none';
