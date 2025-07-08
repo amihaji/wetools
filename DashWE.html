@@ -369,31 +369,75 @@
 
     // Kirim WA hanya ke record tercentang
     document.getElementById('sendWaButton').addEventListener('click', () => {
-        const messageTemplate = document.getElementById('waMessage').value.trim();
-        if (!messageTemplate) {
-            alert('Silakan isi pesan follow up.');
-            return;
+    const messageTemplate = document.getElementById('waMessage').value.trim();
+    if (!messageTemplate) {
+        alert('Silakan isi pesan follow up.');
+        return;
+    }
+
+    const selectedRows = [];
+    document.querySelectorAll('.rowCheckbox').forEach((cb) => {
+        if (cb.checked) {
+            const tr = cb.closest('tr');
+            const nama = tr.children[2].textContent.trim();
+            const nomor = tr.children[3].textContent.trim();
+            const sponsor = tr.children[5].textContent.trim();
+            const hpSponsor = tr.children[6].textContent.trim();
+            selectedRows.push({ nama, nomor, sponsor, hpSponsor });
         }
-        const selectedRows = [];
-        document.querySelectorAll('.rowCheckbox').forEach((cb, idx) => {
-            if (cb.checked) {
-                const tr = cb.closest('tr');
-                const nama = tr.children[2].textContent.trim();
-                const nomor = tr.children[3].textContent.trim();
-                const sponsor = tr.children[5].textContent.trim();
-                selectedRows.push({ nama, nomor, sponsor });
-            }
-        });
-        if (selectedRows.length === 0) {
-            alert('Pilih minimal satu record.');
-            return;
-        }
-        selectedRows.forEach(row => {
-            let message = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
-            const waUrl = `https://wa.me/${row.nomor.replace(/^0/, '62')}?text=${encodeURIComponent(message)}`;
-            window.open(waUrl, '_blank');
-        });
     });
+
+    if (selectedRows.length === 0) {
+        alert('Pilih minimal satu record.');
+        return;
+    }
+
+    const TokenFonnte = "Ekjb4bsxt4W6BcXHr4vE";
+    const url = "https://api.fonnte.com/send";
+    const tanggal = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    selectedRows.forEach(row => {
+        const message = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
+        const noWaUser = "62" + row.nomor.replace(/^0+/, "");
+        const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
+
+        const payloadUser = {
+            target: noWaUser,
+            message: message
+        };
+
+        const payloadSponsor = {
+            target: noWaSponsor,
+            message: `Halo ${row.sponsor}, pesan follow up telah dikirim ke ${row.nama} pada ${tanggal}.`
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': TokenFonnte,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payloadUser)
+        })
+        .then(res => res.json())
+        .then(data => console.log(`WA terkirim ke ${row.nama}:`, data))
+        .catch(err => console.error(`Gagal kirim ke ${row.nama}:`, err));
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': TokenFonnte,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payloadSponsor)
+        })
+        .then(res => res.json())
+        .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
+        .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
+    });
+      alert('Permintaan kirim WA telah diproses. Periksa dashboard Fonnte untuk status pengiriman.');
+    });
+
 
     function logout() {
         showLoading(true);
