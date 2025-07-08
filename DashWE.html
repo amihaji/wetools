@@ -131,7 +131,7 @@
                 <div class="row gy-2">
                     <!-- Tombnol Filter -->
                     <div class="col-lg-6">
-                        <div class="input-group" id="filterToolbar">
+                        <div class="input-group" >
                             <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
                             <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
                         </div>
@@ -240,12 +240,10 @@
         window.location.href = 'FormUser.html';
     }
 
-    // Variabel untuk loading dan modals 
+    // Defenisikan semua constanta 
     const loadingOverlay = document.getElementById('loadingOverlay');
     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
     const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-
-    // Defenisikan semua constanta
     const startFollowUpButton = document.getElementById('startFollowUpButton');
     const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
     const sendWaButton = document.getElementById('sendWaButton');
@@ -253,17 +251,17 @@
     const followUpToolbar = document.getElementById('followUpToolbar');
     const followUpMessageBox = document.getElementById('followUpMessageBox');
     
-    // --- Daftar Semua Event Listener  ---
+    // Daftar Semua Event Listener  
     document.getElementById('logoutButton').addEventListener('click', logout);
     document.getElementById('filterButton').addEventListener('click', loadTableData);
     document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
     document.getElementById('exportButton').addEventListener('click', exportToExcel);
       
-    // --- Inisialisasi Dashboard dan Panggail data 
+    // Inisialisasi Dashboard dan Panggail data 
     document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
     loadTableData(); 
 
-    // --- Aktif dan Non Aktifkan Event Listener ---
+    // Aktif dan Non Aktifkan Event Listener 
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
         // Non Aktifkan Toolbar Filter dan Button Filter
         document.getElementById('filterSponsor').disabled = true;
@@ -273,8 +271,10 @@
         followUpMessageBox.style.display = 'block'; 
         // Menyembunyikan Toolbar Followup dan checkbox
         followUpToolbar.classList.remove('d-none-force');
-        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove);
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
+        viewRecord.hide();
+        openEditModal.hide();
+        deleteRow.hide();  
     });
 
     // --- Aktif dan Non Aktifkan Event Listener ---
@@ -287,8 +287,7 @@
         followUpMessageBox.style.display = 'none';
         // Menampilkan Toolbar Followup dan checkbox
         followUpToolbar.classList.add('d-none-force');
-        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add);
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
         // Kosongkan inputan text area
         document.getElementById('waMessage').value = '';
     });
