@@ -266,13 +266,14 @@
 
     // --- EVENT LISTENERS ---
     document.getElementById('startFollowUpButton').addEventListener('click', () => {
-        // Logika untuk menampilkan/menyembunyikan dengan class
+        // Menyembunyikan Filter Toolbar dan Followup
         filterToolbar.style.display = 'none';
-        normalToolbar.classList.add('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
+        // Menampilkan Nomral Toolbar dan Message Box
+        normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
         // Toggle tampil/hidden checkbox saat follow up
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
+        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
@@ -280,7 +281,7 @@
         followUpToolbar.classList.add('d-none-force');
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
+        //document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
     });
 
     // Check all
