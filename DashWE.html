@@ -270,9 +270,9 @@
         normalToolbar.classList.add('d-none-force');
         followUpMessageBox.style.display = 'block'; 
         // Menyembunyikan Toolbar Filter, Followup dan checkbox
-        filterToolbar.style.display = 'none';
+        filterToolbar.classList.remove('d-none-force');
         followUpToolbar.classList.remove('d-none-force');
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none-force'));
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     });
 
     document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
@@ -280,9 +280,9 @@
         normalToolbar.classList.remove('d-none-force');
         followUpMessageBox.style.display = 'none';
         // Menampilkan Toolbar Filter, Followup dan checkbox
-        filterToolbar.style.display = 'block';
+        filterToolbar.classList.add('d-none-force');
         followUpToolbar.classList.add('d-none-force');
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none-force'));
+        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
     });
 
     // Check all
