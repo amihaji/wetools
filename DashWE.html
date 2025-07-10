@@ -394,7 +394,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         // Konfirmasi pesan followup ke sponsor
         const payloadSponsor = {
             target: noWaSponsor,
-            message: `*Notifikasi FollowUp*\n` + message
+            message: `*Notifikasi FollowUp*\n\n` + message
         };
 
         fetch(url, {
