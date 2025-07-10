@@ -253,7 +253,7 @@
     document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
     document.getElementById('exportButton').addEventListener('click', exportToExcel);
       
-    // Inisialisasi Dashboard dan Panggail data 
+    // Inisialisasi Dashboard dan Panggil data 
     document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
     loadTableData(); 
 
@@ -385,11 +385,13 @@
         const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
         const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
 
+        // Kirim pesan followup ke user
         const payloadUser = {
             target: noWaUser,
             message: message
         };
 
+        // Konfirmasi pesan followup ke sponsor
         const payloadSponsor = {
             target: noWaSponsor,
             message: `Halo ${row.sponsor}, pesan follow up telah dikirim ke ${row.nama} pada ${tanggal}.`
@@ -420,6 +422,10 @@
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
     });
       alert('Permintaan kirim WA telah diproses. Periksa dashboard Fonnte untuk status pengiriman.');
+
+    // Setelah kirim WA, tutup modal dan normalisasi tampilan
+    cancelFollowUpButton.click();   
+
     });
 
 
