@@ -421,7 +421,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
     });
-    alert('Permintaan kirim WA telah diproses. Periksa dashboard Fonnte untuk status pengiriman.');
+    alert('Pesan WA FollowUp telah terkirim');
     // Setelah kirim WA, tutup modal dan normalisasi tampilan
     cancelFollowUpButton.click();   
     }
