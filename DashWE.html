@@ -222,137 +222,137 @@
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxPeWS0F7OBCi4wd2QNWlvWuRR0JHEDL0bMkVjJsE2OyldVsoEwH0KGTJbpOqsdgvMn/exec';
-    const userToken       = sessionStorage.getItem('userToken');
-    const userLevel       = sessionStorage.getItem('userLevel');
-    const userId          = sessionStorage.getItem('userId');
-    // ******************************************************
+//***********  Deklarasi variabel global ****************
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxPeWS0F7OBCi4wd2QNWlvWuRR0JHEDL0bMkVjJsE2OyldVsoEwH0KGTJbpOqsdgvMn/exec';
+const userToken       = sessionStorage.getItem('userToken');
+const userLevel       = sessionStorage.getItem('userLevel');
+const userId          = sessionStorage.getItem('userId');
+// ******************************************************
 
-    // Cek otentikasi saat halaman dimuat
-    if (!userToken || !userLevel) {
-        alert('Akses ditolak. Silakan login terlebih dahulu.');
-        window.location.href = 'FormUser.html';
-    }
+// Cek otentikasi saat halaman dimuat
+if (!userToken || !userLevel) {
+    alert('Akses ditolak. Silakan login terlebih dahulu.');
+    window.location.href = 'FormUser.html';
+}
 
-    // Defenisikan semua constanta 
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
-    const startFollowUpButton = document.getElementById('startFollowUpButton');
-    const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
-    const sendWaButton = document.getElementById('sendWaButton');
-    const normalToolbar = document.getElementById('normalToolbar');
-    const followUpToolbar = document.getElementById('followUpToolbar');
-    const followUpMessageBox = document.getElementById('followUpMessageBox');
+// Defenisikan semua constanta 
+const loadingOverlay       = document.getElementById('loadingOverlay');
+const editModal            = new bootstrap.Modal(document.getElementById('editModal'));
+const viewModal            = new bootstrap.Modal(document.getElementById('viewModal'));
+const startFollowUpButton  = document.getElementById('startFollowUpButton');
+const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
+const sendWaButton         = document.getElementById('sendWaButton');
+const normalToolbar        = document.getElementById('normalToolbar');
+const followUpToolbar      = document.getElementById('followUpToolbar');
+const followUpMessageBox   = document.getElementById('followUpMessageBox');
     
-    // Daftar Semua Event Listener  
-    document.getElementById('logoutButton').addEventListener('click', logout);
-    document.getElementById('filterButton').addEventListener('click', loadTableData);
-    document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
-    document.getElementById('exportButton').addEventListener('click', exportToExcel);
+// Daftar Semua Event Listener  
+document.getElementById('logoutButton').addEventListener('click', logout);
+document.getElementById('filterButton').addEventListener('click', loadTableData);
+document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
+document.getElementById('exportButton').addEventListener('click', exportToExcel);
       
-    // Inisialisasi Dashboard dan Panggil data 
-    document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
-    loadTableData(); 
+// Inisialisasi Dashboard dan Panggil data 
+document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
+loadTableData(); 
 
-    // Aktif dan Non Aktifkan Event Listener 
-    document.getElementById('startFollowUpButton').addEventListener('click', () => {
-        // Non Aktifkan Toolbar Filter dan Button Filter
-        document.getElementById('filterSponsor').disabled = true;
-        document.getElementById('filterButton').disabled = true;
-        // Menampilkan Toolbar Normal dan MessageBox
-        normalToolbar.classList.add('d-none-force');
-        followUpMessageBox.style.display = 'block'; 
-        // Menyembunyikan Toolbar Followup dan checkbox
-        followUpToolbar.classList.remove('d-none-force');
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
-    });
+// Aktif dan Non Aktifkan Event Listener 
+document.getElementById('startFollowUpButton').addEventListener('click', () => {
+    // Non Aktifkan Toolbar Filter dan Button Filter
+    document.getElementById('filterSponsor').disabled = true;
+    document.getElementById('filterButton').disabled = true;
+    // Menampilkan Toolbar Normal dan MessageBox
+    normalToolbar.classList.add('d-none-force');
+    followUpMessageBox.style.display = 'block'; 
+    // Menyembunyikan Toolbar Followup dan checkbox
+    followUpToolbar.classList.remove('d-none-force');
+    document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
+});
 
-    // --- Aktif dan Non Aktifkan Event Listener ---
-    document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
-        // Aktifkan Toolbar Filter dan Button Filter
-        document.getElementById('filterSponsor').disabled = false;
-        document.getElementById('filterButton').disabled = false;
-        // Menyembunyikan Toolbar Normal dan MessageBox
-        normalToolbar.classList.remove('d-none-force');
-        followUpMessageBox.style.display = 'none';
-        // Menampilkan Toolbar Followup dan checkbox
-        followUpToolbar.classList.add('d-none-force');
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
-        // Kosongkan inputan text area
-        document.getElementById('waMessage').value = '';
-    });
+// Aktif dan Non Aktifkan Event Listener 
+document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
+    // Aktifkan Toolbar Filter dan Button Filter
+    document.getElementById('filterSponsor').disabled = false;
+    document.getElementById('filterButton').disabled = false;
+    // Menyembunyikan Toolbar Normal dan MessageBox
+    normalToolbar.classList.remove('d-none-force');
+    followUpMessageBox.style.display = 'none';
+    // Menampilkan Toolbar Followup dan checkbox
+    followUpToolbar.classList.add('d-none-force');
+    document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
+    // Kosongkan inputan text area
+    document.getElementById('waMessage').value = '';
+});
 
-    // Check all
-    document.getElementById('checkAll').addEventListener('change', function() {
-        const isChecked = this.checked;
-        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = isChecked);
-    });
+// Check all
+document.getElementById('checkAll').addEventListener('change', function() {
+    const isChecked = this.checked;
+    document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = isChecked);
+});
 
-    function showLoading(show) {
-        loadingOverlay.style.display = show ? 'flex' : 'none';
-    }
+function showLoading(show) {
+    loadingOverlay.style.display = show ? 'flex' : 'none';
+}
 
-    /* Tampilkan Tabel Data */
-    function loadTableData() {
-        showLoading(true);
-        const filterValue = document.getElementById('filterSponsor').value;
+/* Tampilkan Tabel Data */
+function loadTableData() {
+    showLoading(true);
+    const filterValue  = document.getElementById('filterSponsor').value;
+    const callbackName = 'data_cb_' + Date.now();
+    const script       = document.createElement('script');
+    script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
 
-        const callbackName = 'data_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
+    script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
-        script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
+    window[callbackName] = (response) => {
+        const tableBody  = document.getElementById('dataTableBody');
+        tableBody.innerHTML = '';
+        if (response.status === 'success') {
+            response.data.forEach(row => {
+                const tr        = document.createElement('tr');
+                const rowIndex  = row[0];
+                const tgl       = formatTanggal(row[1]); // Format tanggal Indonesia
+                const nama      = row[2] || '';
+                const hp        = row[3] || '';
+                const email     = row[4] || '';
+                const sponsor   = row[29] || '';
+                const hpSponsor = row[30] || '';
+                // Ubah data menjadi string sebelum menggunakan replace()
+                const safeNama      = String(nama).replace(/'/g, "\\'");
+                const safeHp        = String(hp).replace(/'/g, "\\'");
+                const safeEmail     = String(email).replace(/'/g, "\\'");
+                const safeSponsor   = String(sponsor).replace(/'/g, "\\'");
+                const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
 
-        window[callbackName] = (response) => {
-            const tableBody = document.getElementById('dataTableBody');
-            tableBody.innerHTML = '';
-            if (response.status === 'success') {
-                response.data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    const rowIndex = row[0];
-                    const tgl = formatTanggal(row[1]); // Format tanggal Indonesia
-                    const nama = row[2] || '';
-                    const hp = row[3] || '';
-                    const email = row[4] || '';
-                    const sponsor = row[29] || '';
-                    const hpSponsor = row[30] || '';
-                    // Ubah data menjadi string sebelum menggunakan replace()
-                    const safeNama = String(nama).replace(/'/g, "\\'");
-                    const safeHp = String(hp).replace(/'/g, "\\'");
-                    const safeEmail = String(email).replace(/'/g, "\\'");
-                    const safeSponsor = String(sponsor).replace(/'/g, "\\'");
-                    const safeHpSponsor = String(hpSponsor).replace(/'/g, "\\'");
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="rowCheckbox d-none"></td>
+                    <td>${tgl}</td>
+                    <td>${nama}</td>
+                    <td>${hp}</td>
+                    <td>${email}</td>
+                    <td>${sponsor}</td>
+                    <td>${hpSponsor}</td>
+                    <td class="actions-col">
+                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
+                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
+                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        } else {
+            alert(response.message);
+            if(response.message.includes('Sesi tidak valid')) logout();
+        }
+        showLoading(false);
+    };
+    document.body.appendChild(script);
+}
 
-                    tr.innerHTML = `
-                        <td><input type="checkbox" class="rowCheckbox d-none"></td>
-                        <td>${tgl}</td>
-                        <td>${nama}</td>
-                        <td>${hp}</td>
-                        <td>${email}</td>
-                        <td>${sponsor}</td>
-                        <td>${hpSponsor}</td>
-                        <td class="actions-col">
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                            ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            } else {
-                alert(response.message);
-                if(response.message.includes('Sesi tidak valid')) logout();
-            }
-            showLoading(false);
-        };
-        document.body.appendChild(script);
-    }
-
-    // Kirim WA hanya ke record tercentang
-    document.getElementById('sendWaButton').addEventListener('click', () => {
+// Kirim WA hanya ke record tercentang
+document.getElementById('sendWaButton').addEventListener('click', () => {
     const messageTemplate = document.getElementById('waMessage').value.trim();
     if (!messageTemplate) {
         alert('Silahkan isi pesan follow up.');
@@ -394,13 +394,13 @@
         // Konfirmasi pesan followup ke sponsor
         const payloadSponsor = {
             target: noWaSponsor,
-            message: `"*Notifikasi FollowUp*\n` + message
+            message: `*Notifikasi FollowUp*\n` + message
         };
 
         fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': TokenFonnte,
+                'Authorization': TokenFonnte, 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payloadUser)
@@ -421,197 +421,208 @@
         .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
     });
-      alert('Permintaan kirim WA telah diproses. Periksa dashboard Fonnte untuk status pengiriman.');
-      // Setelah kirim WA, tutup modal dan normalisasi tampilan
-      cancelFollowUpButton.click();   
+    alert('Permintaan kirim WA telah diproses. Periksa dashboard Fonnte untuk status pengiriman.');
+    // Setelah kirim WA, tutup modal dan normalisasi tampilan
+    cancelFollowUpButton.click();   
+    }
+);
+
+function logout() {
+    showLoading(true);
+    const payload = JSON.stringify({ action: "logoutUser", token: userToken });
+    fetch(URL_APPS_SCRIPT, {
+        method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: payload
+    }).finally(() => {
+        sessionStorage.clear();
+        window.location.href = 'FormUser.html';
     });
+}
 
+// Fungsi untuk mengedit data
+function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
+    document.getElementById('editRowIndex').value = rowIndex;
+    document.getElementById('editNama').value = nama;
+    document.getElementById('editNomorHp').value = hp;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editSponsor').value = sponsor;
+    document.getElementById('editHpSponsor').value = hpSponsor;
+    editModal.show();
+}
 
-    function logout() {
-        showLoading(true);
-        const payload = JSON.stringify({ action: "logoutUser", token: userToken });
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: payload
-        }).finally(() => {
-            sessionStorage.clear();
-            window.location.href = 'FormUser.html';
-        });
-    }
-
-    function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
-        document.getElementById('editRowIndex').value = rowIndex;
-        document.getElementById('editNama').value = nama;
-        document.getElementById('editNomorHp').value = hp;
-        document.getElementById('editEmail').value = email;
-        document.getElementById('editSponsor').value = sponsor;
-        document.getElementById('editHpSponsor').value = hpSponsor;
-        editModal.show();
-    }
-
-    function saveChanges() {
-        showLoading(true);
-        const payload = {
-            action: 'editData',
-            token: userToken,
-            rowIndex: document.getElementById('editRowIndex').value,
-            nama: document.getElementById('editNama').value,
-            nomorHp: document.getElementById('editNomorHp').value,
-            email: document.getElementById('editEmail').value,
-            sponsor: document.getElementById('editSponsor').value,
-            hpSponsor: document.getElementById('editHpSponsor').value,
-        };
+// Fungsi untuk menyimpan hasil pengeditan
+function saveChanges() {
+    showLoading(true);
+    const payload = {
+        action: 'editData',
+        token: userToken,
+        rowIndex:  document.getElementById('editRowIndex').value,
+        nama:      document.getElementById('editNama').value,
+        nomorHp:   document.getElementById('editNomorHp').value,
+        email:     document.getElementById('editEmail').value,
+        sponsor:   document.getElementById('editSponsor').value,
+        hpSponsor: document.getElementById('editHpSponsor').value,
+    };
         
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
-        }).finally(() => {
-            editModal.hide();
-            setTimeout(loadTableData, 500); // Beri jeda agar server sempat update
-        });
-    }
+    fetch(URL_APPS_SCRIPT, {
+       method: 'POST', 
+       mode: 'no-cors', 
+       headers: {'Content-Type': 'text/plain'}, 
+       body: JSON.stringify(payload)
+    }).finally(() => {
+       editModal.hide();
+       setTimeout(loadTableData, 500); // Beri jeda agar server sempat update
+    });
+}
 
-    function deleteRow(rowIndex) {
-        if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}? Aksi ini tidak bisa dibatalkan.`)) return;
-        showLoading(true);
-        const payload = { action: 'deleteData', token: userToken, rowIndex: rowIndex };
-        fetch(URL_APPS_SCRIPT, {
-            method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(payload)
-        }).finally(() => {
-            setTimeout(loadTableData, 500);
-        });
-    }
+// Fungsi untuk menghapus data
+function deleteRow(rowIndex) {
+    if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}?`)) return;
+    showLoading(true);
+    const payload = { action: 'deleteData', token: userToken, rowIndex: rowIndex };
+    fetch(URL_APPS_SCRIPT, {
+        method: 'POST', 
+        mode: 'no-cors', 
+        headers: {'Content-Type': 'text/plain'}, 
+        body: JSON.stringify(payload)
+    }).finally(() => {
+       setTimeout(loadTableData, 500);
+    });
+}
 
-    function viewRecord(rowIndex) {
-        showLoading(true);
-        const callbackName = 'view_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
+// Fungsi untuk melihat data lengkap
+function viewRecord(rowIndex) {
+    showLoading(true);
+    const callbackName = 'view_cb_' + Date.now();
+    const script = document.createElement('script');
+    script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
 
-        window[callbackName] = (response) => {
-            if (response.status === 'success') {
-                const data = response.data;
-                const viewBody = document.getElementById('viewModalBody');
+    window[callbackName] = (response) => {
+        if (response.status === 'success') {
+            const data = response.data;
+            const viewBody = document.getElementById('viewModalBody');
 
-                const fungsionalHTML = (data.fungsional || []).map(item => `
-                    <tr>
-                        <td>${item.label || "-"}</td>
-                        <td style="text-align:center;">${item.jawaban || "-"}</td>
-                    </tr>`).join('');
+            const fungsionalHTML = (data.fungsional || []).map(item => `
+                <tr>
+                    <td>${item.label || "-"}</td>
+                    <td style="text-align:center;">${item.jawaban || "-"}</td>
+                </tr>`).join('');
 
-                const evaluasiHTML = (data.evaluasi || []).map(item => `
-                    <tr>
-                        <td>${item.param || "-"}</td>
-                        <td class="text-center">${item.hasil || "-"}</td>
-                        <td class="text-center">${item.ideal || "-"}</td>
-                        <td class="text-center">${item.satuan || "-"}</td>
-                        <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
-                    </tr>`).join('');
+            const evaluasiHTML = (data.evaluasi || []).map(item => `
+                <tr>
+                    <td>${item.param || "-"}</td>
+                    <td class="text-center">${item.hasil || "-"}</td>
+                    <td class="text-center">${item.ideal || "-"}</td>
+                    <td class="text-center">${item.satuan || "-"}</td>
+                    <td style="white-space:pre-line">${item.penjelasan || "-"}</td>
+                </tr>`).join('');
 
-                viewBody.innerHTML = `
-                    <!-- DATA PROFILE -->
-                    <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
-                    <table class="table table-bordered">
-                        <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
-                            <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
+            viewBody.innerHTML = `
+                <!-- DATA PROFILE -->
+                <h6 class="mt-4"><i class="fas fa-user me-2"></i>Data Profile</h6>
+                <table class="table table-bordered">
+                    <tr><th style="background-color:#4d94ff;">Tgl Survey</th>
+                        <td style="background-color:#4d94ff;"><b>${data.tanggal || "-"}</b></td>
+                    </tr>
+                    <tr><td>Nama</td><td>${data.nama}</td></tr>
+                    <tr><td>No. HP</td><td>${data.hp}</td></tr>
+                    <tr><td>Email</td><td>${data.email}</td></tr>
+                    <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
+                    <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
+                    <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
+                    <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
+                    <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
+                    <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
+                </table>
+
+                <!-- DATA FUNGSIONAL -->
+                <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h6>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
+                        <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
+                    </thead>
+                    <tbody>${fungsionalHTML}</tbody>
+                </table>
+
+                <!-- DATA EVALUASI -->
+                <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="background-color:#4d94ff; width:25%;">Parameter</th>
+                            <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
+                            <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
+                            <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
+                            <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
                         </tr>
-                        <tr><td>Nama</td><td>${data.nama}</td></tr>
-                        <tr><td>No. HP</td><td>${data.hp}</td></tr>
-                        <tr><td>Email</td><td>${data.email}</td></tr>
-                        <tr><td>Umur</td><td>${data.umur} tahun</td></tr>
-                        <tr><td>Jenis Kelamin</td><td>${data.jk}</td></tr>
-                        <tr><td>Berat Badan</td><td>${data.berat} kg</td></tr>
-                        <tr><td>Tinggi Badan</td><td>${data.tinggi} cm</td></tr>
-                        <tr><td>Lingkar Perut</td><td>${data.lingkar} cm</td></tr>
-                        <tr><td>Aktivitas Fisik</td><td>${data.aktivitas}</td></tr>
-                    </table>
+                    </thead>
+                    <tbody>${evaluasiHTML}</tbody>
+                </table>
 
-                    <!-- DATA FUNGSIONAL -->
-                    <h6 class="mt-4"><i class="fas fa-list-check me-2"></i>Status Fungsional</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr><th style="background-color:#4d94ff; width:85%;">Pertanyaan</th>
-                            <th style="background-color:#4d94ff; text-align:center; width:15%;">Jawaban</th></tr>
-                        </thead>
-                        <tbody>${fungsionalHTML}</tbody>
-                    </table>
-
-                    <!-- DATA EVALUASI -->
-                    <h6 class="mt-4"><i class="fas fa-heartbeat me-2"></i>Evaluasi Parameter</h6>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                               <th style="background-color:#4d94ff; width:25%;">Parameter</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Hasil</th>
-                               <th style="background-color:#4d94ff; width:15%; text-align:center;">Referensi</th>
-                               <th style="background-color:#4d94ff; width:5%; text-align:center;">Satuan</th>
-                               <th style="background-color:#4d94ff; width:50%;">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>${evaluasiHTML}</tbody>
-                    </table>
-
-                    <!-- DATA KESIMPULAN DAN REKOMENDASI -->
-                    <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
+                <!-- DATA KESIMPULAN DAN REKOMENDASI -->
+                <h6 class="mt-4">Kesimpulan & Rekomendasi</h6>
                               
-                    <table class="table table-bordered">
+                <table class="table table-bordered">
                     <tbody>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
+                    <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
                         <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen}</strong></td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                    </tr>
+                    <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
                         <td style="width:85%;">${data.kesimpulan}</td>
-                        </tr>
-                        <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                    </tr>
+                    <tr><th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
                         <td style="width:85%;">${data.rekomendasi}</td>
-                        </tr>
+                    </tr>
                     </tbody>
-                    </table>`;
+                </table>`;
  
                 viewModal.show();
-            } else {
-                alert(response.message);
-            }
-            showLoading(false);
-        };
-        document.body.appendChild(script);
-    }
+        } else {
+           alert(response.message);
+        }
+           showLoading(false);
+    };
+    document.body.appendChild(script);
+}
 
-    function exportToExcel() {
-        const table = document.querySelector(".table-container table");
-        let csv = [];
-        for (const row of table.rows) {
-            let rowData = [];
-            // Ambil semua sel kecuali sel terakhir (Aksi)
-            for (let i = 0; i < row.cells.length - 1; i++) {
-                rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
-            }
-            csv.push(rowData.join(','));
+// Fungsi untuk mengexport data ke Excel
+function exportToExcel() {
+    const table = document.querySelector(".table-container table");
+    let csv = [];
+    for (const row of table.rows) {
+        let rowData = [];
+        // Ambil semua sel kecuali sel terakhir (Aksi)
+        for (let i = 0; i < row.cells.length - 1; i++) {
+            rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
         }
-        const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "DataSurvey.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        csv.push(rowData.join(','));
     }
+    const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "DataSurvey.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
   
-    // Format penanggalan Indonesia
-    function formatTanggal(tanggalISO) {
-        if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
+// Format penanggalan Indonesia
+function formatTanggal(tanggalISO) {
+    if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
         
-        try {
-            const d = new Date(tanggalISO);
-            // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
-            const hari = String(d.getDate()).padStart(2, '0');
-            const bulan = String(d.getMonth() + 1).padStart(2, '0');
-            const tahun = d.getFullYear();
-            return `${hari}-${bulan}-${tahun}`;
-        } catch (e) {
-            // Jika format tanggal tidak valid, kembalikan apa adanya
-            return tanggalISO;
-        }
+    try {
+        const d = new Date(tanggalISO);
+        // getMonth() dimulai dari 0 (Januari=0), jadi kita tambah 1
+        const hari = String(d.getDate()).padStart(2, '0');
+        const bulan = String(d.getMonth() + 1).padStart(2, '0');
+        const tahun = d.getFullYear();
+        return `${hari}-${bulan}-${tahun}`;
+    } catch (e) {
+        // Jika format tanggal tidak valid, kembalikan apa adanya
+        return tanggalISO;
     }
+}
 </script>
 </body>
 </html>
