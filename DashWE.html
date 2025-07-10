@@ -422,7 +422,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
     });
     alert('Pesan WA FollowUp telah terkirim');
-    // Setelah kirim WA, tutup modal dan normalisasi tampilan
+    // Setelah kirim WA, tutup form modal dan normalisasi tampilan
     cancelFollowUpButton.click();   
     }
 );
