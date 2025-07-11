@@ -392,63 +392,57 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     const url         = "https://api.fonnte.com/send";
     const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 
-    //let completedCount = 0;
+    // Inisialisasi progressbar PADA SAAT AWAL
+    const waProgressContainer = document.getElementById('waProgressContainer');
+    const waProgressBar       = document.getElementById('waProgressBar');
+    waProgressContainer.style.display = 'block';
+    waProgressBar.style.width = '0%';
+    waProgressBar.textContent = '0%';
+
+    let completedCount = 0;
+
     selectedRows.forEach((row, index) => {
-    setTimeout(() => {    
-        const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
-        const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
-        const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
-        const payloadUser         = { target: noWaUser, message: message };
-        const payloadSponsor      = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
+        setTimeout(() => {
+            const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
+            const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
+            const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
+            const payloadUser = { target: noWaUser, message: message };
+            const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
 
-        // Inisialisasi progressbar pengiriman pesan followup wa
-        const waProgressContainer = document.getElementById('waProgressContainer');
-        const waProgressBar       = document.getElementById('waProgressBar');
-        waProgressContainer.style.display = 'block';
-        waProgressBar.style.width = '0%';
-        waProgressBar.textContent = '0%';
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadUser)
+            })
+            .then(res => res.json())
+            .then(data => console.log(`WA terkirim ke ${row.nama}:`, data))
+            .catch(err => console.error(`Gagal kirim ke ${row.nama}:`, err));
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': TokenFonnte, 
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payloadUser)
-        })
-        .then(res => res.json())
-        .then(data => console.log(`WA terkirim ke ${row.nama}:`, data))
-        .catch(err => console.error(`Gagal kirim ke ${row.nama}:`, err));
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadSponsor)
+            })
+            .then(res => res.json())
+            .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
+            .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': TokenFonnte,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payloadSponsor)
-        })
-        .then(res => res.json())
-        .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
-        .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
+            // Update progressbar setelah masing-masing kirim
+            completedCount++;
+            const progress = Math.round((completedCount / selectedRows.length) * 100);
+            waProgressBar.style.width = progress + '%';
+            waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
-        // Update ProgressBar di dalam setTimeout
-        const progress = Math.round(((index + 1) / selectedRows.length) * 100);
-        waProgressBar.style.width = progress + '%';
-        waProgressBar.textContent = `${index + 1} dari ${selectedRows.length}`;
-
-        // Jika kiriman terakhir, lakukan cleanup
-        if (index === selectedRows.length - 1) {
-            alert('Semua pesan WA FollowUp telah dikirim.');
-            // aktifkan kembali icon-icon view, edit dan hapus
-            document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-            // normalkan kembali
-            cancelFollowUpButton.click();
-            waProgressContainer.style.display = 'none'; 
-        }
-    }, index * 5000); // jeda 5 detik 
+            if (completedCount === selectedRows.length) {
+                alert('Semua pesan WA FollowUp telah dikirim.');
+                document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+                cancelFollowUpButton.click();
+                waProgressContainer.style.display = 'none';
+            }
+        }, index * 5000); // jeda 5 detik per kirim
     });
 });
+
 
 function logout() {
     showLoading(true);
