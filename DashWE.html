@@ -42,7 +42,7 @@
         .actions-col {
             text-align: right;
             width: 140px; 
-            /* KUNCI #1: Mencegah ikon turun ke bawah */
+            /* Mencegah ikon turun ke bawah */
             white-space: nowrap; 
         }
 
@@ -59,26 +59,27 @@
             background-color: transparent;
             text-decoration: none;
             margin-left: 8px;
-            
-            /* KUNCI #2: Memastikan ikon sejajar dengan teks di barisnya */
-            vertical-align: middle;
-            
+            vertical-align: middle;   /* ikon sejajar dengan teks di barisnya */
             visibility: hidden;
             opacity: 0;
             transition: all 0.2s ease-in-out;
         }
-
         /* Memunculkan ikon saat baris (tr) di-hover */
         .table-hover > tbody > tr:hover .action-icon {
             visibility: visible;
             opacity: 1;
         }
-
         /* Efek saat ikon di-hover */
         .action-icon:hover {
             background-color: #d3d3d3;  /* Warna abu-abu (lightgray) */
             color: #dc3545;             /* Warna ikon merah */
         }
+        /* Non Aktifkan Ikon */   
+        .disabled-action {
+            pointer-events: none !important;  /* kembali normal, icon bisa diklik lagi */
+            opacity: 0.4 !important;          /* kembali normal, icon tampak normal */
+        }
+
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
@@ -269,6 +270,8 @@ document.getElementById('startFollowUpButton').addEventListener('click', () => {
     // Menyembunyikan Toolbar Followup dan checkbox
     followUpToolbar.classList.remove('d-none-force');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
+    // Non Aktifkan icon-icon View, Edit dan Hapus
+    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.add('disabled-action'));
 });
 
 // Aktif dan Non Aktifkan Event Listener 
@@ -282,6 +285,8 @@ document.getElementById('cancelFollowUpButton').addEventListener('click', () => 
     // Menampilkan Toolbar Followup dan checkbox
     followUpToolbar.classList.add('d-none-force');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
+    // Aktifkan kembali icon-icon View, Edit dan Hapus   
+    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
     // Kosongkan inputan text area
     document.getElementById('waMessage').value = '';
 });
@@ -421,6 +426,8 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
     });
+    // Aktifkan kembali icon-icon View, Edit dan Hapus   
+    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
     alert('Pesan WA FollowUp telah terkirim');
     // Setelah kirim WA, tutup form modal dan normalisasi tampilan
     cancelFollowUpButton.click();   
