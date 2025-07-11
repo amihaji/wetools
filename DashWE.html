@@ -438,7 +438,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         // Jika kiriman terakhir, lakukan cleanup
         if (index === selectedRows.length - 1) {
             alert('Semua pesan WA FollowUp telah dikirim.');
+            // aktifkan kembali icon-icon view, edit dan hapus
             document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+            // normalkan kembali
             cancelFollowUpButton.click();
             waProgressContainer.style.display = 'none'; 
         }
