@@ -142,16 +142,18 @@
                                 <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
                                 <a href="index.html" class="btn btn-primary"><i class="fas fa-times"></i> Close</a>
                             </div>
-                            <!-- Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
-                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
-                                <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
-                                <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
-                            </div>
+                        
                             <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
                             <div class="progress mt-2" id="waProgressContainer" style="display: none;">
                                 <div id="waProgressBar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
                             </div>
 
+                            <!-- Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
+                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
+                                <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
+                                <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
+                            </div>
+                        
                         </div>
                     </div>
                  </div>
@@ -396,9 +398,10 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
         const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
         const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
-
         const payloadUser         = { target: noWaUser, message: message };
         const payloadSponsor      = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
+
+        // Inisialisasi progressbar pengiriman pesan followup wa
         const waProgressContainer = document.getElementById('waProgressContainer');
         const waProgressBar       = document.getElementById('waProgressBar');
         waProgressContainer.style.display = 'block';
@@ -446,7 +449,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     }, index * 5000); // jeda 5 detik 
     });
 });
-  
+
 function logout() {
     showLoading(true);
     const payload = JSON.stringify({ action: "logoutUser", token: userToken });
