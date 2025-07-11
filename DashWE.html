@@ -430,7 +430,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
             waProgressBar.style.width = progress + '%';
             waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
-            if (completedCount === selectedRows.length) {
+            if (completedCount > selectedRows.length) {
                 alert('Semua pesan WA FollowUp telah dikirim.');
                 // Normalkan kembali seperti semula 
                 document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
