@@ -397,8 +397,12 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     waProgressBar.style.width = '0%';
     waProgressBar.textContent = '0%';
 
-    let completedCount = 0;
-
+   
+    // Non Aktifkan Tombol "Batal" dan "KirimWA"
+    document.getElementById('cancelFollowUpButton').disabled = true;
+    document.getElementById('sendWaButton').disabled = true;
+    
+    let completedCount = 0; 
     selectedRows.forEach((row, index) => {
         setTimeout(() => {
             const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
@@ -430,6 +434,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                     cancelFollowUpButton.click();
                     waProgressContainer.style.display = 'none';
+                    // Aktifkan Tombol "Batal" dan "KirimWA"    
+                    document.getElementById('cancelFollowUpButton').disabled = false;
+                    document.getElementById('sendWaButton').disabled = false;
                 }
             })
             .catch(err => {
@@ -438,12 +445,15 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 const progress = Math.round((completedCount / selectedRows.length) * 100);
                 waProgressBar.style.width = progress + '%';
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
-
+            
                 if (completedCount === selectedRows.length) {
                     alert('Semua pesan WA FollowUp telah dikirim (dengan beberapa error).');
                     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                     cancelFollowUpButton.click();
                     waProgressContainer.style.display = 'none';
+                    // Aktifkan Tombol "Batal" dan "KirimWA"    
+                    document.getElementById('cancelFollowUpButton').disabled = false;
+                    document.getElementById('sendWaButton').disabled = false;
                 }
             });
         }, index * 5000); // jeda 5 detik antar kirim
