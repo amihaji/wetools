@@ -362,86 +362,6 @@ function loadTableData() {
 }
 
 // Kirim WA hanya ke record tercentang
-BAKCUP_document.getElementById('sendWaButton').addEventListener('click', () => {
-    const messageTemplate = document.getElementById('waMessage').value.trim();
-    if (!messageTemplate) {
-        alert('Silahkan isi pesan follow up.');
-        return;
-    }
-
-    const selectedRows = [];
-    document.querySelectorAll('.rowCheckbox').forEach((cb) => {
-        if (cb.checked) {
-            const tr = cb.closest('tr');
-            const nama = tr.children[2].textContent.trim();
-            const nomor = tr.children[3].textContent.trim();
-            const sponsor = tr.children[5].textContent.trim();
-            const hpSponsor = tr.children[6].textContent.trim();
-            selectedRows.push({ nama, nomor, sponsor, hpSponsor });
-        }
-    });
-
-    if (selectedRows.length === 0) {
-        alert('Pilih minimal satu record untuk mengirim pesan follow up.');
-        return;
-    }
-
-    const TokenFonnte = "Ekjb4bsxt4W6BcXHr4vE";
-    const url         = "https://api.fonnte.com/send";
-    const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-
-    // Inisialisasi progressbar PADA SAAT AWAL
-    const waProgressContainer = document.getElementById('waProgressContainer');
-    const waProgressBar       = document.getElementById('waProgressBar');
-    waProgressContainer.style.display = 'block';
-    waProgressBar.style.width = '0%';
-    waProgressBar.textContent = '0%';
-
-    let completedCount = 0;
-    selectedRows.forEach((row, index) => {
-        setTimeout(() => {
-            const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
-            const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
-            const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
-            const payloadUser = { target: noWaUser, message: message };
-            const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadUser)
-            })
-            .then(res => res.json())
-            .then(data => console.log(`WA terkirim ke ${row.nama}:`, data))
-            .catch(err => console.error(`Gagal kirim ke ${row.nama}:`, err));
-
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadSponsor)
-            })
-            
-            .then(res => res.json())
-            .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
-            .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
-
-            // Update progressbar setelah masing-masing kirim
-            completedCount++;
-            const progress = Math.round((completedCount / selectedRows.length) * 100);
-            waProgressBar.style.width = progress + '%';
-            waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
-
-            if (completedCount > selectedRows.length) {
-                alert('Semua pesan WA FollowUp telah dikirim.');
-                // Normalkan kembali seperti semula 
-                document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-                cancelFollowUpButton.click();
-                waProgressContainer.style.display = 'none';
-            }
-        }, index * 5000); // jeda 5 detik per kirim untuk menghindari terjadi bunned
-    });
-});
-
-// Kirim WA hanya ke record tercentang
 document.getElementById('sendWaButton').addEventListener('click', () => {
     const messageTemplate = document.getElementById('waMessage').value.trim();
     if (!messageTemplate) {
@@ -470,7 +390,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     const url         = "https://api.fonnte.com/send";
     const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 
-    // Inisialisasi progressbar PADA SAAT AWAL
+    // Inisialisasi progressbar sekali di awal
     const waProgressContainer = document.getElementById('waProgressContainer');
     const waProgressBar       = document.getElementById('waProgressBar');
     waProgressContainer.style.display = 'block';
@@ -478,6 +398,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     waProgressBar.textContent = '0%';
 
     let completedCount = 0;
+
     selectedRows.forEach((row, index) => {
         setTimeout(() => {
             const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
@@ -485,17 +406,18 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
             const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
             const payloadUser = { target: noWaUser, message: message };
             const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
+
             Promise.all([
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadUser)
-            }),
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadSponsor)
-            })
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadUser)
+                }),
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadSponsor)
+                })
             ])
             .then(() => {
                 completedCount++;
@@ -518,15 +440,15 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
                 if (completedCount === selectedRows.length) {
-                    alert('Semua pesan WA FollowUp telah dikirim dengan beberapa error.');
+                    alert('Semua pesan WA FollowUp telah dikirim (dengan beberapa error).');
                     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                     cancelFollowUpButton.click();
                     waProgressContainer.style.display = 'none';
                 }
             });
-        }, index * 5000); // jeda 5 detik per kirim untuk menghindari terjadi bunned);
-    });    
-});    
+        }, index * 5000); // jeda 5 detik antar kirim
+    });
+});
 
 function logout() {
     showLoading(true);
