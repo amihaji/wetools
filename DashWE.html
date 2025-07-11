@@ -126,7 +126,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row gy-2">
-                    <!-- Tombnol Filter -->
+                    <!-- Tombol Filter -->
                     <div class="col-lg-6">
                         <div class="input-group" >
                             <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
@@ -144,11 +144,11 @@
                             </div>
                         
                             <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
-                            <div class="progress mt-2" id="waProgressContainer" style="display: none;">
-                                <div id="waProgressBar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+                            <div class="progress mt-2" id="waProgressContainer" style="height:20px; display:none;">
+                                <div id="waProgressBar" class="progress-bar" role="progressbar" style="width: 100%;">0%</div>
                             </div>
 
-                            <!-- Grup Tombol Mode Follow-up (Awalnya Tersembunyi) -->
+                            <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
                             <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
                                 <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                                 <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
@@ -400,7 +400,6 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     waProgressBar.textContent = '0%';
 
     let completedCount = 0;
-
     selectedRows.forEach((row, index) => {
         setTimeout(() => {
             const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
@@ -435,11 +434,12 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
             if (completedCount === selectedRows.length) {
                 alert('Semua pesan WA FollowUp telah dikirim.');
+                // Normalkan kembali seperti semula 
                 document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                 cancelFollowUpButton.click();
                 waProgressContainer.style.display = 'none';
             }
-        }, index * 5000); // jeda 5 detik per kirim
+        }, index * 5000); // jeda 5 detik per kirim untuk menghindari terjadi bunned
     });
 });
 
