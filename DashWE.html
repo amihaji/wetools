@@ -147,6 +147,11 @@
                                 <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                                 <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                             </div>
+                            <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
+                            <div class="progress mt-2" id="waProgressContainer" style="display: none;">
+                                <div id="waProgressBar" class="progress-bar" role="progressbar" style="width: 0%;">0%</div>
+                            </div>
+
                         </div>
                     </div>
                  </div>
@@ -385,7 +390,14 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     const url         = "https://api.fonnte.com/send";
     const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 
+    const waProgressContainer = document.getElementById('waProgressContainer');
+    const waProgressBar       = document.getElementById('waProgressBar');
+    waProgressContainer.style.display = 'block';
+    waProgressBar.style.width = '0%';
+    waProgressBar.textContent = '0%';
+    
     selectedRows.forEach(row => {
+    setTimeout(() => {    
         const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
         const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
         const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
@@ -425,14 +437,31 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         .then(res => res.json())
         .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
-    });
+     });
+
     // Aktifkan kembali icon-icon View, Edit dan Hapus   
-    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-    alert('Pesan WA FollowUp telah terkirim');
+    //document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+    //alert('Pesan WA FollowUp telah terkirim');
     // Setelah kirim WA, tutup form modal dan normalisasi tampilan
-    cancelFollowUpButton.click();   
+    //cancelFollowUpButton.click();    
+    //}
+
+    // Update ProgressBar
+    const progress = Math.round(((index + 1) / selectedRows.length) * 100);
+    waProgressBar.style.width = progress + '%';
+    waProgressBar.textContent = `${index + 1} dari ${selectedRows.length}`;
+
+    if (index === selectedRows.length - 1) {
+        alert('Semua pesan WA FollowUp telah dikirim.');
+        // Aktifkan kembali icon-icon View, Edit dan Hapus   
+        document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+        // Setelah kirim WA, tutup form modal dan normalisasi tampilan
+        cancelFollowUpButton.click();
+        // sembunyikan progress bar
+        waProgressContainer.style.display = 'none'; 
     }
-);
+}, index * 5000); // jeda 5 detik 
+
 
 function logout() {
     showLoading(true);
