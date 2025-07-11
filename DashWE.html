@@ -395,24 +395,16 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     waProgressContainer.style.display = 'block';
     waProgressBar.style.width = '0%';
     waProgressBar.textContent = '0%';
+    //let completedCount = 0;
     
-    selectedRows.forEach(row => {
+    selectedRows.forEach((row, index) => {
     setTimeout(() => {    
         const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
         const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
         const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
 
-        // Kirim pesan followup ke user
-        const payloadUser = {
-            target: noWaUser,
-            message: message
-        };
-
-        // Konfirmasi pesan followup ke sponsor
-        const payloadSponsor = {
-            target: noWaSponsor,
-            message: `*Notifikasi FollowUp*\n\n` + message
-        };
+        const payloadUser = { target: noWaUser, message: message };
+        const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
 
         fetch(url, {
             method: 'POST',
@@ -437,37 +429,30 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         .then(res => res.json())
         .then(data => console.log(`WA terkirim ke Sponsor ${row.sponsor}:`, data))
         .catch(err => console.error(`Gagal kirim ke Sponsor ${row.sponsor}:`, err));
-     });
 
-    // Aktifkan kembali icon-icon View, Edit dan Hapus   
-    //document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-    //alert('Pesan WA FollowUp telah terkirim');
-    // Setelah kirim WA, tutup form modal dan normalisasi tampilan
-    //cancelFollowUpButton.click();    
-    //}
+        // Update ProgressBar di dalam setTimeout
+        const progress = Math.round(((index + 1) / selectedRows.length) * 100);
+        waProgressBar.style.width = progress + '%';
+        waProgressBar.textContent = `${index + 1} dari ${selectedRows.length}`;
 
-    // Update ProgressBar
-    const progress = Math.round(((index + 1) / selectedRows.length) * 100);
-    waProgressBar.style.width = progress + '%';
-    waProgressBar.textContent = `${index + 1} dari ${selectedRows.length}`;
-
-    if (index === selectedRows.length - 1) {
-        alert('Semua pesan WA FollowUp telah dikirim.');
-        // Aktifkan kembali icon-icon View, Edit dan Hapus   
-        document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-        // Setelah kirim WA, tutup form modal dan normalisasi tampilan
-        cancelFollowUpButton.click();
-        // sembunyikan progress bar
-        waProgressContainer.style.display = 'none'; 
-    }
-}, index * 5000); // jeda 5 detik 
+        // Jika kiriman terakhir, lakukan cleanup
+        if (index === selectedRows.length - 1) {
+            alert('Semua pesan WA FollowUp telah dikirim.');
+            document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+            cancelFollowUpButton.click();
+            waProgressContainer.style.display = 'none'; 
+        }
+    }, index * 5000); // jeda 5 detik 
 });
-
+  
 function logout() {
     showLoading(true);
     const payload = JSON.stringify({ action: "logoutUser", token: userToken });
     fetch(URL_APPS_SCRIPT, {
-        method: 'POST', mode: 'no-cors', headers: {'Content-Type': 'text/plain'}, body: payload
+        method: 'POST', 
+        mode: 'no-cors', 
+        headers: {'Content-Type': 'text/plain'}, 
+        body: payload
     }).finally(() => {
         sessionStorage.clear();
         window.location.href = 'FormUser.html';
