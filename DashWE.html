@@ -426,7 +426,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 waProgressBar.style.width = progress + '%';
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
-                if (completedCount > selectedRows.length) {
+                if (completedCount === selectedRows.length) {
                     //setTimeout(() => {
                         alert('Seluruh Pesan telah terkirim');
                         
@@ -440,7 +440,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
                         //document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                         cancelFollowUpButton.click();
-                        return;
+                        
                     //}, 300); // Delay agar progress sempat tampil
                 }    
             });
