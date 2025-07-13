@@ -427,24 +427,26 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
                 if (completedCount === selectedRows.length) {
-                    setTimeout(() => {
+                    //setTimeout(() => {
                         completedCount++;
                         const progress = Math.round((completedCount / selectedRows.length) * 100);
                         waProgressBar.style.width = progress + '%';
+                        waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
                         alert('Semua pesan WA FollowUp telah dikirim.');
-                        
+                }else{        
                         // Reset tampilan ke semula
-                        document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-                        cancelFollowUpButton.click();
                         waProgressContainer.style.display = 'none';
                         waProgressBar.style.width = '0%';
                         waProgressBar.textContent = '0%';
-                        document.getElementById('filterSponsor').value = '';
-                        document.getElementById('waMessage').value = '';
-                        document.getElementById('checkAll').checked = false;
-                        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
-                    }, 300); // Delay agar progress sempat tampil
-                }
+                }      
+                cancelFollowUpButton.click();
+                document.getElementById('filterSponsor').value = '';
+                document.getElementById('waMessage').value = '';
+                document.getElementById('checkAll').checked = false;
+                document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+                //}, 300); // Delay agar progress sempat tampil
+                
             });
         }, index * 5000); // jeda 5 detik antar kirim
     });
