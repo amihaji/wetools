@@ -428,6 +428,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
                 if (completedCount === selectedRows.length) {
                     setTimeout(() => {
+                        const progress = Math.round((completedCount / selectedRows.length) * 100);
                         waProgressBar.style.width = progress + '%';
                         alert('Semua pesan WA FollowUp telah dikirim.');
                         
