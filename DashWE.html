@@ -388,29 +388,25 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
     const TokenFonnte = "Ekjb4bsxt4W6BcXHr4vE";
     const url         = "https://api.fonnte.com/send";
-    const tanggal     = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
 
-    // Inisialisasi progressbar sekali di awal
+    // Inisialisasi progressbar
     const waProgressContainer = document.getElementById('waProgressContainer');
     const waProgressBar       = document.getElementById('waProgressBar');
     waProgressContainer.style.display = 'block';
     waProgressBar.style.width = '0%';
-    waProgressBar.textContent = '0%';
+    waProgressBar.textContent = `0 dari ${selectedRows.length}`;
 
-   
-    // Non Aktifkan Tombol "Batal" dan "KirimWA"
-    document.getElementById('cancelFollowUpButton').disabled = true;
-    document.getElementById('sendWaButton').disabled = true;
-    
-    let completedCount = 0; 
+    let completedCount = 0;
+
     selectedRows.forEach((row, index) => {
         setTimeout(() => {
             const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
             const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
             const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
             const payloadUser = { target: noWaUser, message: message };
-            const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n` + message };
+            const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n${message}` };
 
+            // Kirim ke user dan sponsor, lalu update progress setelah keduanya selesai
             Promise.all([
                 fetch(url, {
                     method: 'POST',
@@ -423,42 +419,32 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                     body: JSON.stringify(payloadSponsor)
                 })
             ])
-            .then(() => {
+            .catch(err => console.error('Error pengiriman:', err))
+            .finally(() => {
                 completedCount++;
                 const progress = Math.round((completedCount / selectedRows.length) * 100);
                 waProgressBar.style.width = progress + '%';
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
                 if (completedCount === selectedRows.length) {
-                    alert('Semua pesan WA FollowUp telah dikirim.');
-                    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-                    cancelFollowUpButton.click();
-                    waProgressContainer.style.display = 'none';
-                    // Aktifkan Tombol "Batal" dan "KirimWA"    
-                    document.getElementById('cancelFollowUpButton').disabled = false;
-                    document.getElementById('sendWaButton').disabled = false;
-                }
-            })
-            .catch(err => {
-                console.error('Gagal kirim WA:', err);
-                completedCount++;
-                const progress = Math.round((completedCount / selectedRows.length) * 100);
-                waProgressBar.style.width = progress + '%';
-                waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
-            
-                if (completedCount === selectedRows.length) {
-                    alert('Semua pesan WA FollowUp telah dikirim (dengan beberapa error).');
-                    document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-                    cancelFollowUpButton.click();
-                    waProgressContainer.style.display = 'none';
-                    // Aktifkan Tombol "Batal" dan "KirimWA"    
-                    document.getElementById('cancelFollowUpButton').disabled = false;
-                    document.getElementById('sendWaButton').disabled = false;
+                    setTimeout(() => {
+                        alert('Semua pesan WA FollowUp telah dikirim.');
+                        // Reset tampilan ke semula
+                        document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+                        cancelFollowUpButton.click();
+                        waProgressContainer.style.display = 'none';
+                        waProgressBar.style.width = '0%';
+                        waProgressBar.textContent = '0%';
+                        document.getElementById('waMessage').value = '';
+                        document.getElementById('checkAll').checked = false;
+                        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
+                    }, 300); // Delay agar progress sempat tampil
                 }
             });
         }, index * 5000); // jeda 5 detik antar kirim
     });
 });
+
 
 function logout() {
     showLoading(true);
