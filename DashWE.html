@@ -400,10 +400,10 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
     selectedRows.forEach((row, index) => {
         setTimeout(() => {
-            const message     = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
-            const noWaUser    = "62" + row.nomor.replace(/^0+/, "");
-            const noWaSponsor = "62" + row.hpSponsor.replace(/^0+/, "");
-            const payloadUser = { target: noWaUser, message: message };
+            const message        = messageTemplate.replace('{nama}', row.nama).replace('{sponsor}', row.sponsor);
+            const noWaUser       = "62" + row.nomor.replace(/^0+/, "");
+            const noWaSponsor    = "62" + row.hpSponsor.replace(/^0+/, "");
+            const payloadUser    = { target: noWaUser, message: message };
             const payloadSponsor = { target: noWaSponsor, message: `*Notifikasi FollowUp*\n\n${message}` };
 
             // Kirim ke user dan sponsor, lalu update progress setelah keduanya selesai
@@ -428,7 +428,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
                 if (completedCount === selectedRows.length) {
                     setTimeout(() => {
+                        waProgressBar.style.width = progress + '%';
                         alert('Semua pesan WA FollowUp telah dikirim.');
+                        
                         // Reset tampilan ke semula
                         document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                         cancelFollowUpButton.click();
