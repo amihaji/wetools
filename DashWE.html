@@ -428,10 +428,6 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
 
                 if (completedCount > selectedRows.length) {
                     //setTimeout(() => {
-                        //completedCount++;
-                        //const progress = Math.round((completedCount / selectedRows.length) * 100);
-                        //waProgressBar.style.width = progress + '%';
-                        //waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
                         alert('Seluruh Pesan telah terkirim');
                         
                         // Reset tampilan ke semula
@@ -442,7 +438,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.getElementById('waMessage').value = '';
                         document.getElementById('checkAll').checked = false;
                         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
-                        document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
+                        //document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
                         cancelFollowUpButton.click();
                         return;
                     //}, 300); // Delay agar progress sempat tampil
@@ -451,7 +447,6 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         }, index * 5000); // jeda 5 detik antar kirim
     });
 });
-
 
 function logout() {
     showLoading(true);
