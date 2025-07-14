@@ -435,8 +435,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 if (completedCount === selectedRows.length) {
                     setTimeout(() => {
                         waProgressBar.style.width = '100%';
+                        waProgressBar.textContent = '100%';
                         // Aktifkan tombol-tombol
-                         document.getElementById('filterSponsor').disabled = false;
+                        document.getElementById('filterSponsor').disabled = false;
                         document.getElementById('filterButton').disabled  = false;
                         document.getElementById('sendWaButton').disabled  = false;
                         document.getElementById('cancelFollowUpButton').disabled  = false;
