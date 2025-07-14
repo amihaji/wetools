@@ -449,9 +449,12 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.getElementById('waMessage').value = '';
                         document.getElementById('checkAll').checked = false;
                         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
+                        // Aktifkan tombol-tombol
+                        document.getElementById('filterSponsor').disabled = false;
+                        document.getElementById('filterButton').disabled  = false;
+                        document.getElementById('sendWaButton').disabled  = false;
+                        document.getElementById('cancelFollowUpButton').disabled  = false;
                         //document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
-                        
-                        
                     }, 300); // Delay agar progress sempat tampil
                 }    
             });
