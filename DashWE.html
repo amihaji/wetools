@@ -435,9 +435,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 if (completedCount === selectedRows.length) {
                     setTimeout(() => {
                         completedCount++;
-                        const progress = Math.round((completedCount / selectedRows.length) * 100);
+                        const progress = Math.round(((completedCount +1) / selectedRows.length) * 100);
                         waProgressBar.style.width = progress + '%';
-                        waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
+                        //waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
                         // Aktifkan tombol-tombol
                         document.getElementById('filterSponsor').disabled = false;
                         document.getElementById('filterButton').disabled  = false;
