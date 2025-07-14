@@ -392,10 +392,16 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     // Inisialisasi progressbar
     const waProgressContainer = document.getElementById('waProgressContainer');
     const waProgressBar       = document.getElementById('waProgressBar');
-    waProgressContainer.style.display = 'block';
     waProgressBar.style.width = '0%';
     waProgressBar.textContent = `0 dari ${selectedRows.length}`;
+    waProgressContainer.style.display = 'block';
 
+    // Non Aktifkan tombol-tombol
+    document.getElementById('filterSponsor').disabled = true;
+    document.getElementById('filterButton').disabled  = true;
+    document.getElementById('sendWaButton').disabled  = true;
+    document.getElementById('cancelFollowUpButton').disabled  = true;
+    
     let completedCount = 0;
 
     selectedRows.forEach((row, index) => {
