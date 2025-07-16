@@ -456,7 +456,7 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.getElementById('waMessage').value = '';
                         document.getElementById('checkAll').checked = false;
                         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
-                    }, 500); // Delay agar progress 100% terlihat sebelum alert
+                    }, 3000); // Delay agar progress 100% terlihat sebelum alert
                 }
             });    
         }, index * 5000); // jeda 5 detik setiap perdata yang dikirim
