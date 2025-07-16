@@ -418,14 +418,14 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                     method: 'POST',
                     headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payloadUser)
-                }),
+                }).then(res => res.json()).catch(err => console.error(`Error kirim ke user ${row.nama}:`, err)),
+
                 fetch(url, {
                     method: 'POST',
                     headers: { 'Authorization': TokenFonnte, 'Content-Type': 'application/json' },
                     body: JSON.stringify(payloadSponsor)
-                })
+                }).then(res => res.json()).catch(err => console.error(`Error kirim ke sponsor ${row.sponsor}:`, err))
             ])
-            .catch(err => console.error('Error pengiriman:', err))
             .finally(() => {
                 completedCount++;
                 const progress = Math.round((completedCount / selectedRows.length) * 100);
@@ -436,13 +436,15 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                     setTimeout(() => {
                         waProgressBar.style.width = '100%';
                         waProgressBar.textContent = '100%';
-                        // Aktifkan tombol-tombol
+
+                        // Aktifkan kembali tombol-tombol
                         document.getElementById('filterSponsor').disabled = false;
                         document.getElementById('filterButton').disabled  = false;
                         document.getElementById('sendWaButton').disabled  = false;
                         document.getElementById('cancelFollowUpButton').disabled  = false;
+
                         alert('Seluruh Pesan telah terkirim');
-                        
+
                         // Reset tampilan ke semula
                         cancelFollowUpButton.click();
                         waProgressContainer.style.display = 'none';
@@ -452,8 +454,8 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.getElementById('waMessage').value = '';
                         document.getElementById('checkAll').checked = false;
                         document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
-                     }, 300); // Delay agar progress sempat tampil
-                }    
+                    }, 300); // Delay agar progress 100% terlihat sebelum alert
+                }
             });
         }, index * 5000); // jeda 5 detik antar kirim
     });
