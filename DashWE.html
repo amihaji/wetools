@@ -88,6 +88,10 @@
         .d-none-force {
             display: none !important;
         }
+        
+        .progress-bar {
+           transition: width 0.3s ease; /* jika ingin animasi halus */
+        }
     </style>
 </head>
 
@@ -433,30 +437,31 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                 waProgressBar.textContent = `${completedCount} dari ${selectedRows.length}`;
 
                 if (completedCount === selectedRows.length) {
-                    setTimeout(() => {
-                        waProgressBar.style.width = '100%';
-                        waProgressBar.textContent = '100%';
-
+                    waProgressBar.style.width = '100%';
+                    waProgressBar.textContent = '100%';
+                    requestAnimationFrame(() => {
+                        setTimeout(() => {
                         // Aktifkan kembali tombol-tombol
-                        document.getElementById('filterSponsor').disabled = false;
-                        document.getElementById('filterButton').disabled  = false;
-                        document.getElementById('sendWaButton').disabled  = false;
-                        document.getElementById('cancelFollowUpButton').disabled  = false;
+                            document.getElementById('filterSponsor').disabled = false;
+                            document.getElementById('filterButton').disabled  = false;
+                            document.getElementById('sendWaButton').disabled  = false;
+                            document.getElementById('cancelFollowUpButton').disabled  = false;
 
-                        alert('Seluruh Pesan telah terkirim');
+                            alert('Seluruh Pesan telah terkirim');
 
-                        // Reset tampilan ke semula
-                        cancelFollowUpButton.click();
-                        waProgressContainer.style.display = 'none';
-                        waProgressBar.style.width = '0%';
-                        waProgressBar.textContent = '0%';
-                        document.getElementById('filterSponsor').value = '';
-                        document.getElementById('waMessage').value = '';
-                        document.getElementById('checkAll').checked = false;
-                        document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
-                    }, 300); // Delay agar progress 100% terlihat sebelum alert
+                            // Reset tampilan ke semula
+                            cancelFollowUpButton.click();
+                            waProgressContainer.style.display = 'none';
+                            waProgressBar.style.width = '0%';
+                            waProgressBar.textContent = '0%';
+                            document.getElementById('filterSponsor').value = '';
+                            document.getElementById('waMessage').value = '';
+                            document.getElementById('checkAll').checked = false;
+                            document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = false);
+                        }, 100); // Delay agar progress 100% terlihat sebelum alert
+                    });
                 }
-            });
+            });    
         }, index * 5000); // jeda 5 detik antar kirim
     });
 });
