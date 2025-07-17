@@ -1,5 +1,5 @@
 <!---------------------------------------------------------------
-Aplikasi Survey Kebugaran - WETools Versi 5.0 GitHUB
+Aplikasi Survey Kebugaran - WETools Versi 4.0 GitHUB
 
 Dibuat dengan menggunakan : 
 - HTML Bootstrap versi 5.0
@@ -7,8 +7,10 @@ Dibuat dengan menggunakan :
 - Google Script Aplication
 
 Terdiri atas beberapa file :
-- Database : Sheet "SurveyData"
-- index.html (program utama) di ditempat di GitHUB
+- Database : Sheet "SurveyData", "DataWE", "TabelUser"
+- index.html (program utama) ditempatkan di GitHUB
+- formUser.html ditempatkan di GitHUB
+- DashWE.html ditempatkan di GitHUB
 - code.gs (program server side)
 - templatePDF.html (untuk menampilkan hasil ke bentuk file PDF, di tempatkan di Google script)
 
@@ -18,9 +20,11 @@ Fitur Aplikasi:
 - File pdf dapat dikirim ke email dan wa
 - Penambahan Inputan untuk Data Sponsor/Pengundang
 - Hasil Survey TIDAK ditampilkan ke layar
-- Tampilan lebih Responsive
+- Tampilan lebih Responsive 
 - Form Login User
-- Form Dashboard Admin
+- Form Dashboard Admin : Lihat, Edit dan Hapus
+- Kirim WA Follow UP : Isi Pesan, Pilih Record untuk kirim WA
+- Penambahan Fiture emoticon untuk kirim pesan
 ------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="id">
@@ -472,7 +476,7 @@ body {
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwtPQzSPN4f5QrwMImYb49L9bX-21PTJTX9LSxxFS_zdtyqQJHfib15mOyES2FU7y3r/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzmjDyz8Du-zeY1CrpdWLNeCTCXgtTdTz1OO_fNpAzFyxVaNEdnef1oEkDsSsv1fe8/exec';
 // ******************************************************
 
 // ***********************
