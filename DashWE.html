@@ -703,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pickerHeight = 350;   // tinggi rata-rata picker
 
         let left = window.innerWidth / 2 - pickerWidth / 2 + window.scrollX;
-        let top = textareaRect.bottom + window.scrollY + 8; // 8px jarak bawah textarea
+        let top  = textareaRect.bottom + window.scrollY + 2;    // 2px jarak bawah textarea
 
         picker.style.display  = picker.style.display === 'none' ? 'block' : 'none';
         picker.style.position = 'absolute';
