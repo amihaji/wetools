@@ -89,9 +89,18 @@
             display: none !important;
         }
         
+        /* Transisi Progress bar dengan animasi halus */
         .progress-bar {
-           transition: width 0.3s ease; /* jika ingin animasi halus */
+           transition: width 0.3s ease; 
         }
+       
+        /* emiticon selalu tampil di posisi tepat, responsif */
+        emoji-picker {
+            max-width: 95vw;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        }
+
     </style>
 </head>
 <body>
@@ -687,12 +696,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = document.getElementById('emojiPickerButton');
     const textarea = document.getElementById('waMessage');
 
+    // Fungsi untuk menambahkan emoji ke textarea
     button.addEventListener('click', (event) => {
+        const rect = button.getBoundingClientRect();
         picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-        picker.style.top = (button.getBoundingClientRect().bottom + window.scrollY) + 'px';
-        picker.style.left = (button.getBoundingClientRect().left + window.scrollX) + 'px';
-    });
 
+        const pickerWidth = 300; // lebar picker rata-rata
+        let left = rect.left + window.scrollX + (rect.width / 2) - (pickerWidth / 2);
+        let top = rect.bottom + window.scrollY + 8; // jarak 8px dari tombol
+
+        // Batas agar tidak keluar layar kiri
+        if (left < 8) left = 8;
+        // Batas agar tidak keluar layar kanan
+        if (left + pickerWidth > window.innerWidth - 8) {
+            left = window.innerWidth - pickerWidth - 8;
+        }
+
+        picker.style.position = 'absolute';
+        picker.style.width = pickerWidth + 'px';
+        picker.style.left = left + 'px';
+        picker.style.top = top + 'px';
+        picker.style.zIndex = 9999;
+    });
+     
     picker.addEventListener('emoji-click', (event) => {
         const emoji = event.detail.unicode;
         const start = textarea.selectionStart;
