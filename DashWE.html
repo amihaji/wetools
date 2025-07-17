@@ -697,28 +697,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById('waMessage');
 
     // Fungsi untuk menambahkan emoji ke textarea
-    button.addEventListener('click', (event) => {
-        const rect = button.getBoundingClientRect();
+    button.addEventListener('click', () => {
+        const textareaRect = textarea.getBoundingClientRect();
+        const pickerWidth = 300;    // atau 320 sesuai kenyamanan
+        const pickerHeight = 350;   // tinggi rata-rata picker
+
+        let left = window.innerWidth / 2 - pickerWidth / 2 + window.scrollX;
+        let top = textareaRect.bottom + window.scrollY + 8; // 8px jarak bawah textarea
+
         picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-
-        const pickerWidth = 300; // lebar picker rata-rata
-        let left = rect.left + window.scrollX + (rect.width / 2) - (pickerWidth / 2);
-        let top = rect.bottom + window.scrollY + 8; // jarak 8px dari tombol
-
-        // Batas agar tidak keluar layar kiri
-        if (left < 8) left = 8;
-        // Batas agar tidak keluar layar kanan
-        if (left + pickerWidth > window.innerWidth - 8) {
-            left = window.innerWidth - pickerWidth - 8;
-        }
-
         picker.style.position = 'absolute';
         picker.style.width = pickerWidth + 'px';
         picker.style.left = left + 'px';
         picker.style.top = top + 'px';
         picker.style.zIndex = 9999;
     });
-     
+
     picker.addEventListener('emoji-click', (event) => {
         const emoji = event.detail.unicode;
         const start = textarea.selectionStart;
