@@ -692,31 +692,31 @@ function formatTanggal(tanggalISO) {
 
 // Inisialisasi Emoji Picker
 document.addEventListener('DOMContentLoaded', () => {
-    const picker = document.getElementById('emojiPicker');
-    const button = document.getElementById('emojiPickerButton');
+    const picker   = document.getElementById('emojiPicker');
+    const button   = document.getElementById('emojiPickerButton');
     const textarea = document.getElementById('waMessage');
 
     // Fungsi untuk menambahkan emoji ke textarea
     button.addEventListener('click', () => {
         const textareaRect = textarea.getBoundingClientRect();
-        const pickerWidth = 300;    // atau 320 sesuai kenyamanan
+        const pickerWidth  = 300;   // atau 320 sesuai kenyamanan
         const pickerHeight = 350;   // tinggi rata-rata picker
 
         let left = window.innerWidth / 2 - pickerWidth / 2 + window.scrollX;
         let top = textareaRect.bottom + window.scrollY + 8; // 8px jarak bawah textarea
 
-        picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+        picker.style.display  = picker.style.display === 'none' ? 'block' : 'none';
         picker.style.position = 'absolute';
-        picker.style.width = pickerWidth + 'px';
-        picker.style.left = left + 'px';
-        picker.style.top = top + 'px';
-        picker.style.zIndex = 9999;
+        picker.style.width    = pickerWidth + 'px';
+        picker.style.left     = left + 'px';
+        picker.style.top      = top + 'px';
+        picker.style.zIndex   = 9999;
     });
 
     picker.addEventListener('emoji-click', (event) => {
         const emoji = event.detail.unicode;
         const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
+        const end   = textarea.selectionEnd;
         textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end);
         textarea.focus();
         textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
