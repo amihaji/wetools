@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
 <title>Setup User</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <style>
@@ -12,7 +12,6 @@
 </style>
 </head>
 <body class="p-3">
-
 <div class="container">
     <h4 class="mb-3">Setup User</h4>
     <div class="mb-2">
@@ -48,15 +47,15 @@
                 <form id="userForm">
                     <div class="mb-2">
                         <label>User ID</label>
-                        <input type="text" id="userId" class="form-control" required />
+                        <input type="text" id="userId" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label>Nama User</label>
-                        <input type="text" id="userName" class="form-control" required />
+                        <input type="text" id="userName" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label>Password</label>
-                        <input type="text" id="userPass" class="form-control" required />
+                        <input type="text" id="userPass" class="form-control" required>
                     </div>
                     <div class="mb-2">
                         <label>Level</label>
@@ -68,7 +67,7 @@
                     </div>
                     <div class="mb-2">
                         <label>Salah</label>
-                        <input type="number" id="userSalah" class="form-control" value="0" min="0" max="3" />
+                        <input type="number" id="userSalah" class="form-control" value="0" min="0" max="3">
                     </div>
                 </form>
             </div>
@@ -81,12 +80,15 @@
 </div>
 
 <script>
-//***********  Deklarasi variabel global ****************
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx6fTn0yI61rFTPM7VVgH8vNiLCB3WV8bwIarv_hw4n5DC3vydElbVmt3jN-0D1ty2A/exec";
-const userModal   = new bootstrap.Modal(document.getElementById('userModal'));
-const userForm    = document.getElementById('userForm');
-let editingId     = null;
-// ******************************************************
+const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+const userForm  = document.getElementById('userForm');
+let editingId   = null;
+
+const userLevel = sessionStorage.getItem('userLevel');
+if (userLevel !== 'Admin') {
+    alert("Anda tidak memiliki akses ke halaman ini.");
+    window.location.href = 'DashWE.html';
+}
 
 document.getElementById('addUserBtn').addEventListener('click', () => {
     document.querySelector('.modal-title').textContent = "Add User";
@@ -99,87 +101,71 @@ document.getElementById('closeBtn').addEventListener('click', () => {
     window.location.href = "DashWE.html";
 });
 
-document.getElementById('saveUserBtn').addEventListener('click', async () => {
-    const data = {
-        action: editingId ? "editUser" : "addUser",
+document.getElementById('saveUserBtn').addEventListener('click', () => {
+    const userData = {
         userId: document.getElementById('userId').value.trim(),
         userName: document.getElementById('userName').value.trim(),
         userPass: document.getElementById('userPass').value.trim(),
-        userLevel: document.getElementById('userLevel').value.trim(),
+        userLevel: document.getElementById('userLevel').value,
         userSalah: document.getElementById('userSalah').value.trim()
     };
+
+    if (!userData.userId || !userData.userName || !userData.userPass) {
+        alert("Lengkapi semua field!");
+        return;
+    }
+
     if (editingId) {
-        data.userId = editingId;
-    }
-    const res = await fetch(WEB_APP_URL, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-    });
-    const result = await res.json();
-    if (result.status === "success") {
-        userModal.hide();
-        loadUserTable();
+        google.script.run.withSuccessHandler(loadUserTable).editUser(userData);
     } else {
-        alert("Gagal menyimpan data!");
+        google.script.run.withSuccessHandler(loadUserTable).addUser(userData);
     }
+    userModal.hide();
 });
 
-async function loadUserTable() {
-    const res = await fetch(`${WEB_APP_URL}?action=getTabelUser`);
-    const data = await res.json();
-    const tbody = document.querySelector('#userTable tbody');
-    tbody.innerHTML = "";
-    data.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row[0]}</td>
-            <td>${row[1]}</td>
-            <td>${row[2]}</td>
-            <td>${row[3]}</td>
-            <td>${row[4]}</td>
-            <td>
-                <span class="action-icon" onclick="editUser('${row[0]}')">✏️</span>
-                <span class="action-icon" onclick="deleteUser('${row[0]}')">🗑️</span>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
+function loadUserTable() {
+    google.script.run.withSuccessHandler(data => {
+        const tbody = document.querySelector('#userTable tbody');
+        tbody.innerHTML = "";
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row[0]}</td>
+                <td>${row[1]}</td>
+                <td>${row[2]}</td>
+                <td>${row[3]}</td>
+                <td>${row[4]}</td>
+                <td>
+                    <span class="action-icon" onclick="editUser('${row[0]}')">✏️</span>
+                    <span class="action-icon" onclick="deleteUser('${row[0]}')">🗑️</span>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }).getTabelUser();
 }
 
-async function editUser(userId) {
-    const res = await fetch(`${WEB_APP_URL}?action=getTabelUser`);
-    const data = await res.json();
-    const user = data.find(u => u[0] === userId);
-    if (!user) return;
-    document.querySelector('.modal-title').textContent = "Edit User";
-    document.getElementById('userId').value = user[0];
-    document.getElementById('userName').value = user[1];
-    document.getElementById('userPass').value = user[2];
-    document.getElementById('userLevel').value = user[3];
-    document.getElementById('userSalah').value = user[4];
-    editingId = user[0];
-    userModal.show();
+function editUser(userId) {
+    google.script.run.withSuccessHandler(data => {
+        const user = data.find(u => u[0] === userId);
+        if (!user) return;
+        document.querySelector('.modal-title').textContent = "Edit User";
+        document.getElementById('userId').value = user[0];
+        document.getElementById('userName').value = user[1];
+        document.getElementById('userPass').value = user[2];
+        document.getElementById('userLevel').value = user[3];
+        document.getElementById('userSalah').value = user[4];
+        editingId = user[0];
+        userModal.show();
+    }).getTabelUser();
 }
 
-async function deleteUser(userId) {
+function deleteUser(userId) {
     if (!confirm(`Yakin ingin menghapus user ${userId}?`)) return;
-    const data = { action: "deleteUser", userId: userId };
-    const res = await fetch(WEB_APP_URL, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-    });
-    const result = await res.json();
-    if (result.status === "success") {
-        loadUserTable();
-    } else {
-        alert("Gagal menghapus data!");
-    }
+    google.script.run.withSuccessHandler(loadUserTable).deleteUser({ userId });
 }
 
 loadUserTable();
 </script>
-
 </body>
 </html>

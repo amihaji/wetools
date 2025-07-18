@@ -98,12 +98,18 @@
 
         window[callbackName] = (response) => {
             if (response.status === 'success' && response.loggedIn) {
+                // Simpan session
                 sessionStorage.setItem('userToken', response.token);
                 sessionStorage.setItem('userLevel', response.level);
                 sessionStorage.setItem('userId', response.userId);
                 
-                if (response.level === 'Admin') {
+                // redirect sesuai level
+                if (response.level === "Admin") {
                     window.location.href = 'DashWE.html';
+                } else if (response.level === "Member") {
+                    window.location.href = 'DashCRM.html';
+                } else if (response.level === "User") {
+                    window.location.href = 'DashUser.html'; // pengembangan berikutnya
                 } else {
                     showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
                     resetButton();
