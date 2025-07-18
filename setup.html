@@ -10,6 +10,45 @@
 body {
     background-color: #f8f9fa;
 }
+.title-box {
+    background-color: #003366;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.title-box i {
+    margin-right: 10px;
+}
+.button-box {
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 10px;
+    margin: 15px 0;
+}
+.btn-group-vertical-responsive {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+@media (max-width: 576px) {
+    .btn-group-vertical-responsive {
+        flex-direction: column;
+    }
+}
+.table-box {
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 10px;
+}
+.table-wrapper {
+    max-height: 450px;
+    overflow-y: auto;
+}
 .table-hover tbody tr:hover {
     background-color: #f2f2f2;
     cursor: pointer;
@@ -31,41 +70,33 @@ tr:hover .action-icon {
 .action-icon:hover {
     color: red;
 }
-.shadow-box {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    padding: 15px;
-}
-@media (max-width: 576px) {
-    .btn-group-responsive {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
+thead.bg-dark-blue {
+    background-color: #003366;
+    color: white;
 }
 </style>
 </head>
 <body class="p-2 p-sm-3">
 
 <div class="container">
+
     <!-- Header Box -->
-    <div class="shadow-box mb-3 bg-primary text-white d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-user-cog fa-lg me-2"></i>
-            <h6 class="mb-0">Setup User</h6>
-        </div>
-        <div class="btn-group btn-group-sm btn-group-responsive">
-            <button class="btn btn-light text-primary" id="addUserButton"><i class="fas fa-plus"></i> Add User</button>
-            <a href="DashWE.html" class="btn btn-light text-primary"><i class="fas fa-arrow-left"></i> Close</a>
-        </div>
+    <div class="title-box mb-3">
+        <i class="fas fa-user-cog fa-lg"></i>
+        <h6 class="mb-0">Setup User</h6>
+    </div>
+
+    <!-- Button Box -->
+    <div class="button-box d-flex justify-content-between align-items-center btn-group-vertical-responsive">
+        <button class="btn btn-primary btn-sm" id="addUserButton"><i class="fas fa-plus"></i> Add User</button>
+        <a href="DashWE.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Close</a>
     </div>
 
     <!-- Table Box -->
-    <div class="shadow-box">
-        <div class="table-responsive">
-            <table class="table table-hover table-striped table-bordered align-middle mb-0">
-                <thead class="bg-primary text-white">
+    <div class="table-box">
+        <div class="table-wrapper">
+            <table class="table table-hover table-striped table-bordered align-middle text-center">
+                <thead class="bg-dark-blue">
                     <tr>
                         <th>User ID</th>
                         <th>Nama User</th>
@@ -83,11 +114,11 @@ tr:hover .action-icon {
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Form -->
 <div class="modal fade" id="userModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <form id="userForm" class="modal-content">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header" style="background-color:#003366; color:white;">
         <h6 class="modal-title">Tambah User</h6>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
