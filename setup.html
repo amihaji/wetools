@@ -2,131 +2,91 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Setup User</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup User - WETools</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-.action-icon { cursor: pointer; margin: 0 5px; color: #007bff; }
-.action-icon:hover { color: #0056b3; }
+.table-wrapper {
+    max-height: 400px;
+    overflow: auto;
+    border: 1px solid #dee2e6;
+}
+.table-hover > tbody > tr:hover {
+    background-color: #f2f2f2;
+}
+.actions-col {
+    text-align: right;
+    width: 100px;
+    white-space: nowrap;
+}
+.action-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #6c757d;
+    background-color: transparent;
+    text-decoration: none;
+    margin-left: 6px;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+}
+.table-hover > tbody > tr:hover .action-icon {
+    visibility: visible;
+    opacity: 1;
+}
+.action-icon:hover {
+    background-color: #d3d3d3;
+    color: #dc3545;
+}
 </style>
 </head>
-<body class="p-3">
+<body class="p-4">
+
 <div class="container">
     <h4 class="mb-3">Setup User</h4>
-    <div class="mb-2">
-        <button id="addUserBtn" class="btn btn-success btn-sm">Add User</button>
-        <button id="closeBtn" class="btn btn-secondary btn-sm">Close</button>
+    <div class="d-flex justify-content-between mb-2">
+        <button class="btn btn-primary" id="addUserBtn"><i class="fas fa-plus"></i> Add User</button>
+        <a href="DashWE.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Close</a>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped table-sm" id="userTable">
-            <thead class="table-light">
+    <div class="table-wrapper">
+        <table class="table table-hover table-striped mb-0">
+            <thead class="table-dark">
                 <tr>
                     <th>User ID</th>
                     <th>Nama User</th>
                     <th>Password</th>
                     <th>Level</th>
                     <th>Salah</th>
-                    <th>Aksi</th>
+                    <th class="actions-col">Aksi</th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="userTableBody">
+                <!-- Data akan terisi di sini -->
+            </tbody>
         </table>
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="userModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add User</h5>
-                <button class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="userForm">
-                    <div class="mb-2">
-                        <label>User ID</label>
-                        <input type="text" id="userId" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Nama User</label>
-                        <input type="text" id="userName" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Password</label>
-                        <input type="text" id="userPass" class="form-control" required>
-                    </div>
-                    <div class="mb-2">
-                        <label>Level</label>
-                        <select id="userLevel" class="form-select">
-                            <option>Admin</option>
-                            <option>User</option>
-                            <option>Member</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label>Salah</label>
-                        <input type="number" id="userSalah" class="form-control" value="0" min="0" max="3">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button id="saveUserBtn" class="btn btn-primary btn-sm">Save</button>
-                <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-const userModal = new bootstrap.Modal(document.getElementById('userModal'));
-const userForm  = document.getElementById('userForm');
-let editingId   = null;
+// Variabel global
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzs6oVX4piyLqyyiWvq40mwnZ2IQzzN3wEzPK4U0Eb9PbReXKMpgcIHXKm2zTuEgvZB/exec';
 
-const userLevel = sessionStorage.getItem('userLevel');
-if (userLevel !== 'Admin') {
-    alert("Anda tidak memiliki akses ke halaman ini.");
-    window.location.href = 'DashWE.html';
-}
-
-document.getElementById('addUserBtn').addEventListener('click', () => {
-    document.querySelector('.modal-title').textContent = "Add User";
-    userForm.reset();
-    editingId = null;
-    userModal.show();
-});
-
-document.getElementById('closeBtn').addEventListener('click', () => {
-    window.location.href = "DashWE.html";
-});
-
-document.getElementById('saveUserBtn').addEventListener('click', () => {
-    const userData = {
-        userId: document.getElementById('userId').value.trim(),
-        userName: document.getElementById('userName').value.trim(),
-        userPass: document.getElementById('userPass').value.trim(),
-        userLevel: document.getElementById('userLevel').value,
-        userSalah: document.getElementById('userSalah').value.trim()
-    };
-
-    if (!userData.userId || !userData.userName || !userData.userPass) {
-        alert("Lengkapi semua field!");
-        return;
-    }
-
-    if (editingId) {
-        google.script.run.withSuccessHandler(loadUserTable).editUser(userData);
-    } else {
-        google.script.run.withSuccessHandler(loadUserTable).addUser(userData);
-    }
-    userModal.hide();
-});
+document.addEventListener('DOMContentLoaded', loadUserTable);
+document.getElementById('addUserBtn').addEventListener('click', addUser);
 
 function loadUserTable() {
-    google.script.run.withSuccessHandler(data => {
-        const tbody = document.querySelector('#userTable tbody');
-        tbody.innerHTML = "";
+    const callbackName = 'cb_' + Date.now();
+    const script = document.createElement('script');
+    script.src = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+
+    window[callbackName] = (data) => {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = '';
         data.forEach(row => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -135,37 +95,84 @@ function loadUserTable() {
                 <td>${row[2]}</td>
                 <td>${row[3]}</td>
                 <td>${row[4]}</td>
-                <td>
-                    <span class="action-icon" onclick="editUser('${row[0]}')">✏️</span>
-                    <span class="action-icon" onclick="deleteUser('${row[0]}')">🗑️</span>
+                <td class="actions-col">
+                    <a href="#" class="action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}')">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="#" class="action-icon" title="Hapus" onclick="deleteUser('${row[0]}')">
+                        <i class="fas fa-trash"></i>
+                    </a>
                 </td>
             `;
             tbody.appendChild(tr);
         });
-    }).getTabelUser();
+        document.body.removeChild(script);
+        delete window[callbackName];
+    };
+    document.body.appendChild(script);
 }
 
-function editUser(userId) {
-    google.script.run.withSuccessHandler(data => {
-        const user = data.find(u => u[0] === userId);
-        if (!user) return;
-        document.querySelector('.modal-title').textContent = "Edit User";
-        document.getElementById('userId').value = user[0];
-        document.getElementById('userName').value = user[1];
-        document.getElementById('userPass').value = user[2];
-        document.getElementById('userLevel').value = user[3];
-        document.getElementById('userSalah').value = user[4];
-        editingId = user[0];
-        userModal.show();
-    }).getTabelUser();
+function addUser() {
+    const userId = prompt('Masukkan User ID:');
+    if (!userId) return;
+    const userName = prompt('Masukkan Nama User:');
+    const userPass = prompt('Masukkan Password:');
+    const userLevel = prompt('Masukkan Level (Admin/Member/User):');
+    const userSalah = 0;
+
+    const payload = {
+        action: 'addUser',
+        userId,
+        userName,
+        userPass,
+        userLevel,
+        userSalah
+    };
+
+    fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+    }).then(() => loadUserTable());
+}
+
+function editUser(userId, userName, userPass, userLevel, userSalah) {
+    const newUserName = prompt('Edit Nama User:', userName);
+    if (newUserName === null) return;
+    const newUserPass = prompt('Edit Password:', userPass);
+    const newUserLevel = prompt('Edit Level (Admin/Member/User):', userLevel);
+
+    const payload = {
+        action: 'editUser',
+        userId,
+        userName: newUserName,
+        userPass: newUserPass,
+        userLevel: newUserLevel,
+        userSalah: parseInt(userSalah)
+    };
+
+    fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+    }).then(() => loadUserTable());
 }
 
 function deleteUser(userId) {
     if (!confirm(`Yakin ingin menghapus user ${userId}?`)) return;
-    google.script.run.withSuccessHandler(loadUserTable).deleteUser({ userId });
-}
 
-loadUserTable();
+    const payload = {
+        action: 'deleteUser',
+        userId
+    };
+
+    fetch(URL_APPS_SCRIPT, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+    }).then(() => loadUserTable());
+}
 </script>
+
 </body>
 </html>
