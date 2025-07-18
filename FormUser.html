@@ -58,8 +58,7 @@
 
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx6fTn0yI61rFTPM7VVgH8vNiLCB3WV8bwIarv_hw4n5DC3vydElbVmt3jN-0D1ty2A/exec';
-    const loginForm       = document.getElementById('loginForm');
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx6fTn0yI61rFTPM7VVgH8vNiLCB3WV8bwIarv_hw4n5DC3vydElbVmt3jN-0D1ty2A/exec'
     const loginButton     = document.getElementById('loginButton');
     const spinner         = loginButton.querySelector('.spinner-border');
     const messageDiv      = document.getElementById('message');
@@ -91,43 +90,54 @@
         });
     });
 
-    function checkLoginStatus(userId) {
-        const callbackName = 'login_status_cb_' + Date.now();
-        const script = document.createElement('script');
-        script.src = `${URL_APPS_SCRIPT}?action=checkLogin&userId=${userId}&callback=${callbackName}`;
+    function handleLogin() {
+    const userIdInput = document.getElementById('userId').value.trim();
+    const userPassInput = document.getElementById('userPass').value.trim();
 
-        window[callbackName] = (response) => {
-            if (response.status === 'success' && response.loggedIn) {
-                // Simpan session
-                sessionStorage.setItem('userToken', response.token);
-                sessionStorage.setItem('userLevel', response.level);
-                sessionStorage.setItem('userId', response.userId);
-                
-                // redirect sesuai level
-                if (response.level === "Admin") {
-                    window.location.href = 'DashWE.html';
-                } else if (response.level === "Member") {
-                    window.location.href = 'DashCRM.html';
-                } else if (response.level === "User") {
-                    window.location.href = 'DashUser.html'; // pengembangan berikutnya
-                } else {
-                    showMessage('Anda tidak memiliki hak akses Admin.', 'warning');
-                    resetButton();
-                    window.location.href = 'index.html';
-                }
+    if (!userIdInput || !userPassInput) {
+        showMessage("User ID dan Password harus diisi.", "warning");
+        return;
+    }
+
+    const callbackName = 'login_cb_' + Date.now();
+    const script = document.createElement('script');
+
+    script.src = `${URL_APPS_SCRIPT}?action=checkLogin&userId=${encodeURIComponent(userIdInput)}&userPass=${encodeURIComponent(userPassInput)}&callback=${callbackName}`;
+
+    window[callbackName] = (response) => {
+        if (response.status === 'success' && response.loggedIn) {
+            // ✅ Simpan session
+            sessionStorage.setItem('userToken', response.token);
+            sessionStorage.setItem('userLevel', response.level);
+            sessionStorage.setItem('userId', response.userId);
+
+            // ✅ Redirect sesuai level
+            if (response.level === "Admin") {
+                window.location.href = 'DashWE.html';
+            } else if (response.level === "Member") {
+                window.location.href = 'DashCRM.html';
+            } else if (response.level === "User") {
+                window.location.href = 'DashUser.html'; // untuk pengembangan berikutnya
             } else {
-                showMessage(response.message || 'User ID atau Password salah.', 'danger');
+                showMessage("Level user tidak dikenali.", "danger");
                 resetButton();
             }
-            cleanup(script, callbackName);
-        };
-        script.onerror = () => {
-            showMessage('Gagal memverifikasi status login.', 'danger');
+        } else {
+            showMessage(response.message || "User ID atau Password salah.", "danger");
             resetButton();
-            cleanup(script, callbackName);
-        };
-        document.body.appendChild(script);
-    }
+        }
+
+        cleanup(script, callbackName);
+    };
+
+    script.onerror = () => {
+        showMessage("Gagal menghubungi server. Periksa koneksi Anda.", "danger");
+        resetButton();
+        cleanup(script, callbackName);
+    };
+
+    document.body.appendChild(script);
+}
     
     function cleanup(script, callbackName) {
         if (script.parentNode) script.parentNode.removeChild(script);
