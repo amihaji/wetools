@@ -75,6 +75,14 @@ thead.bg-dark-blue {
     color: white;
 }
 
+.sticky-header th {
+    position: sticky;
+    top: 0;
+    background-color: #003366; /* biru tua */
+    color: white;
+    z-index: 2;
+}
+
 @media (max-width: 576px) {
     .btn-group-vertical-responsive button,
     .btn-group-vertical-responsive a {
@@ -104,7 +112,7 @@ thead.bg-dark-blue {
     <div class="table-box">
         <div class="table-wrapper">
             <table class="table table-hover table-striped table-bordered align-middle text-center">
-                <thead class="bg-primary text-white">    
+                <thead class="sticky-header">  
                     <tr>
                         <th>User ID</th>
                         <th>Nama User</th>
