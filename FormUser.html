@@ -58,7 +58,7 @@
 
 <script>
     //***********  Deklarasi variabel global ****************
-    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx6fTn0yI61rFTPM7VVgH8vNiLCB3WV8bwIarv_hw4n5DC3vydElbVmt3jN-0D1ty2A/exec';
+    const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbylD_s6MQ_fS8yH-Llb6nPWhf6OzThN24mfWu0i2zNpHzmwH9X2s6h74B9xb1EhnzQb/exec';
     const loginButton     = document.getElementById('loginButton');
     const spinner         = loginButton.querySelector('.spinner-border');
     const messageDiv      = document.getElementById('message');
@@ -68,8 +68,8 @@
         e.preventDefault();
         
         spinner.style.display = 'inline-block';
-        loginButton.disabled = true;
-        messageDiv.innerHTML = '';
+        loginButton.disabled  = true;
+        messageDiv.innerHTML  = '';
 
         const payload = {
             action: 'loginUser',
