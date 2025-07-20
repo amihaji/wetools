@@ -18,6 +18,8 @@ body { background-color: #f8f9fa; }
     background-color: #f2f2f2; 
     cursor: pointer; 
 }
+
+/*
 .actions-col { 
     width: 80px; 
     text-align: center; 
@@ -29,8 +31,52 @@ body { background-color: #f8f9fa; }
     cursor: pointer; 
     color: #6c757d;
  }
-tr:hover .action-icon {opacity: 1;}
-.action-icon:hover { color: red; }
+    
+tr:hover .action-icon {opacity: 1;} 
+*/
+
+/******************************************
+/* Pengaturan Untuk Ikon di Edit dan Hapus
+/*****************************************
+
+/* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
+.actions-col {
+    text-align: center;
+    width: 140px; 
+    /* Mencegah ikon turun ke bawah */
+    white-space: nowrap; 
+}
+
+/* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
+.action-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+            
+    color: #6c757d;
+    background-color: transparent;
+    text-decoration: none;
+    margin-left: 8px;
+    vertical-align: middle;   /* ikon sejajar dengan teks di barisnya */
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Memunculkan ikon saat baris (tr) di-hover */
+.table-hover > tbody > tr:hover .action-icon {
+    visibility: visible;
+    opacity: 1;
+}
+/* Efek saat ikon di-hover */
+.action-icon:hover { 
+    background-color: #d3d3d3;  /* Warna abu-abu (lightgray) */
+    color: #dc3545;             /* Warna ikon merah */
+}
+
 .sticky-header th { 
     position: sticky; 
     top: 0; 
