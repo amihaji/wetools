@@ -180,12 +180,20 @@ tr:hover .action-icon {opacity: 1;}
 //***********  Deklarasi variabel global ****************
 const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzSQ18cfIRmZZLWHyYRRyCCGHyy8glz7c_rG9Ls7rVODW47odVOAkXU4a5oCtgJxkAL/exec';
 // ******************************************************
+const loadingOverlay       = document.getElementById('loadingOverlay');
+
+function showLoading(show) {
+    loadingOverlay.style.display = show ? 'flex' : 'none';
+}
 
 // LOAD TABLE DATA
 function loadUserTable() {
     const callbackName = 'cb_' + Date.now();
-    const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    const script       = document.createElement('script');
+    script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+
+    script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
+
     window[callbackName] = function(data) {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = '';
@@ -208,6 +216,7 @@ function loadUserTable() {
                 tbody.appendChild(tr);
             });
         }
+        showLoading(false);
         document.body.removeChild(script);
         delete window[callbackName];
     };
