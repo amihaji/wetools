@@ -42,11 +42,10 @@ tr:hover .action-icon {opacity: 1;}
 /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
 .actions-col {
     text-align: center;
-    width: 140px; 
+    width: 100px; 
     /* Mencegah ikon turun ke bawah */
     white-space: nowrap; 
 }
-
 /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
 .action-icon {
     display: inline-flex;
@@ -65,7 +64,6 @@ tr:hover .action-icon {opacity: 1;}
     opacity: 0;
     transition: all 0.2s ease-in-out;
 }
-
 /* Memunculkan ikon saat baris (tr) di-hover */
 .table-hover > tbody > tr:hover .action-icon {
     visibility: visible;
@@ -77,6 +75,7 @@ tr:hover .action-icon {opacity: 1;}
     color: #dc3545;             /* Warna ikon merah */
 }
 
+/* Membuat header tetap di posisinya */
 .sticky-header th { 
     position: sticky; 
     top: 0; 
