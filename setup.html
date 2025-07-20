@@ -19,21 +19,12 @@ body { background-color: #f8f9fa; }
     cursor: pointer; 
 }
 
-/*
-.actions-col { 
-    width: 80px; 
-    text-align: center; 
+/* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
+.table-wrapper {
+    max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
+    overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
+    border: 1px solid #dee2e6;
 }
-.action-icon { 
-    opacity: 0; 
-    transition: opacity 0.2s, color 0.2s; 
-    margin: 0 5px; 
-    cursor: pointer; 
-    color: #6c757d;
- }
-    
-tr:hover .action-icon {opacity: 1;} 
-*/
 
 /******************************************
 /* Pengaturan Untuk Ikon di Edit dan Hapus
@@ -44,7 +35,7 @@ tr:hover .action-icon {opacity: 1;}
     text-align: center;
     width: 100px; 
     /* Mencegah ikon turun ke bawah */
-    white-space: nowrap; 
+    /* white-space: nowrap; */ 
 }
 /* Mengatur setiap ikon (elemen <a> dengan kelas .action-icon) */
 .action-icon {
@@ -111,19 +102,17 @@ tr:hover .action-icon {opacity: 1;}
     flex-direction: row; 
     gap: 10px;
 }
-@media (max-width: 576px) {
-    .btn-group-vertical-responsive { flex-direction: column; }
-    .btn-group-vertical-responsive button, .btn-group-vertical-responsive a { width: 100% !important; }
-}
+
 .table-box {
     background: white; 
     border-radius: 5px; 
     box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
     padding: 10px; 
 }
-.table-wrapper { 
-    max-height: 450px; 
-    overflow-y: auto; 
+
+@media (max-width: 576px) {
+    .btn-group-vertical-responsive { flex-direction: column; }
+    .btn-group-vertical-responsive button, .btn-group-vertical-responsive a { width: 100% !important; }
 }
 </style>
 </head>
