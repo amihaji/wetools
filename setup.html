@@ -19,11 +19,26 @@ body { background-color: #f8f9fa; }
     cursor: pointer; 
 }
 
+/****************************************************
+* Pengaturan Untuk jumlah 5 baris dari tabel + header
+****************************************************/
 /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
 .table-wrapper {
     max-height: 400px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
     overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
     border: 1px solid #dee2e6;
+}
+/* Membuat header tabel menjadi "sticky" */
+.table-wrapper thead th {
+    position: sticky; /* Membuat header tetap di posisinya */
+    top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
+    z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
+}
+/* Mengubah warna header tabel */
+.table-dark-custom {
+    --bs-table-bg: #002266;
+    --bs-table-color: white;
+    --bs-table-border-color: #003388;
 }
 
 /******************************************
@@ -67,6 +82,7 @@ body { background-color: #f8f9fa; }
 }
 
 /* Membuat header tetap di posisinya */
+/*
 .sticky-header th { 
     position: sticky; 
     top: 0; 
@@ -74,6 +90,7 @@ body { background-color: #f8f9fa; }
     color: white; 
     z-index: 2; 
 }
+*/
 .title-box { 
     background-color: #003366; 
     color: white; 
@@ -155,9 +172,9 @@ body { background-color: #f8f9fa; }
 
     <!-- Table Box -->
     <div class="table-box">
-        <div class="table-wrapper">
+        <div class="table-wrapper shadow-sm">
             <table class="table table-hover table-striped table-bordered align-middle text-center">
-                <thead class="sticky-header">
+                <thead class="table-dark-custom">
                     <tr>
                         <th>User ID</th>
                         <th>Nama User</th>
