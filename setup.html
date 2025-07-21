@@ -182,22 +182,25 @@ function loadUserTable() {
         if (!data || data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8">Tidak ada data user.</td></tr>';
         } else {
-            data.forEach(row => {
+                data.forEach(row => {
+                const salah = parseInt(row[6]) || 0;
+                const isLocked = salah >= 3 ? '' : 'disabled';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${row[0]}</td>
-                    <td>${row[1]}</td>
-                    <td>${row[2]}</td>
-                    <td>${row[3]}</td>
-                    <td>${row[4]}</td>
-                    <td>${row[5]}</td>
-                    <td>${row[6]}</td>
-                    <td>
-                        <i class="fas fa-edit action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}','${row[5]}','${row[6]}')"></i>
-                        <i class="fas fa-trash action-icon" title="Hapus" onclick="deleteUser('${row[0]}')"></i>
-                        <i class="fas fa-unlock action-icon" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
-                        <i class="fas fa-paper-plane action-icon" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[2]}','${row[3]}','${row[4]}')"></i>
-                    </td>
+                <td>${row[0]}</td>
+                <td>${row[1]}</td>
+                <td>${row[2]}</td>
+                <td>${row[3]}</td>
+                <td>${row[4]}</td>
+                <td>${row[5]}</td>
+                <td>${row[6]}</td>
+                <td>
+                    <i class="fas fa-edit action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}','${row[5]}','${row[6]}')"></i>
+                    <i class="fas fa-trash action-icon" title="Hapus" onclick="deleteUser('${row[0]}')"></i>
+                    <i class="fas fa-unlock action-icon ${isLocked}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
+                    <i class="fas fa-paper-plane action-icon ${isLocked}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[2]}','${row[3]}','${row[4]}')"></i>
+                </td>
                 `;
                 tbody.appendChild(tr);
             });
