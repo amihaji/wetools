@@ -278,13 +278,7 @@ document.getElementById('userForm').addEventListener('submit', function(e) {
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
     //script.src = `${URL_APPS_SCRIPT}?action=${action}&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userPass=${encodeURIComponent(userPass)}&userLevel=${encodeURIComponent(userLevel)}&callback=${callbackName}`;
-    script.src = `${URL_APPS_SCRIPT}?action=${action}&
-        userId=${encodeURIComponent(userId)}&
-        userName=${encodeURIComponent(userName)}&
-        userPass=${encodeURIComponent(userPass)}&
-        userLevel=${encodeURIComponent(userLevel)}&
-        userSalah=${encodeURIComponent(userSalah)}&
-        callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=${action}&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userPass=${encodeURIComponent(userPass)}&userLevel=${encodeURIComponent(userLevel)}&userSalah=${encodeURIComponent(userSalah)}&callback=${callbackName}`;
 
     window[callbackName] = function(response) {
         if (response.status === 'success') {
