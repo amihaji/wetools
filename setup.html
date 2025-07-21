@@ -203,6 +203,11 @@ body { background-color: #f8f9fa; }
                   <option value="User">User</option>
               </select>
           </div>
+          <div class="mb-2">
+            <label class="form-label">Salah</label>
+            <input type="number" id="userSalah" class="form-control" min="0" max="3" value="0" required>
+          </div>
+
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Simpan</button>
@@ -267,11 +272,19 @@ document.getElementById('userForm').addEventListener('submit', function(e) {
     const userName = document.getElementById('userName').value.trim();
     const userPass = document.getElementById('userPass').value.trim();
     const userLevel = document.getElementById('userLevel').value;
+    const userSalah = document.getElementById('userSalah').value || 0;
 
     const action = mode === 'add' ? 'addUser' : 'editUser';
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=${action}&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userPass=${encodeURIComponent(userPass)}&userLevel=${encodeURIComponent(userLevel)}&callback=${callbackName}`;
+    //script.src = `${URL_APPS_SCRIPT}?action=${action}&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userPass=${encodeURIComponent(userPass)}&userLevel=${encodeURIComponent(userLevel)}&callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=${action}&
+        userId=${encodeURIComponent(userId)}&
+        userName=${encodeURIComponent(userName)}&
+        userPass=${encodeURIComponent(userPass)}&
+        userLevel=${encodeURIComponent(userLevel)}&
+        userSalah=${encodeURIComponent(userSalah)}&
+        callback=${callbackName}`;
 
     window[callbackName] = function(response) {
         if (response.status === 'success') {
@@ -321,6 +334,8 @@ function editUser(userId, userName, userPass, userLevel, userSalah) {
     document.getElementById('userName').value = userName;
     document.getElementById('userPass').value = userPass;
     document.getElementById('userLevel').value = userLevel;
+    document.getElementById('userSalah').value = userSalah || 0;
+
     document.querySelector('#userModal .modal-title').innerText = 'Edit User';
     new bootstrap.Modal(document.getElementById('userModal')).show();
 }
