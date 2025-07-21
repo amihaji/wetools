@@ -11,24 +11,74 @@ body { background-color: #f8f9fa; }
 .table-hover tbody tr:hover { background-color: #f2f2f2; cursor: pointer; }
 .actions-col { width: 120px; text-align: center; }
 .action-icon { opacity: 0; transition: opacity 0.2s, color 0.2s; margin: 0 5px; cursor: pointer; color: #6c757d; }
-tr:hover .action-icon { opacity: 1; }
-.action-icon:hover { color: red; }
-.sticky-header th { position: sticky; top: 0; background-color: #003366; color: white; z-index: 2; }
-.title-box { background-color: #003366; color: white; padding: 10px 15px; border-radius: 5px; display: flex; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+
+.action-icon {
+    opacity: 0;
+    transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+    margin: 0 5px;
+    cursor: pointer;
+    color: #6c757d;
+    border-radius: 50%;
+    padding: 6px;
+}
+tr:hover .action-icon {
+    opacity: 1;
+}
+.action-icon:hover {
+    color: red;
+    background-color: #e0e0e0;
+}
+.action-icon.disabled {
+    pointer-events: none;
+    opacity: 0.3 !important;
+}
+
+.sticky-header th { 
+    position: sticky; top: 0; 
+    background-color: #003366; 
+    color: white; 
+    z-index: 2; 
+}
+.title-box { 
+    background-color: #003366; 
+    color: white; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    display: flex; 
+    align-items: center; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2); 
+}
 .title-box i { margin-right: 10px; }
-.button-box { background: white; border-radius: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 10px; margin: 15px 0; }
-.btn-group-vertical-responsive { display: flex; flex-direction: row; gap: 10px; }
+.button-box { 
+    background: white; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+    padding: 10px; 
+    margin: 15px 0; 
+}
+.btn-group-vertical-responsive { 
+    display: flex; 
+    flex-direction: row; 
+    gap: 10px; 
+}
 @media (max-width: 576px) {
     .btn-group-vertical-responsive { flex-direction: column; }
     .btn-group-vertical-responsive button, .btn-group-vertical-responsive a { width: 100% !important; }
 }
-.table-box { background: white; border-radius: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 10px; }
-.table-wrapper { max-height: 450px; overflow-y: auto; }
+.table-box { 
+    background: white; 
+    border-radius: 5px; 
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+    padding: 10px; 
+}
+.table-wrapper { 
+    max-height: 450px; 
+    overflow-y: auto; 
+}
 </style>
 </head>
 
 <body class="p-2 p-sm-3">
-
 <div class="container">
 
     <!-- Header Box -->
