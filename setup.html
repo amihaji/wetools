@@ -223,12 +223,38 @@ function loadUserTable() {
                 data.forEach(row => {
                 const salah = parseInt(row[6]) || 0;
                 // const isLocked = salah >= 3 ? '' : 'disabled';
-                let unlockState = 'disabled';
-                let sendState   = 'disabled';
+                //let unlockState = 'disabled';
+                //let sendState   = 'disabled';
+                //if (salah >= 3) {
+                //    unlockState = ''; // enable unlock
+                //} else if (salah === 0) {
+                //    sendState = ''; // enable kirim setelah unlock
+                //}
+
+                // Kondisi kondisi default icon
+                let editState   = '';
+                let deleteState = '';
+                let unlockState = 'disabled-action';
+                let sendState   = 'disabled-action';
+
                 if (salah >= 3) {
+                    // Sudah terkunci
+                    editState   = 'disabled-action';
+                    deleteState = 'disabled-action';
                     unlockState = ''; // enable unlock
-                } else if (salah === 0) {
-                    sendState = ''; // enable kirim setelah unlock
+                    sendState   = 'disabled-action';
+                } else if (salah === 0 && kirimNotifikasiSiap(userId)) {
+                    // Setelah unlock dan siap kirim notifikasi
+                    editState   = 'disabled-action';
+                    deleteState = 'disabled-action';
+                    unlockState = 'disabled-action';
+                    sendState   = ''; // enable kirim
+                } else {
+                    // Default
+                    editState   = '';
+                    deleteState = '';
+                    unlockState = 'disabled-action';
+                    sendState   = 'disabled-action';
                 }
 
                 const tr = document.createElement('tr');
@@ -241,11 +267,10 @@ function loadUserTable() {
                 <td>${row[5]}</td>
                 <td>${row[6]}</td>
                 <td>
-                    <i class="fas fa-edit action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}','${row[5]}','${row[6]}')"></i>
-                    <i class="fas fa-trash action-icon" title="Hapus" onclick="deleteUser('${row[0]}')"></i>
+                    <i class="fas fa-edit action-icon ${editState}" title="Edit User" onclick="editUser('${row[0]}')"></i>
+                    <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" onclick="deleteUser('${row[0]}')"></i>
                     <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
                     <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}')"></i>
-
                 </td>
                 `;
                 tbody.appendChild(tr);
@@ -337,6 +362,7 @@ function unlockUser(userId) {
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert(`User ${userId} berhasil di-unlock.`);
+            localStorage.setItem('notifReady_' + userId, 'true');
             loadUserTable();
         } else {
             alert('Gagal unlock user: ' + (response.message || 'Unknown error'));
@@ -345,6 +371,11 @@ function unlockUser(userId) {
         delete window[callbackName];
     };
     document.body.appendChild(script);
+}
+
+// Mengecek localStorage sebagai flag setelah unlock, reset setelah kirim
+function kirimNotifikasiSiap(userId) {
+    return localStorage.getItem('notifReady_' + userId) === 'true';
 }
 
 // Kirim notifikasi ke WA & Email User
@@ -361,13 +392,13 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
         `- Nama : ${userName}\n`+
         `- User ID: ${userId}\n`+
         `- Pass: ${userPass}\n`+
-        `ke Email dan WA anda\n`+
-        `Thanks`;
+        `Terima Kasih`;
 
     script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userEmail=${encodeURIComponent(userEmail)}&userHP=${encodeURIComponent(userHP)}&userPass=${encodeURIComponent(userPass)}&message=${encodeURIComponent(message)}&callback=${callbackName}`;
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert('Notifikasi berhasil dikirim.');
+            localStorage.removeItem('notifReady_' + userId);
             loadUserTable();
         } else {
             alert('Gagal mengirim notifikasi: ' + (response.message || 'Unknown error'));
