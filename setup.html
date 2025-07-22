@@ -222,7 +222,14 @@ function loadUserTable() {
         } else {
                 data.forEach(row => {
                 const salah = parseInt(row[6]) || 0;
-                const isLocked = salah >= 3 ? '' : 'disabled';
+                // const isLocked = salah >= 3 ? '' : 'disabled';
+                let unlockState = 'disabled';
+                let sendState   = 'disabled';
+                if (salah >= 3) {
+                    unlockState = ''; // enable unlock
+                } else if (salah === 0) {
+                    sendState = ''; // enable kirim setelah unlock
+                }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -236,8 +243,13 @@ function loadUserTable() {
                 <td>
                     <i class="fas fa-edit action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}','${row[5]}','${row[6]}')"></i>
                     <i class="fas fa-trash action-icon" title="Hapus" onclick="deleteUser('${row[0]}')"></i>
+                    <!--
                     <i class="fas fa-unlock action-icon ${isLocked}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
                     <i class="fas fa-paper-plane action-icon ${isLocked}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[2]}','${row[3]}','${row[4]}')"></i>
+                    -->
+                    <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
+                    <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}')"></i>
+
                 </td>
                 `;
                 tbody.appendChild(tr);
@@ -300,7 +312,6 @@ function deleteUser(userId) {
 
 // UNLOCK USER
 function unlockUser(userId) {
-    //if (!confirm(`Reset login gagal untuk user ${userId} ke 0?`)) return;
     // Cari data user lengkap dari tabel yang sudah terload
     const rows   = document.querySelectorAll('#userTableBody tr');
     let userData = null;
@@ -341,10 +352,37 @@ function unlockUser(userId) {
 }
 
 // SEND NOTIF
-function sendNotif(userId, userEmail, userHP, userPass) {
-    alert(`Konfirmasi reset telah dikirim ke:\nWA: ${userHP}\nEmail: ${userEmail}\nDengan Pass: ${userPass}`);
-    // Disini Anda bisa menambahkan JSONP ke Apps Script untuk kirim notifikasi WA/Email jika diperlukan.
+function sendNotif(userId, userName, userEmail, userHP, userPass) {
+    if (!confirm(`Kirim notifikasi reset ke WA & Email user ${userId}?`)) return;
+
+    const callbackName = 'cb_' + Date.now();
+    const script = document.createElement('script');
+
+    const message = 
+        `*Notifikasi Reset User*\n` +
+        `----------------------\n`+
+        `Telah direset User atas\n` +
+        `- Nama : ${userName}\n` +
+        `- User ID: ${userId}\n` +
+        `- Pass: ${userPass}\n` +
+        `ke Email dan WA anda\n` +
+        `Thanks`;
+
+    script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userEmail=${encodeURIComponent(userEmail)}&userHP=${encodeURIComponent(userHP)}&message=${encodeURIComponent(message)}&callback=${callbackName}`;
+
+    window[callbackName] = function(response) {
+        if (response.status === 'success') {
+            alert('Notifikasi berhasil dikirim.');
+            loadUserTable();
+        } else {
+            alert('Gagal mengirim notifikasi: ' + (response.message || 'Unknown error'));
+        }
+        document.body.removeChild(script);
+        delete window[callbackName];
+    };
+    document.body.appendChild(script);
 }
+
 
 // OPEN MODAL ADD
 document.getElementById('addUserButton').addEventListener('click', () => {
