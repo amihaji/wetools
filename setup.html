@@ -187,7 +187,7 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw7Ozj7c-5sfYA4
 function loadUserTable() {
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    script.src   = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
     window[callbackName] = function(data) {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = '';
@@ -299,7 +299,7 @@ function unlockUser(userId) {
 
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=editUser&userId=${encodeURIComponent(userData.userId)}&userName=${encodeURIComponent(userData.userName)}&userEmail=${encodeURIComponent(userData.userEmail)}&userHP=${encodeURIComponent(userData.userHP)}&userPass=${encodeURIComponent(userData.userPass)}&userLevel=${encodeURIComponent(userData.userLevel)}&userSalah=${encodeURIComponent(userData.userSalah)}&callback=${callbackName}`;
+    script.src   = `${URL_APPS_SCRIPT}?action=editUser&userId=${encodeURIComponent(userData.userId)}&userName=${encodeURIComponent(userData.userName)}&userEmail=${encodeURIComponent(userData.userEmail)}&userHP=${encodeURIComponent(userData.userHP)}&userPass=${encodeURIComponent(userData.userPass)}&userLevel=${encodeURIComponent(userData.userLevel)}&userSalah=${encodeURIComponent(userData.userSalah)}&callback=${callbackName}`;
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert(`User ${userId} berhasil di-unlock.`);
