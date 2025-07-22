@@ -197,7 +197,7 @@ tr:hover .action-icon {
 </div>
 
 <script>
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbznTrHmkKvKNY2qLDKaTNc-5QA0YbPvTKPfGWkpZcDrEsq_zps1JX7yVhoVgqgTaYL1CA/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwPoLENYyS_CrfTthuF9CONe3LOSp5QfL8dY2PVbaitcsa-lp2Kv-BX3jiNk8n2ZCgiTw/exec';
 const loadingOverlay  = document.getElementById('loadingOverlay');
 
 // Loading Spinner
@@ -261,12 +261,12 @@ function loadUserTable() {
 // ADD / EDIT USER
 document.getElementById('userForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const mode = document.getElementById('mode').value;
-    const userId = document.getElementById('userId').value.trim();
-    const userName = document.getElementById('userName').value.trim();
+    const mode      = document.getElementById('mode').value;
+    const userId    = document.getElementById('userId').value.trim();
+    const userName  = document.getElementById('userName').value.trim();
     const userEmail = document.getElementById('userEmail').value.trim();
-    const userHP = document.getElementById('userHP').value.trim();
-    const userPass = document.getElementById('userPass').value.trim();
+    const userHP    = document.getElementById('userHP').value.trim();
+    const userPass  = document.getElementById('userPass').value.trim();
     const userLevel = document.getElementById('userLevel').value;
     const userSalah = document.getElementById('userSalah').value || 0;
 
@@ -355,14 +355,14 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
     const script = document.createElement('script');
 
     const message = 
-        `*Notifikasi Reset User*\n` +
-        `----------------------\n`+
-        `Telah direset User atas\n` +
-        `- Nama : ${userName}\n` +
-        `- User ID: ${userId}\n` +
-        `- Pass: ${userPass}\n` +
-        `ke Email dan WA anda\n` +
-        `Thanks`;
+        `*Notifikasi Reset User*
+        ----------------------
+        Telah direset User atas
+        - Nama : ${userName}
+        - User ID: ${userId}
+        - Pass: ${userPass}
+        ke Email dan WA anda
+        Thanks`;
 
     script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userEmail=${encodeURIComponent(userEmail)}&userHP=${encodeURIComponent(userHP)}&message=${encodeURIComponent(message)}&callback=${callbackName}`;
 
