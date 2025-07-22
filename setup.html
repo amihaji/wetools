@@ -197,8 +197,8 @@ tr:hover .action-icon {
 </div>
 
 <script>
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbw7Ozj7c-5sfYA40L12XYsaPTAi1vrG9SSKztGEJ3z93ycWzA1THKTLdG98ggnEo4Nnqg/exec';
-const loadingOverlay       = document.getElementById('loadingOverlay');
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzJ7ICxJusWVBTq3dyYsw9VQqEVAaINlJ3_9vqdGJTc9iZ-MAbzmJxYMhTDtFeK92AUJw/exec';
+const loadingOverlay  = document.getElementById('loadingOverlay');
 
 // Loading Spinner
 function showLoading(show) {
@@ -243,10 +243,6 @@ function loadUserTable() {
                 <td>
                     <i class="fas fa-edit action-icon" title="Edit" onclick="editUser('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}','${row[5]}','${row[6]}')"></i>
                     <i class="fas fa-trash action-icon" title="Hapus" onclick="deleteUser('${row[0]}')"></i>
-                    <!--
-                    <i class="fas fa-unlock action-icon ${isLocked}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
-                    <i class="fas fa-paper-plane action-icon ${isLocked}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[2]}','${row[3]}','${row[4]}')"></i>
-                    -->
                     <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${row[0]}')"></i>
                     <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${row[0]}','${row[1]}','${row[2]}','${row[3]}','${row[4]}')"></i>
 
