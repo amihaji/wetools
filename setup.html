@@ -87,6 +87,12 @@ tr:hover .action-icon {
     max-height: 450px; 
     overflow-y: auto; 
 }
+
+.loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.7); z-index: 1060;
+    display: flex; justify-content: center; align-items: center;
+}
 </style>
 </head>
 
@@ -101,8 +107,8 @@ tr:hover .action-icon {
 
     <!-- Button Box -->
     <div class="button-box d-flex justify-content-between align-items-center btn-group-vertical-responsive">
-        <button class="btn btn-primary btn-sm" id="addUserButton"><i class="fas fa-plus"></i> Add User</button>
-        <a href="DashWE.html" class="btn btn-secondary btn-sm"><i class="fas fa-arrow-left"></i> Close</a>
+        <button class="btn btn-primary" id="addUserButton"><i class="fas fa-plus"></i> Add User</button>
+        <a href="DashWE.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Close</a>
     </div>
 
     <!-- Table Box -->
@@ -123,6 +129,10 @@ tr:hover .action-icon {
                 </thead>
                 <tbody id="userTableBody">
                     <tr><td colspan="8">Memuat data...</td></tr>
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="loading-overlay">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                    </div>
                 </tbody>
             </table>
         </div>
