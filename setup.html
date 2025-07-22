@@ -273,10 +273,9 @@ function deleteUser(userId) {
 
 // UNLOCK USER
 function unlockUser(userId) {
-    if (!confirm(`Reset login gagal untuk user ${userId} ke 0?`)) return;
-
+    //if (!confirm(`Reset login gagal untuk user ${userId} ke 0?`)) return;
     // Cari data user lengkap dari tabel yang sudah terload
-    const rows = document.querySelectorAll('#userTableBody tr');
+    const rows   = document.querySelectorAll('#userTableBody tr');
     let userData = null;
     rows.forEach(row => {
         const cells = row.querySelectorAll('td');
