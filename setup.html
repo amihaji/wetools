@@ -274,13 +274,37 @@ function deleteUser(userId) {
 // UNLOCK USER
 function unlockUser(userId) {
     if (!confirm(`Reset login gagal untuk user ${userId} ke 0?`)) return;
+
+    // Cari data user lengkap dari tabel yang sudah terload
+    const rows = document.querySelectorAll('#userTableBody tr');
+    let userData = null;
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells[0].innerText === userId) {
+            userData = {
+                userId:    cells[0].innerText,
+                userName:  cells[1].innerText,
+                userEmail: cells[2].innerText,
+                userHP:    cells[3].innerText,
+                userPass:  cells[4].innerText,
+                userLevel: cells[5].innerText,
+                userSalah: 0 // reset menjadi 0
+            };
+        }
+    });
+
+    if (!userData) {
+        alert('User tidak ditemukan di tabel.');
+        return;
+    }
+
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=editUser&userId=${encodeURIComponent(userId)}&userSalah=0&callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=editUser&userId=${encodeURIComponent(userData.userId)}&userName=${encodeURIComponent(userData.userName)}&userEmail=${encodeURIComponent(userData.userEmail)}&userHP=${encodeURIComponent(userData.userHP)}&userPass=${encodeURIComponent(userData.userPass)}&userLevel=${encodeURIComponent(userData.userLevel)}&userSalah=${encodeURIComponent(userData.userSalah)}&callback=${callbackName}`;
     window[callbackName] = function(response) {
         if (response.status === 'success') {
-            loadUserTable();
             alert(`User ${userId} berhasil di-unlock.`);
+            loadUserTable();
         } else {
             alert('Gagal unlock user: ' + (response.message || 'Unknown error'));
         }
