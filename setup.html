@@ -364,7 +364,14 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
         ke Email dan WA anda
         Thanks`;
 
-    script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userEmail=${encodeURIComponent(userEmail)}&userHP=${encodeURIComponent(userHP)}&message=${encodeURIComponent(message)}&callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&
+    userId=${encodeURIComponent(userId)}&
+    userName=${encodeURIComponent(userName)}&
+    userEmail=${encodeURIComponent(userEmail)}&
+    userHP=${encodeURIComponent(userHP)}&
+    userPass=${encodeURIComponent(userPass)}&
+    message=${encodeURIComponent(message)}&
+    callback=${callbackName}`;
 
     window[callbackName] = function(response) {
         if (response.status === 'success') {
