@@ -197,7 +197,7 @@ tr:hover .action-icon {
 </div>
 
 <script>
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzBIvtfKjf7gM6siV4o10S5wHAQdA8Wsi2KYEI7hLjjEDrZ5RELjlwKuwZj85R-kddf9A/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx0XBWkGNtuR-aE7C59NE8gJAncgCRcN6ECnAlhMcupDkqAh73gVH_g7bq0ytD73XsEQA/exec';
 const loadingOverlay  = document.getElementById('loadingOverlay');
 
 // Loading Spinner
@@ -364,15 +364,7 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
         ke Email dan WA anda
         Thanks`;
 
-    script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&
-        userId=${encodeURIComponent(userId)}&
-        userName=${encodeURIComponent(userName)}&
-        userEmail=${encodeURIComponent(userEmail)}&
-        userHP=${encodeURIComponent(userHP)}&
-        userPass=${encodeURIComponent(userPass)}&
-        message=${encodeURIComponent(message)}&
-        callback=${callbackName}`;
-
+    script.src = `${URL_APPS_SCRIPT}?action=sendNotifUser&userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&userEmail=${encodeURIComponent(userEmail)}&userHP=${encodeURIComponent(userHP)}&userPass=${encodeURIComponent(userPass)}&message=${encodeURIComponent(message)}&callback=${callbackName}`;
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert('Notifikasi berhasil dikirim.');
@@ -385,7 +377,6 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
     };
     document.body.appendChild(script);
 }
-
 
 // OPEN MODAL ADD
 document.getElementById('addUserButton').addEventListener('click', () => {
