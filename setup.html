@@ -221,35 +221,36 @@ function loadUserTable() {
             tbody.innerHTML = '<tr><td colspan="8">Tidak ada data user.</td></tr>';
         } else {
                 data.forEach(row => {
-                const salah = parseInt(row[6]) || 0;
-                // const isLocked = salah >= 3 ? '' : 'disabled';
-                //let unlockState = 'disabled';
-                //let sendState   = 'disabled';
-                //if (salah >= 3) {
-                //    unlockState = ''; // enable unlock
-                //} else if (salah === 0) {
-                //    sendState = ''; // enable kirim setelah unlock
-                //}
-
-                // Kondisi kondisi default icon
-                let editState   = '';
+                const userId    = row[0];
+                const namaUser  = row[1];
+                const emailUser = row[2];
+                const hpUser    = row[3];
+                const passUser  = row[4];
+                const levelUser = row[5];    
+                const salah     = parseInt(row[6]) || 0;
+                salah           = parseInt(salah) || 0;
+               
+                // Default: Edit & Hapus enabled, Unlock & Kirim disabled
+                let editState = '';
                 let deleteState = '';
                 let unlockState = 'disabled-action';
-                let sendState   = 'disabled-action';
+                let sendState = 'disabled-action';
 
                 if (salah >= 3) {
-                    // Sudah terkunci
+                    // User terkunci
                     editState = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = ''; // enable unlock
                     sendState = 'disabled-action';
-                } else if (kirimNotifikasiSiap(userId)) {
-                    // Setelah unlock, siap kirim
+                } else if (localStorage.getItem('notifReady_' + userId) === 'true') {
+                    // Setelah unlock
                     editState = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
                     sendState = ''; // enable kirim
-                }    
+                }
+                // else kondisi default sudah handled
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                 <td>${row[0]}</td>
