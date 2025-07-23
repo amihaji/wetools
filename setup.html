@@ -243,7 +243,8 @@ function loadUserTable() {
                     deleteState = 'disabled-action';
                     unlockState = ''; // enable unlock
                     sendState   = 'disabled-action';
-                } else if (salah === 0 && kirimNotifikasiSiap(userId)) {
+                //} else if (salah === 0 && kirimNotifikasiSiap(userId)) {
+                } else if (kirimNotifikasiSiap(userId)) {    
                     // Setelah unlock dan siap kirim notifikasi
                     editState   = 'disabled-action';
                     deleteState = 'disabled-action';
