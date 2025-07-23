@@ -227,7 +227,7 @@ function loadUserTable() {
                 const hpUser    = row[3];
                 const passUser  = row[4];
                 const levelUser = row[5];    
-                const salah     = parseInt(row[6]) || 0;
+                let salah       = row[6]; // <= NILAI SALAH DIDAPAT DISINI
                 salah           = parseInt(salah) || 0;
                
                 // Default: Edit & Hapus enabled, Unlock & Kirim disabled
