@@ -230,26 +230,31 @@ function loadUserTable() {
                 let salah       = row[6]; // <= NILAI SALAH DIDAPAT DISINI
                 salah           = parseInt(salah) || 0;
                
-                // Default: Edit & Hapus enabled, Unlock & Kirim disabled
-                let editState   = '';
+                // Default
+                let editState = '';
                 let deleteState = '';
                 let unlockState = 'disabled-action';
-                let sendState   = 'disabled-action';
+                let sendState = 'disabled-action';
 
                 if (salah >= 3) {
-                    // User terkunci
+                    // Terkunci
                     editState   = 'disabled-action';
                     deleteState = 'disabled-action';
-                    unlockState = ''; // enable unlock
+                    unlockState = ''; // enable
                     sendState   = 'disabled-action';
                 } else if (localStorage.getItem('notifReady_' + userId) === 'true') {
                     // Setelah unlock
                     editState   = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
-                    sendState   = ''; // enable kirim
+                    sendState   = ''; // enable
+                } else {
+                    // Default
+                    editState   = '';
+                    deleteState = '';
+                    unlockState = 'disabled-action';
+                    sendState   = 'disabled-action';
                 }
-                // else kondisi default sudah handled
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
