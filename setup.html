@@ -231,23 +231,23 @@ function loadUserTable() {
                 salah           = parseInt(salah) || 0;
                
                 // Default: Edit & Hapus enabled, Unlock & Kirim disabled
-                let editState = '';
+                let editState   = '';
                 let deleteState = '';
                 let unlockState = 'disabled-action';
-                let sendState = 'disabled-action';
+                let sendState   = 'disabled-action';
 
                 if (salah >= 3) {
                     // User terkunci
-                    editState = 'disabled-action';
+                    editState   = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = ''; // enable unlock
-                    sendState = 'disabled-action';
+                    sendState   = 'disabled-action';
                 } else if (localStorage.getItem('notifReady_' + userId) === 'true') {
                     // Setelah unlock
-                    editState = 'disabled-action';
+                    editState   = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
-                    sendState = ''; // enable kirim
+                    sendState   = ''; // enable kirim
                 }
                 // else kondisi default sudah handled
 
