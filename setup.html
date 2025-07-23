@@ -239,26 +239,17 @@ function loadUserTable() {
 
                 if (salah >= 3) {
                     // Sudah terkunci
-                    editState   = 'disabled-action';
+                    editState = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = ''; // enable unlock
-                    sendState   = 'disabled-action';
-                //} else if (salah === 0 && kirimNotifikasiSiap(userId)) {
-                } else if (kirimNotifikasiSiap(userId)) {    
-                    // Setelah unlock dan siap kirim notifikasi
-                    editState   = 'disabled-action';
+                    sendState = 'disabled-action';
+                } else if (kirimNotifikasiSiap(userId)) {
+                    // Setelah unlock, siap kirim
+                    editState = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
-                    sendState   = ''; // enable kirim
-                } 
-                //else {
-                //    // Default
-                //    editState   = ''; // enable edit
-                //    deleteState = ''; // enable hapus
-                //    unlockState = 'disabled-action';
-                //    sendState   = 'disabled-action';
-               // }
-
+                    sendState = ''; // enable kirim
+                }    
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                 <td>${row[0]}</td>
