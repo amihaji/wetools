@@ -251,7 +251,7 @@ function loadUserTable() {
                     unlockState = 'disabled-action';
                     sendState   = ''; // Enable Kirim
                 }
-                tabelBody += `
+                const rowHTML = `
                 <tr id="row_${userId}">
                     <td>${userId}</td>
                     <td>${namaUser}</td>
@@ -268,6 +268,7 @@ function loadUserTable() {
                     </td>
                 </tr>
                 `;
+                tbody.insertAdjacentHTML('beforeend', rowHTML);
             });
         }
         document.body.removeChild(script);
