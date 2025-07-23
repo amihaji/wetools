@@ -24,7 +24,7 @@ body { background-color: #f8f9fa; }
     align-items: center;
     width: 25px;
     height: 25px;
-    opacity: 0;
+    opacity: 0; /* Icon tersembunyi */
     transition: opacity 0.2s, color 0.2s, background-color 0.2s;
     margin: 0 5px;
     cursor: pointer;
@@ -34,16 +34,19 @@ body { background-color: #f8f9fa; }
 }
 
 tr:hover .action-icon {
-    opacity: 1;
+    opacity: 1; /* Icon muncul saat hover baris */
 }
+
 .action-icon:hover {
     color: red;
     background-color: #e0e0e0;
 }
+
 .action-icon.disabled-action {
-    pointer-events: none;
     opacity: 0.3 !important;
+    pointer-events: none;
 }
+
 .action-icon.disabled-action:hover {
     color: #6c757d;
     background-color: transparent;
