@@ -227,40 +227,47 @@ function loadUserTable() {
                 const hpUser    = row[3];
                 const passUser  = row[4];
                 const levelUser = row[5];    
-                let salah       = row[6]; // <= NILAI SALAH DIDAPAT DISINI
-                salah           = parseInt(salah) || 0;
-               
+                let salah       = parseInt(row[6]) || 0;
+
                 // Semua icon default:
                 let editState   = '';
                 let deleteState = '';
                 let unlockState = 'disabled-action';
                 let sendState   = 'disabled-action';
-
-                // HANYA jika salah >= 3
+                
+                // CEK LOCALSTORAGE untuk status setelah UNLOCK
+                const unlockFlag = localStorage.getItem('notifReady_' + userId);
+                // ATUR STATE SESUAI KONDISI
                 if (salah >= 3) {
+                    // USER TERKUNCI
                     editState   = 'disabled-action';
                     deleteState = 'disabled-action';
-                    unlockState = ''; // enable unlock
+                    unlockState = ''; // Enable Unlock
+                    sendState   = 'disabled-action';
+                } else if (unlockFlag === 'true') {
+                    // SUDAH UNLOCK, SIAP KIRIM
+                    editState   = 'disabled-action';
+                    deleteState = 'disabled-action';
+                    unlockState = 'disabled-action';
+                    sendState   = ''; // Enable Kirim
                 }
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                <td>${row[0]}</td>
-                <td>${row[1]}</td>
-                <td>${row[2]}</td>
-                <td>${row[3]}</td>
-                <td>${row[4]}</td>
-                <td>${row[5]}</td>
-                <td>${row[6]}</td>
-                <td>
-                    <i class="fas fa-edit action-icon ${editState}" title="Edit User" onclick="editUser('${userId}')"></i>
-                    <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" onclick="deleteUser('${userId}')"></i>
-                    <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${userId}')"></i>
-                    <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${userId}','${namaUser}','${emailUser}','${hpUser}','${passUser}')"></i>
-                </td>
-
+                tabelBody += `
+                <tr id="row_${userId}">
+                    <td>${userId}</td>
+                    <td>${namaUser}</td>
+                    <td>${emailUser}</td>
+                    <td>${hpUser}</td>
+                    <td>${passUser}</td>
+                    <td>${levelUser}</td>
+                    <td>${salah}</td>
+                    <td>
+                        <i class="fas fa-edit action-icon ${editState}" title="Edit User" onclick="editUser('${userId}')"></i>
+                        <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" onclick="deleteUser('${userId}')"></i>
+                        <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${userId}')"></i>
+                        <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${userId}','${namaUser}','${emailUser}','${hpUser}','${passUser}')"></i>
+                    </td>
+                </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
         document.body.removeChild(script);
@@ -349,14 +356,7 @@ function unlockUser(userId) {
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert(`User ${userId} berhasil di-unlock.`);
-            // localStorage.setItem('notifReady_' + userId, 'true');
-            const rowElement = document.getElementById('row_' + userId);
-            if (rowElement) {
-                rowElement.querySelector('.fa-unlock').classList.add('disabled-action');
-                rowElement.querySelector('.fa-paper-plane').classList.remove('disabled-action');
-                rowElement.querySelector('.fa-edit').classList.add('disabled-action');
-                rowElement.querySelector('.fa-trash-alt').classList.add('disabled-action');
-            }
+            localStorage.setItem('notifReady_' + userId, 'true');
             loadUserTable();
         } else {
             alert('Gagal unlock user: ' + (response.message || 'Unknown error'));
@@ -392,13 +392,7 @@ function sendNotif(userId, userName, userEmail, userHP, userPass) {
     window[callbackName] = function(response) {
         if (response.status === 'success') {
             alert('Notifikasi berhasil dikirim.');
-            //localStorage.removeItem('notifReady_' + userId);
-            const rowElement = document.getElementById('row_' + userId);
-            if (rowElement) {
-                rowElement.querySelector('.fa-paper-plane').classList.add('disabled-action');
-                rowElement.querySelector('.fa-edit').classList.remove('disabled-action');
-                rowElement.querySelector('.fa-trash-alt').classList.remove('disabled-action');
-            }
+            localStorage.removeItem('notifReady_' + userId);
             loadUserTable();
         } else {
             alert('Gagal mengirim notifikasi: ' + (response.message || 'Unknown error'));
