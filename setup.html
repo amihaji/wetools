@@ -15,7 +15,6 @@ body { background-color: #f8f9fa; }
 .actions-col { 
     width: 180px; 
     text-align: center; 
-    /* Mencegah ikon turun ke bawah */
     white-space: nowrap; 
 }
 
@@ -25,7 +24,6 @@ body { background-color: #f8f9fa; }
     align-items: center;
     width: 25px;
     height: 25px;
-
     opacity: 0;
     transition: opacity 0.2s, color 0.2s, background-color 0.2s;
     margin: 0 5px;
@@ -42,11 +40,16 @@ tr:hover .action-icon {
     color: red;
     background-color: #e0e0e0;
 }
-.action-icon.disabled {
+.action-icon.disabled-action {
     pointer-events: none;
     opacity: 0.3 !important;
 }
- 
+.action-icon.disabled-action:hover {
+    color: #6c757d;
+    background-color: transparent;
+    cursor: not-allowed;
+}
+
 .sticky-header th { 
     position: sticky; top: 0; 
     background-color: #003366; 
@@ -210,47 +213,50 @@ function loadUserTable() {
     showLoading(true);
     const callbackName = 'cb_' + Date.now();
     const script = document.createElement('script');
-    script.src   = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
-    
+    script.src = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+
     script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
     window[callbackName] = function(data) {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = '';
+
         if (!data || data.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8">Tidak ada data user.</td></tr>';
         } else {
-                data.forEach(row => {
+            data.forEach(row => {
                 const userId    = row[0];
                 const namaUser  = row[1];
                 const emailUser = row[2];
                 const hpUser    = row[3];
                 const passUser  = row[4];
-                const levelUser = row[5];    
-                let salah       = parseInt(row[6]) || 0;
+                const levelUser = row[5];
+                let salah        = parseInt(row[6]) || 0;
 
-                // Semua icon default:
-                let editState   = '';
+                // Default: Edit/Hapus aktif, Unlock/Kirim nonaktif
+                let editState = '';
                 let deleteState = '';
                 let unlockState = 'disabled-action';
-                let sendState   = 'disabled-action';
-                
-                // CEK LOCALSTORAGE untuk status setelah UNLOCK
+                let sendState = 'disabled-action';
+
+                // Cek localStorage jika baru unlock (siap kirim notif)
                 const unlockFlag = localStorage.getItem('notifReady_' + userId);
-                // ATUR STATE SESUAI KONDISI
+
                 if (salah >= 3) {
-                    // USER TERKUNCI
-                    editState   = 'disabled-action';
+                    // User terkunci
+                    editState = 'disabled-action';
                     deleteState = 'disabled-action';
-                    unlockState = ''; // Enable Unlock
-                    sendState   = 'disabled-action';
+                    unlockState = ''; // enable unlock
+                    sendState = 'disabled-action';
                 } else if (unlockFlag === 'true') {
-                    // SUDAH UNLOCK, SIAP KIRIM
-                    editState   = 'disabled-action';
+                    // Setelah unlock, siap kirim
+                    editState = 'disabled-action';
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
-                    sendState   = ''; // Enable Kirim
+                    sendState = ''; // enable kirim
                 }
+                // Else: default (edit/hapus aktif, unlock/kirim nonaktif)
+
                 const rowHTML = `
                 <tr id="row_${userId}">
                     <td>${userId}</td>
@@ -260,7 +266,7 @@ function loadUserTable() {
                     <td>${passUser}</td>
                     <td>${levelUser}</td>
                     <td>${salah}</td>
-                    <td>
+                    <td class="actions-col">
                         <i class="fas fa-edit action-icon ${editState}" title="Edit User" onclick="editUser('${userId}')"></i>
                         <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" onclick="deleteUser('${userId}')"></i>
                         <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${userId}')"></i>
@@ -271,6 +277,7 @@ function loadUserTable() {
                 tbody.insertAdjacentHTML('beforeend', rowHTML);
             });
         }
+
         document.body.removeChild(script);
         delete window[callbackName];
         showLoading(false);
