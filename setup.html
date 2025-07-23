@@ -249,13 +249,14 @@ function loadUserTable() {
                     deleteState = 'disabled-action';
                     unlockState = 'disabled-action';
                     sendState   = ''; // enable kirim
-                } else {
-                    // Default
-                    editState   = ''; // enable edit
-                    deleteState = ''; // enable hapus
-                    unlockState = 'disabled-action';
-                    sendState   = 'disabled-action';
-                }
+                } 
+                //else {
+                //    // Default
+                //    editState   = ''; // enable edit
+                //    deleteState = ''; // enable hapus
+                //    unlockState = 'disabled-action';
+                //    sendState   = 'disabled-action';
+               // }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
