@@ -267,10 +267,18 @@ function loadUserTable() {
                     <td>${levelUser}</td>
                     <td>${salah}</td>
                     <td class="actions-col">
-                        <i class="fas fa-edit action-icon ${editState}" title="Edit User" onclick="editUser('${userId}')"></i>
-                        <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" onclick="deleteUser('${userId}')"></i>
-                        <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" onclick="unlockUser('${userId}')"></i>
-                        <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" onclick="sendNotif('${userId}','${namaUser}','${emailUser}','${hpUser}','${passUser}')"></i>
+                        <i class="fas fa-edit action-icon ${editState}" title="Edit User"
+                          onclick="editUser('${userId}','${namaUser}','${emailUser}','${hpUser}','${passUser}','${levelUser}','${salah}')">
+                        </i>
+                        <i class="fas fa-trash-alt action-icon ${deleteState}" title="Hapus User" 
+                          onclick="deleteUser('${userId}')">
+                        </i>
+                        <i class="fas fa-unlock action-icon ${unlockState}" title="Unlock User" 
+                          onclick="unlockUser('${userId}')">
+                        </i>
+                        <i class="fas fa-paper-plane action-icon ${sendState}" title="Kirim Notifikasi" 
+                          onclick="sendNotif('${userId}','${namaUser}','${emailUser}','${hpUser}','${passUser}')">
+                        </i>
                     </td>
                 </tr>
                 `;
