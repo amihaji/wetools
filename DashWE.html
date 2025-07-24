@@ -125,7 +125,7 @@
     <!-- Tampilan Baris Navbar Dasboard -->
     <nav class="navbar navbar-dark navbar-custom-blue">    
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dashboard - Admin</a>
+            <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dasboard - FollowUp</a>
             <div>
                 <span class="navbar-text me-3" id="welcomeUser"></span>
                 <button class="btn btn-outline-light" id="logoutButton">Logout</button>
@@ -173,8 +173,7 @@
                             <div id="normalToolbar" class="d-grid d-md-flex gap-2">
                                 <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
                                 <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                                <a href="dashCRM.html" class="btn btn-primary"><i class="fas fa-user"></i> CRM</a>
-                                <a href="setup.html" class="btn btn-primary"><i class="fa fa-cog"></i> Setup</a>
+                                <a href="index.html" class="btn btn-primary"><i class="fa-paper-plane"></i> Close</a>
                             </div>
                       
                             <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
@@ -507,7 +506,7 @@ function logout() {
         body: payload
     }).finally(() => {
         sessionStorage.clear();
-        window.location.href = 'FormUser.html';
+        window.location.href = "https://amihaji.github.io/kitworks/index.html";
     });
 }
 
