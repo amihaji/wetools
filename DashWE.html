@@ -349,8 +349,8 @@ function loadTableData() {
     const filterValue  = document.getElementById('filterSponsor').value;
     const callbackName = 'data_cb_' + Date.now();
     const script       = document.createElement('script');
-    //script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&token=${userToken}&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
-    script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    //script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&callback=${callbackName}`;
     script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
     window[callbackName] = (response) => {
