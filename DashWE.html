@@ -116,20 +116,17 @@
 
     </style>
 </head>
-<body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-    </div>
 
+<body class="p-2 p-sm-3">
+  
     <!-- Tampilan Baris Navbar Dasboard -->
     <div class="container">
         <div class="title-box mb-3">
             <i class="fas fa-list-check"></i>
             <h6 class="mb-0">Setup User</h6>
         </div> 
-    
-    <!-- <div class="container mt-4"> -->
+    </div>
+    <div class="container mt-4"> 
         <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
         <div class="card mb-3" id="followUpMessageBox" style="display: none;">
             <div class="card-body">
@@ -203,10 +200,13 @@
                             <th class="actions-col">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody">
-                       <tr><td colspan="6">Memuat data...</td></tr> 
+                    <tbody id="dataTableBody"><tr><td colspan="6">Memuat data...</td></tr> 
                        <!-- Data akan diisi oleh JavaScript di sini -->  
                     </tbody>
+                    <!-- Loading Overlay -->
+                    <div id="loadingOverlay" class="loading-overlay">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                    </div>
                 </table>
             </div>
         </div>
