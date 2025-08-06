@@ -501,7 +501,6 @@ function saveChanges() {
     showLoading(true);
     const payload = {
         action: 'editData',
-        token: userToken,
         rowIndex:  document.getElementById('editRowIndex').value,
         nama:      document.getElementById('editNama').value,
         nomorHp:   document.getElementById('editNomorHp').value,
@@ -525,7 +524,7 @@ function saveChanges() {
 function deleteRow(rowIndex) {
     if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}?`)) return;
     showLoading(true);
-    const payload = { action: 'deleteData', token: userToken, rowIndex: rowIndex };
+    const payload = { action: 'deleteData', rowIndex: rowIndex };
     fetch(URL_APPS_SCRIPT, {
         method: 'POST', 
         mode: 'no-cors', 
@@ -541,7 +540,7 @@ function viewRecord(rowIndex) {
     showLoading(true);
     const callbackName = 'view_cb_' + Date.now();
     const script = document.createElement('script');
-    script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&token=${userToken}&rowIndex=${rowIndex}&callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&callback=${callbackName}`;
 
     window[callbackName] = (response) => {
         if (response.status === 'success') {
