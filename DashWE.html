@@ -126,10 +126,6 @@
     <nav class="navbar navbar-dark navbar-custom-blue">    
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fas fa-tachometer-alt me-2"></i> Dasboard - FollowUp</a>
-            <div>
-                <span class="navbar-text me-3" id="welcomeUser"></span>
-                <button class="btn btn-outline-light" id="logoutButton">Logout</button>
-            </div>
         </div>
     </nav>
 
@@ -283,7 +279,7 @@ const followUpToolbar      = document.getElementById('followUpToolbar');
 const followUpMessageBox   = document.getElementById('followUpMessageBox');
     
 // Daftar Semua Event Listener  
-document.getElementById('logoutButton').addEventListener('click', logout);
+// document.getElementById('logoutButton').addEventListener('click', logout);
 document.getElementById('filterButton').addEventListener('click', loadTableData);
 document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
 document.getElementById('exportButton').addEventListener('click', exportToExcel);
@@ -383,7 +379,7 @@ function loadTableData() {
             });
         } else {
             alert(response.message);
-            if(response.message.includes('Sesi tidak valid')) logout();
+            if(response.message.includes('Sesi tidak valid')); 
         }
         showLoading(false);
     };
@@ -488,19 +484,6 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     });
 });
 
-function logout() {
-    showLoading(true);
-    const payload = JSON.stringify({ action: "logoutUser", token: userToken });
-    fetch(URL_APPS_SCRIPT, {
-        method: 'POST', 
-        mode: 'no-cors', 
-        headers: {'Content-Type': 'text/plain'}, 
-        body: payload
-    }).finally(() => {
-        sessionStorage.clear();
-        window.location.href = "https://amihaji.github.io/kitworks/index.html";
-    });
-}
 
 // Fungsi untuk mengedit data
 function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
