@@ -268,17 +268,8 @@
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyXfpLl_-KpqO-dFjJfv4bhOEWZIfp1eC9XIcrUMod4R5bFinevt-A3TGFLPobF_FF_/exec';
-const userToken       = sessionStorage.getItem('userToken');
-const userLevel       = sessionStorage.getItem('userLevel');
-const userId          = sessionStorage.getItem('userId');
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzdHOFYhF_w7nmhuNpPUDPZP2zE6Xso_AKbAuDy6t5EzUguxQCpygXwMFinvK458BCM/exec';
 // ******************************************************
-const userLogin = (localStorage.getItem("userLogin") || '').trim();
-
-//if (!userLogin) {
-//   alert("Anda belum login!");
-//   window.location.href = "index.html"; // arahkan kembali ke halaman login
-//}
 
 // Defenisikan semua constanta 
 const loadingOverlay       = document.getElementById('loadingOverlay');
@@ -349,7 +340,9 @@ function loadTableData() {
     const filterValue  = document.getElementById('filterSponsor').value;
     const callbackName = 'data_cb_' + Date.now();
     const script       = document.createElement('script');
-    script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    // script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
+    script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&callback=${callbackName}`;
+
     script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
     window[callbackName] = (response) => {
