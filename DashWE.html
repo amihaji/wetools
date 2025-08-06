@@ -277,7 +277,11 @@ const sendWaButton         = document.getElementById('sendWaButton');
 const normalToolbar        = document.getElementById('normalToolbar');
 const followUpToolbar      = document.getElementById('followUpToolbar');
 const followUpMessageBox   = document.getElementById('followUpMessageBox');
-    
+const userLevel            = "Admin"; // atau "User"    
+
+//const urlParams  = new URLSearchParams(window.location.search);
+//const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
+
 // Daftar Semua Event Listener  
 document.getElementById('filterButton').addEventListener('click', loadTableData);
 document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
