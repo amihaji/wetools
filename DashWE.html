@@ -279,13 +279,11 @@ const followUpToolbar      = document.getElementById('followUpToolbar');
 const followUpMessageBox   = document.getElementById('followUpMessageBox');
     
 // Daftar Semua Event Listener  
-// document.getElementById('logoutButton').addEventListener('click', logout);
 document.getElementById('filterButton').addEventListener('click', loadTableData);
 document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
 document.getElementById('exportButton').addEventListener('click', exportToExcel);
       
 // Inisialisasi Dashboard dan Panggil data 
-//document.getElementById('welcomeUser').textContent = `Welcome, ${userId} (${userLevel})`;
 loadTableData(); 
 
 // Aktif dan Non Aktifkan Event Listener 
@@ -336,7 +334,6 @@ function loadTableData() {
     const filterValue  = document.getElementById('filterSponsor').value;
     const callbackName = 'data_cb_' + Date.now();
     const script       = document.createElement('script');
-    // script.src         = `${URL_APPS_SCRIPT}?action=getTabelUser&callback=${callbackName}`;
     script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&callback=${callbackName}`;
 
     script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
@@ -483,7 +480,6 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
         }, index * 5000); // jeda 5 detik setiap perdata yang dikirim
     });
 });
-
 
 // Fungsi untuk mengedit data
 function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
