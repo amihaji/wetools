@@ -266,16 +266,9 @@
 <script>
 //***********  Deklarasi variabel global ****************
 const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx1xURGj7sRWJPtknnOQCHv4SiCEVuH9i1gk0-E0LTmu661jTAg_t3Ja-p2PcjD2HU7/exec';
-//const userToken       = sessionStorage.getItem('token');
-//const userLevel       = sessionStorage.getItem('userLevel');
-// const userId     = sessionStorage.getItem('userId');
-//const urlParams  = new URLSearchParams(window.location.search);
-//const userToken  = urlParams.get("token");           // fallback ke "User" jika tidak dikirim
-//const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
-
 const userID     = localStorage.getItem('userID') || '';
 const userToken  = localStorage.getItem('userToken') || '';
-const userLevel  = localStorage.getItem('userLevel') || '';
+const userLevel  = localStorage.getItem('userLevel') || 'User';
 
 // ******************************************************
 
