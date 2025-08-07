@@ -11,6 +11,11 @@
         * Pengaturan Untuk jumlah 5 baris dari tabel + header
         ****************************************************/
         /* Wrapper untuk tabel agar bisa di-scroll vertikal dan horizontal */
+        .table {
+            min-width: 800px;    /* Atur lebar minimal agar tidak pecah */
+            table-layout: auto;
+            white-space: nowrap; /* Agar teks tetap dalam satu baris */
+        }
         .table-box { 
             background: white; 
             border-radius: 5px; 
@@ -18,6 +23,7 @@
             padding: 10px; 
         }
         .table-wrapper {
+            width: 100%;
             max-height: 450px; /* Batasi tinggi tabel (sekitar 5-7 baris). Sesuaikan jika perlu. */
             overflow: auto;    /* Tambahkan scrollbar vertikal & horizontal jika konten melebihi batasan */
             border: 1px solid #dee2e6;
@@ -29,6 +35,7 @@
             top: 0;           /* Tetap di posisi paling atas dari scroll container-nya (.table-wrapper) */
             z-index: 2;       /* Pastikan header berada di atas konten lain, beri nilai lebih tinggi */
         }
+
         /* Mengubah warna header tabel */
         .table-dark-custom {
             --bs-table-bg: #002266;
@@ -41,7 +48,7 @@
         /************************************************
         /* Mengatur kolom Aksi agar rata kanan dan memiliki lebar tetap */
         .actions-col {
-            text-align: right;
+            text-align: center;
             width: 140px; 
             /* Mencegah ikon turun ke bawah */
             white-space: nowrap; 
@@ -166,7 +173,7 @@
                             <div id="normalToolbar" class="d-grid d-md-flex gap-2">
                                 <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
                                 <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                                <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-primary"><i class="fa-paper-plane"></i> Close</a>
+                                <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Close</a>
                             </div>
                       
                             <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
@@ -201,7 +208,7 @@
                             <th class="actions-col">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody"><tr><td colspan="6">Memuat data...</td></tr> 
+                    <tbody id="dataTableBody"><tr><td colspan="6" style="text-align: center;">Memuat data...</td></tr> 
                        <!-- Data akan diisi oleh JavaScript di sini -->  
                     </tbody>
                     <!-- Loading Overlay -->
