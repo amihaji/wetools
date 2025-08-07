@@ -265,14 +265,17 @@
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxPcZBnd8nd1lipCg8h9E1fSHl1nOPMHJWLwdlK8_FDfn-2Kp38eldrMWfi9jCfwdCs/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx1xURGj7sRWJPtknnOQCHv4SiCEVuH9i1gk0-E0LTmu661jTAg_t3Ja-p2PcjD2HU7/exec';
 //const userToken       = sessionStorage.getItem('token');
 //const userLevel       = sessionStorage.getItem('userLevel');
-const userId          = sessionStorage.getItem('userId');
-const urlParams  = new URLSearchParams(window.location.search);
-const userToken  = urlParams.get("token"); // fallback ke "User" jika tidak dikirim
-const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
+// const userId     = sessionStorage.getItem('userId');
+//const urlParams  = new URLSearchParams(window.location.search);
+//const userToken  = urlParams.get("token");           // fallback ke "User" jika tidak dikirim
+//const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
 
+const userID     = localStorage.getItem('userID') || '';
+const userToken  = localStorage.getItem('userToken') || '';
+const userLevel  = localStorage.getItem('userLevel') || '';
 
 // ******************************************************
 
@@ -287,10 +290,6 @@ const normalToolbar        = document.getElementById('normalToolbar');
 const followUpToolbar      = document.getElementById('followUpToolbar');
 const followUpMessageBox   = document.getElementById('followUpMessageBox');
     
-
-//const urlParams  = new URLSearchParams(window.location.search);
-//const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
-
 // Daftar Semua Event Listener  
 document.getElementById('filterButton').addEventListener('click', loadTableData);
 document.getElementById('saveChangesButton').addEventListener('click', saveChanges);
@@ -348,8 +347,7 @@ function loadTableData() {
     const callbackName = 'data_cb_' + Date.now();
     const script       = document.createElement('script');
     script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&filter=${encodeURIComponent(filterValue)}&callback=${callbackName}`;
-    //script.src         = `${URL_APPS_SCRIPT}?action=getDataWE&callback=${callbackName}`;
-
+   
     script.onerror = () => { alert('Gagal mengambil data.'); showLoading(false); };
 
     window[callbackName] = (response) => {
@@ -552,8 +550,6 @@ function viewRecord(rowIndex) {
     const script = document.createElement('script');
     //const token = 'DUMMY_ADMIN_TOKEN'; // Ganti dengan token valid dari sesi login
     script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&token=${userToken}&callback=${callbackName}`;
-
-    //script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&callback=${callbackName}`;
 
     window[callbackName] = (response) => {
         if (response.status === 'success') {
