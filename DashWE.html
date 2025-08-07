@@ -667,7 +667,7 @@ function viewRecord(rowIndex) {
 // *************************************
 // Fungsi untuk mengexport data ke Excel
 // *************************************
-function exportToExcel() {
+function BACKUP_exportToExcel() {
     //const table = document.querySelector(".table-container table");
     const table = document.querySelector(".table-box table");
     let csv = [];
@@ -681,6 +681,30 @@ function exportToExcel() {
     }
     const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
     const encodedUri = encodeURI(csvContent);
+    const link       = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "DataSurvey.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportToExcel() {
+    const table = document.querySelector(".table-box table");
+    let csv = [];
+
+    for (const row of table.rows) {
+        let rowData = [];
+
+        // Ambil sel dari index 1 sampai index ke-6 (lewatkan checkbox dan kolom aksi)
+        for (let i = 1; i <= 6; i++) {
+            rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
+        }
+        csv.push(rowData.join(','));
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
+    const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", "DataSurvey.csv");
@@ -688,7 +712,8 @@ function exportToExcel() {
     link.click();
     document.body.removeChild(link);
 }
-  
+
+
 // *****************************
 // Format penanggalan Indonesia
 // *****************************
