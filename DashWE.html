@@ -269,7 +269,6 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx1xURGj7sRWJPt
 const userID     = localStorage.getItem('userID') || '';
 const userToken  = localStorage.getItem('userToken') || '';
 const userLevel  = localStorage.getItem('userLevel') || 'User';
-
 // ******************************************************
 
 // Defenisikan semua constanta 
@@ -372,16 +371,17 @@ function loadTableData() {
                     <td>${sponsor}</td>
                     <td>${hpSponsor}</td>
                     <td class="actions-col">
-                        <!--
-                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>
-                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>
-                        -->
-                        
-                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="viewRecord(${rowIndex})" title="Lihat"><i class="fas fa-eye"></i></a>` : ''}
-                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')" title="Edit"><i class="fas fa-edit"></i></a>` : ''}
-                        ${userLevel === 'Admin' ? `<a href="#" class="action-icon" onclick="deleteRow(${rowIndex})" title="Hapus"><i class="fas fa-trash"></i></a>` : ''}
-                        
+                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" 
+                            onclick="${userLevel !== 'User' ? `viewRecord(${rowIndex})` : 'return false;'}" 
+                            title="Lihat"><i class="fas fa-eye"></i></a>
+
+                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" 
+                            onclick="${userLevel !== 'User' ? `openEditModal(${rowIndex}, '${safeNama}', '${safeHp}', '${safeEmail}', '${safeSponsor}', '${safeHpSponsor}')` : 'return false;'}" 
+                            title="Edit"><i class="fas fa-edit"></i></a>
+
+                        <a href="#" class="action-icon ${userLevel === 'User' ? 'disabled-action' : ''}" 
+                            onclick="${userLevel !== 'User' ? `deleteRow(${rowIndex})` : 'return false;'}" 
+                            title="Hapus"><i class="fas fa-trash"></i></a>
                     </td>
                 `;
                 tableBody.appendChild(tr);
