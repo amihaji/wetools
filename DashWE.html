@@ -290,7 +290,9 @@ document.getElementById('exportButton').addEventListener('click', exportToExcel)
 // Inisialisasi Dashboard dan Panggil data 
 loadTableData(); 
 
+// **************************************
 // Aktif dan Non Aktifkan Event Listener 
+// **************************************
 document.getElementById('startFollowUpButton').addEventListener('click', () => {
     // Non Aktifkan Toolbar Filter dan Button Filter
     document.getElementById('filterSponsor').disabled = true;
@@ -305,7 +307,9 @@ document.getElementById('startFollowUpButton').addEventListener('click', () => {
     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.add('disabled-action'));
 });
 
-// Aktif dan Non Aktifkan Event Listener 
+// *************************************
+// Aktif dan Non Aktifkan Event Listener
+// ************************************* 
 document.getElementById('cancelFollowUpButton').addEventListener('click', () => {
     // Aktifkan Toolbar Filter dan Button Filter
     document.getElementById('filterSponsor').disabled = false;
@@ -322,17 +326,24 @@ document.getElementById('cancelFollowUpButton').addEventListener('click', () => 
     document.getElementById('waMessage').value = '';
 });
 
-// Check all
+// ****************
+// Check semuanya
+// ****************
 document.getElementById('checkAll').addEventListener('change', function() {
     const isChecked = this.checked;
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = isChecked);
 });
 
+// ********************
+// Tampilkan spinner
+// ********************
 function showLoading(show) {
     loadingOverlay.style.display = show ? 'flex' : 'none';
 }
 
-/* Tampilkan Tabel Data */
+// ************************
+// Tampilkan Tabel Data  
+// ************************
 function loadTableData() {
     showLoading(true);
     const filterValue  = document.getElementById('filterSponsor').value;
@@ -395,7 +406,9 @@ function loadTableData() {
     document.body.appendChild(script);
 }
 
+// ************************************
 // Kirim WA hanya ke record tercentang
+// ************************************
 document.getElementById('sendWaButton').addEventListener('click', () => {
     const messageTemplate = document.getElementById('waMessage').value.trim();
     if (!messageTemplate) {
@@ -493,7 +506,9 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     });
 });
 
+// ***************************
 // Fungsi untuk mengedit data
+// ***************************
 function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
     document.getElementById('editRowIndex').value = rowIndex;
     document.getElementById('editNama').value = nama;
@@ -504,7 +519,9 @@ function openEditModal(rowIndex, nama, hp, email, sponsor, hpSponsor) {
     editModal.show();
 }
 
+// ****************************************
 // Fungsi untuk menyimpan hasil pengeditan
+// ****************************************
 function saveChanges() {
     showLoading(true);
     const payload = {
@@ -528,7 +545,9 @@ function saveChanges() {
     });
 }
 
+// *****************************
 // Fungsi untuk menghapus data
+// *****************************
 function deleteRow(rowIndex) {
     if (!confirm(`Anda yakin ingin menghapus data baris ke-${rowIndex}?`)) return;
     showLoading(true);
@@ -547,7 +566,9 @@ function deleteRow(rowIndex) {
     });
 }
 
-// Fungsi untuk melihat data lengkap
+// ************************************************
+// Fungsi untuk melihat data hasil evaluasi wetools
+// ************************************************
 function viewRecord(rowIndex) {
     showLoading(true);
     const callbackName = 'view_cb_' + Date.now();
@@ -643,9 +664,12 @@ function viewRecord(rowIndex) {
     document.body.appendChild(script);
 }
 
+// *************************************
 // Fungsi untuk mengexport data ke Excel
+// *************************************
 function exportToExcel() {
-    const table = document.querySelector(".table-container table");
+    //const table = document.querySelector(".table-container table");
+    const table = document.querySelector(".table-box table");
     let csv = [];
     for (const row of table.rows) {
         let rowData = [];
@@ -665,7 +689,9 @@ function exportToExcel() {
     document.body.removeChild(link);
 }
   
+// *****************************
 // Format penanggalan Indonesia
+// *****************************
 function formatTanggal(tanggalISO) {
     if (!tanggalISO) return ''; // Kembalikan string kosong jika tanggal tidak ada
         
@@ -682,11 +708,9 @@ function formatTanggal(tanggalISO) {
     }
 }
 
-// *******************************
-// Awal script untuk emoji picker
-// *******************************
-
+// ***************************
 // Inisialisasi Emoji Picker
+// **************************
 document.addEventListener('DOMContentLoaded', () => {
     const picker   = document.getElementById('emojiPicker');
     const button   = document.getElementById('emojiPickerButton');
@@ -726,9 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-// **************************
-// Akhir script emoji picker
-// **************************
 
 </script>
 </body>
