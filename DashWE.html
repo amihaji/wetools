@@ -548,7 +548,6 @@ function viewRecord(rowIndex) {
     showLoading(true);
     const callbackName = 'view_cb_' + Date.now();
     const script = document.createElement('script');
-    //const token = 'DUMMY_ADMIN_TOKEN'; // Ganti dengan token valid dari sesi login
     script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&userToken=${userToken}&callback=${callbackName}`;
 
     window[callbackName] = (response) => {
