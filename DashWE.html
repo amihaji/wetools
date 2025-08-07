@@ -274,8 +274,8 @@ const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx1xURGj7sRWJPt
 //const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
 
 const userID     = localStorage.getItem('userID') || '';
-const userToken  = localStorage.getItem('userToken') || '';
-const userLevel  = localStorage.getItem('userLevel') || '';
+const token  = localStorage.getItem('userToken') || '';
+const level  = localStorage.getItem('userLevel') || '';
 
 // ******************************************************
 
@@ -549,7 +549,7 @@ function viewRecord(rowIndex) {
     const callbackName = 'view_cb_' + Date.now();
     const script = document.createElement('script');
     //const token = 'DUMMY_ADMIN_TOKEN'; // Ganti dengan token valid dari sesi login
-    script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&userToken=${userToken}&callback=${callbackName}`;
+    script.src = `${URL_APPS_SCRIPT}?action=getSingleRecord&rowIndex=${rowIndex}&token=${token}&callback=${callbackName}`;
 
     window[callbackName] = (response) => {
         if (response.status === 'success') {
