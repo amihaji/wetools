@@ -265,10 +265,15 @@
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwQljgdZcYSRwEIv0wfbVJ9CGbpY_7eWCbhscuZuFrQxVOGdYrP9_2EkEe9yFVL-qn9/exec';
-const userToken       = sessionStorage.getItem('userToken');
-const userLevel       = sessionStorage.getItem('userLevel');
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxPcZBnd8nd1lipCg8h9E1fSHl1nOPMHJWLwdlK8_FDfn-2Kp38eldrMWfi9jCfwdCs/exec';
+//const userToken       = sessionStorage.getItem('token');
+//const userLevel       = sessionStorage.getItem('userLevel');
 const userId          = sessionStorage.getItem('userId');
+const urlParams  = new URLSearchParams(window.location.search);
+const userToken  = urlParams.get("token"); // fallback ke "User" jika tidak dikirim
+const userLevel  = urlParams.get("level") || "User"; // fallback ke "User" jika tidak dikirim
+
+
 // ******************************************************
 
 // Defenisikan semua constanta 
