@@ -168,45 +168,38 @@
         </div>
         
         <!-- Toolbar Filter, FollowUp, Export, Close, Batal dan Kirim WA -->
-        <!-- <div class="card mb-4"> -->
-            <!-- <div class="card-body"> -->
-                <!-- <div class="row gy-2"> -->
-                <div class="button-box d-grid d-md-flex justify-content-md-end gap-2">
-                    <!-- Tombol Filter -->
-                    <div class="col-lg-6">
-                        <div class="input-group" >
-                            <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
-                            <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
-                        </div>
-                    </div> 
-                    <!-- Tombol Followup, Export, Close, Batal dan Kirim WA -->
-                    <div class="col-lg-6">
-                     
-                        <!-- <div class="d-grid d-md-flex justify-content-md-end gap-2"> -->
-
-                            <!-- Grup Tombol Normal (Awalnya Terlihat) -->
-                            <div id="normalToolbar" class="d-grid d-md-flex gap-2">
-                                <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
-                                <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                                <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> E x i t</a>
-                            </div>
+        <div class="button-box d-grid d-md-flex justify-content-md-end gap-2">
+            <!-- Tombol Filter -->
+            <div class="col-lg-6">
+                <div class="input-group" >
+                    <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
+                    <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
+                </div>
+            </div> 
+    
+            <!-- Tombol Followup, Export, Close, Batal dan Kirim WA -->
+            <div class="col-lg-6">
+            <!-- <div class="d-grid d-md-flex justify-content-md-end gap-2"> -->
+                <!-- Grup Tombol Normal (Awalnya Terlihat) -->
+                <div id="normalToolbar" class="d-grid d-md-flex gap-2">
+                    <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
+                    <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
+                    <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> E x i t</a>
+                </div>
                       
-                            <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
-                            <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
-                                <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
-                                <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
-                            </div>
-
-                        <!-- </div> -->
-                    </div>
+                <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
+                <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
+                    <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
+                    <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                 </div>
-                <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
-                <div class="progress mt-2 bg-light" id="waProgressContainer" style="height:30px; width:100%; display:none;">
-                    <div id="waProgressBar" class="progress-bar" role="progressbar" style="height:30px; width:100%;">0%</div>
-                </div>
-            <!-- </div> -->
-        <!-- </div> -->
-
+            </div>
+        </div>
+               
+        <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
+        <div class="progress mt-2 bg-light" id="waProgressContainer" style="height:30px; width:100%; display:none;">
+            <div id="waProgressBar" class="progress-bar" role="progressbar" style="height:30px; width:100%;">0%</div>
+        </div>
+    
         <!-- Tabel Data -->
         <div class="table-box">
             <h6 class="mb-2">Daftar Prospect</h6>  
