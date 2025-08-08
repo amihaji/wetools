@@ -38,6 +38,15 @@
             --bs-table-border-color: #003388;
         }
 
+        /* Box Button */
+        .button-box { 
+            background: white; 
+            border-radius: 5px; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+            padding: 10px; 
+            margin: 15px 0; 
+        }
+
         /************************************************
         /* Pengaturan Untuk Ikon di Hapus, Edit dan Lihat
         /************************************************
@@ -171,7 +180,9 @@
                     </div> 
                     <!-- Tombol Followup, Export, Close, Batal dan Kirim WA -->
                     <div class="col-lg-6">
-                        <div class="d-grid d-md-flex justify-content-md-end gap-2">
+                        <div class="button-box d-flex justify-content-between align-items-center">
+                        <!-- <div class="d-grid d-md-flex justify-content-md-end gap-2"> -->
+
                             <!-- Grup Tombol Normal (Awalnya Terlihat) -->
                             <div id="normalToolbar" class="d-grid d-md-flex gap-2">
                                 <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
@@ -184,6 +195,7 @@
                                 <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                                 <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                             </div>
+
                         </div>
                     </div>
                 </div>
