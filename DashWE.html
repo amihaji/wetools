@@ -97,7 +97,7 @@
             background: rgba(255, 255, 255, 0.7); z-index: 1060;
             display: flex; justify-content: center; align-items: center;
         }
-        .d-none-force {
+        .sembunyikan {
             display: none !important;
         }
         
@@ -178,7 +178,7 @@
             </div> 
     
             <!-- Tombol Followup, Export, Close, Batal dan Kirim WA -->
-            <div class="col-lg-6 align-items:left">  
+            <div class="col-lg-6">  
                 <!-- Grup Tombol Normal (Awalnya Terlihat) -->
                 <div id="normalToolbar" class="d-grid d-md-flex gap-2">
                     <button class="btn btn-primary btn-sm" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
@@ -187,7 +187,7 @@
                 </div>
                       
                 <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
-                <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
+                <div id="followUpToolbar" class="d-grid d-md-flex gap-2 sembunyikan">
                     <button class="btn btn-success btn-sm" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
                     <button class="btn btn-secondary btn-sm" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                 </div>
@@ -313,10 +313,10 @@ document.getElementById('startFollowUpButton').addEventListener('click', () => {
     document.getElementById('filterSponsor').disabled = true;
     document.getElementById('filterButton').disabled = true;
     // Menampilkan Toolbar Normal dan MessageBox
-    normalToolbar.classList.add('d-none-force');
+    normalToolbar.classList.add('sembunyikan');
     followUpMessageBox.style.display = 'block'; 
     // Menyembunyikan Toolbar Followup dan checkbox
-    followUpToolbar.classList.remove('d-none-force');
+    followUpToolbar.classList.remove('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
     // Non Aktifkan icon-icon View, Edit dan Hapus
     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.add('disabled-action'));
@@ -330,10 +330,10 @@ document.getElementById('cancelFollowUpButton').addEventListener('click', () => 
     document.getElementById('filterSponsor').disabled = false;
     document.getElementById('filterButton').disabled = false;
     // Menyembunyikan Toolbar Normal dan MessageBox
-    normalToolbar.classList.remove('d-none-force');
+    normalToolbar.classList.remove('sembunyikan');
     followUpMessageBox.style.display = 'none';
     // Menampilkan Toolbar Followup dan checkbox
-    followUpToolbar.classList.add('d-none-force');
+    followUpToolbar.classList.add('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
     // Aktifkan kembali icon-icon View, Edit dan Hapus   
     document.querySelectorAll('.action-icon').forEach(icon => icon.classList.remove('disabled-action'));
