@@ -173,7 +173,7 @@
             <div class="col-lg-6">
                 <div class="input-group">
                     <input type="text" class="form-control" id="filterSponsor" placeholder="Filter berdasarkan Nama Sponsor...">
-                    <button class="btn btn-outline-secondary" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
+                    <button class="btn btn-outline-secondary btn-sm" id="filterButton" type="button"><i class="fas fa-filter"></i> Filter</button>
                 </div>
             </div> 
     
@@ -181,15 +181,15 @@
             <div class="col-lg-6">
                 <!-- Grup Tombol Normal (Awalnya Terlihat) -->
                 <div id="normalToolbar" class="d-grid d-md-flex gap-2">
-                    <button class="btn btn-primary" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
-                    <button class="btn btn-primary" id="exportButton"><i class="fas fa-file-excel"></i> Export</button>
-                    <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> E x i t</a>
+                    <button class="btn btn-primary btn-sm" id="startFollowUpButton"><i class="fab fa-whatsapp"></i> Follow Up</button>
+                    <button class="btn btn-primary btn-sm" id="exportButton"><i class="fas fa-file-excel"></i> Ekspor</button>
+                    <a href="https://amihaji.github.io/kitworks/index.html" class="btn btn-secondary"><i class="fas fa-sign-out-alt"></i> Kembali</a>
                 </div>
                       
                 <!-- Grup Tombol Mode Follow-up (Awalnya tersembunyi) -->
                 <div id="followUpToolbar" class="d-grid d-md-flex gap-2 d-none-force">
-                    <button class="btn btn-success" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
-                    <button class="btn btn-secondary" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
+                    <button class="btn btn-success btn-sm" id="sendWaButton"><i class="fas fa-paper-plane"></i> Kirim WA</button>
+                    <button class="btn btn-secondary btn-sm" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                 </div>
             </div>
         </div>
@@ -216,7 +216,7 @@
                             <th class="actions-col">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="dataTableBody"><tr><td colspan="6" style="text-align: center;">Memuat data...</td></tr> 
+                    <tbody id="dataTableBody"><tr><td colspan="6" style="align-items: center;">Memuat data...</td></tr> 
                        <!-- Data akan diisi oleh JavaScript di sini -->  
                     </tbody>
                     <!-- Loading Overlay -->
@@ -236,7 +236,7 @@
                 <div class="modal-header" style="background-color:#003366; color:white;">
                 <!-- <div class="modal-header"> -->
                     <h5 class="modal-title">Edit Data</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editForm">
@@ -249,8 +249,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-primary" id="saveChangesButton">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="saveChangesButton">Simpan</button>
                 </div>
             </div>
         </div>
@@ -263,13 +263,13 @@
                 <!-- <div class="modal-header"> -->
                 <div class="modal-header" style="background-color:#003366; color:white;">    
                     <h5 class="modal-title" id="viewModalLabel">Detail Hasil Analisa</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="viewModalBody">
                     <!-- Konten detail akan dimuat di sini -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Kembali</button>
                 </div>
             </div>
         </div>
