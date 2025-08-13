@@ -106,6 +106,21 @@
            transition: width 0.3s ease; 
         }
        
+        /* Notifikasi Message Box */
+        .notification-message {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px; /* agar icon dan teks tidak dempet */
+        }
+        .pesan-notif-icon {font-size: 18px;}
+        .notification-error { background-color: #d9534f; color: white; }
+        .notification-success { background-color: #0275d8; color: white; }
+        .notification-warning { background-color: #f0ad4e; color: black; }
+
         /* Tampilan emiticon */
         emoji-picker {
             max-width: 90vw;
@@ -147,7 +162,8 @@
 
     <div class="container mt-2"> 
         <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
-        <div class="card mb-3" id="followUpMessageBox" style="display: none;">
+        <!-- <div class="card mb-3" id="followUpMessageBox" style="display: none;"> -->
+        <div class="card mb-3">
             <div class="card-body">
                 <label for="waMessage" class="form-label">
                     <strong>Tulis Pesan Follow Up Anda:</strong>
@@ -192,6 +208,11 @@
                     <button class="btn btn-secondary btn-sm" id="cancelFollowUpButton"><i class="fas fa-times"></i> Batal</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Pesan notifikasi -->
+        <div id="pesanNotification" class="notification-message">
+            <i id="pesanNotifIcon" class="pesan-notif-icon"></i><span id="pesanNotifText"></span>
         </div>
 
         <!-- Progress Kirim WA Massal (awalnya tersembunyi) -->
@@ -295,7 +316,7 @@ const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
 const sendWaButton         = document.getElementById('sendWaButton');
 const normalToolbar        = document.getElementById('normalToolbar');
 const followUpToolbar      = document.getElementById('followUpToolbar');
-const followUpMessageBox   = document.getElementById('followUpMessageBox');
+//onst followUpMessageBox   = document.getElementById('followUpMessageBox');
     
 // Daftar Semua Event Listener  
 document.getElementById('filterButton').addEventListener('click', loadTableData);
@@ -314,7 +335,7 @@ document.getElementById('startFollowUpButton').addEventListener('click', () => {
     document.getElementById('filterButton').disabled = true;
     // Menampilkan Toolbar Normal dan MessageBox
     normalToolbar.classList.add('sembunyikan');
-    followUpMessageBox.style.display = 'block'; 
+    //followUpMessageBox.style.display = 'block'; 
     // Menyembunyikan Toolbar Followup dan checkbox
     followUpToolbar.classList.remove('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
@@ -331,7 +352,7 @@ document.getElementById('cancelFollowUpButton').addEventListener('click', () => 
     document.getElementById('filterButton').disabled = false;
     // Menyembunyikan Toolbar Normal dan MessageBox
     normalToolbar.classList.remove('sembunyikan');
-    followUpMessageBox.style.display = 'none';
+    //followUpMessageBox.style.display = 'none';
     // Menampilkan Toolbar Followup dan checkbox
     followUpToolbar.classList.add('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
@@ -413,7 +434,8 @@ function loadTableData() {
                 tableBody.appendChild(tr);
             });
         } else {
-            alert(response.message);
+            //alert(response.message);
+            showPesan('warning', " ERROR : " + response.message);
             if(response.message.includes('Sesi tidak valid')); 
         }
         showLoading(false);
@@ -427,7 +449,8 @@ function loadTableData() {
 document.getElementById('sendWaButton').addEventListener('click', () => {
     const messageTemplate = document.getElementById('waMessage').value.trim();
     if (!messageTemplate) {
-        alert('Silahkan isi pesan follow up.');
+        // alert('Silahkan isi pesan follow up.');
+        showPesan('warning', " PERHATIAN : Silahkan isi pesan FollowUp");
         return;
     }
 
@@ -444,7 +467,8 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
     });
 
     if (selectedRows.length === 0) {
-        alert('Pilih minimal satu record untuk mengirim pesan follow up.');
+        // alert('Pilih minimal satu record untuk mengirim pesan follow up.');
+        showPesan('warning', " PERHATIAN : Pilih minimal satu record untuk mengirim pesan follow up");
         return;
     }
     // Konfigurasi API FONNTE
@@ -504,7 +528,8 @@ document.getElementById('sendWaButton').addEventListener('click', () => {
                         document.getElementById('sendWaButton').disabled  = false;
                         document.getElementById('cancelFollowUpButton').disabled  = false;
 
-                        alert('Seluruh Pesan telah terkirim');
+                        //alert('Seluruh Pesan telah terkirim');
+                        showPesan('success', " BERHASIL : mengirim seluruh pesan");
                         // Reset tampilan ke semula
                         cancelFollowUpButton.click();
                         waProgressContainer.style.display = 'none';
@@ -541,7 +566,7 @@ function saveChanges() {
     showLoading(true);
     const payload = {
         action: 'editData',
-        userToken: userToken,  // Tambahkan ini
+        userToken: userToken,  
         rowIndex:  document.getElementById('editRowIndex').value,
         nama:      document.getElementById('editNama').value,
         nomorHp:   document.getElementById('editNomorHp').value,
@@ -558,6 +583,7 @@ function saveChanges() {
        editModal.hide();
        setTimeout(loadTableData, 500); // Beri jeda agar server sempat update
     });
+    showPesan('success', " BERHASIL : menyimpan data");
 }
 
 // *****************************
@@ -568,7 +594,7 @@ function deleteRow(rowIndex) {
     showLoading(true);
     const payload = { 
         action: 'deleteData', 
-        userToken: userToken,  // Tambahkan ini
+        userToken: userToken,  
         rowIndex: rowIndex 
     };
     fetch(URL_APPS_SCRIPT, {
@@ -579,6 +605,7 @@ function deleteRow(rowIndex) {
     }).finally(() => {
        setTimeout(loadTableData, 500);
     });
+    showPesan('warning', " PERHATIAN : data berhasil dihapus");
 }
 
 // ************************************************
@@ -672,7 +699,8 @@ function viewRecord(rowIndex) {
  
                 viewModal.show();
         } else {
-           alert(response.message);
+           //alert(response.message);
+           showPesan('warning', " PERHATIAN : " + response.message);
         }
            showLoading(false);
     };
@@ -682,28 +710,6 @@ function viewRecord(rowIndex) {
 // *************************************
 // Fungsi untuk mengexport data ke Excel
 // *************************************
-function BACKUP_exportToExcel() {
-    //const table = document.querySelector(".table-container table");
-    const table = document.querySelector(".table-box table");
-    let csv = [];
-    for (const row of table.rows) {
-        let rowData = [];
-        // Ambil semua sel kecuali sel terakhir (Aksi)
-        for (let i = 0; i < row.cells.length - 1; i++) {
-            rowData.push('"' + row.cells[i].innerText.replace(/"/g, '""') + '"');
-        }
-        csv.push(rowData.join(','));
-    }
-    const csvContent = "data:text/csv;charset=utf-8," + csv.join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link       = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "DataSurvey.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
 function exportToExcel() {
     const table = document.querySelector(".table-box table");
     let csv = [];
@@ -726,8 +732,8 @@ function exportToExcel() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    showPesan('success', " BERHASIL : mengekspor data");
 }
-
 
 // *****************************
 // Format penanggalan Indonesia
@@ -790,6 +796,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// *****************************************
+// Pesan Notifikasi untuk di Form Tabel User
+// *****************************************
+// showPesan('success', " SUKSES : " + response.message);
+// showPesan('error', " ERROR : " + response.message);
+// showPesan('warning', " PERHATIAN : " + response.message);
+
+function showPesan(type, message, duration = 3000) {
+  const box      = document.getElementById('pesanNotification');
+  const icon     = document.getElementById('pesanNotifIcon');
+  const text     = document.getElementById('pesanNotifText');
+
+  // Reset class
+  box.className  = 'notification-message';
+  icon.className = 'pesan-notif-icon';
+
+  if (type === 'error') {
+    box.classList.add('notification-error');
+    icon.classList.add('fas', 'fa-times-circle');
+  } else if (type === 'success') {
+    box.classList.add('notification-success');
+    icon.classList.add('fas', 'fa-check-circle');
+  } else if (type === 'warning') {
+    box.classList.add('notification-warning');
+    icon.classList.add('fas', 'fa-exclamation-circle');
+  }
+  text.textContent  = message;
+  box.style.display = 'flex';
+  setTimeout(() => {box.style.display = 'none';}, duration);
+}
 
 </script>
 </body>
