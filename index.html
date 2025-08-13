@@ -113,6 +113,30 @@ body {
     border-top-right-radius: var(--bs-card-border-radius);
 }
 
+/* About Form Overlay */
+.about-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  display: none; /* Hidden by default */
+}
+.about-form {
+  width: 100%;
+  max-width: 350px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
 /* --- Tampilan Mobile (Vertikal) --- */
 @media (max-width: 991.98px) {
   .btn-custom, .btn-kirim { margin-bottom: 0.1rem; }
@@ -469,6 +493,19 @@ body {
   </div>
 </div>
 
+<!-- About Overlay -->
+<div class="about-overlay" id="aboutOverlay">
+  <div class="about-form">
+    <h5 class="mb-2">Aplikasi WETools Versi 5.0</h5>
+    <br>Copyright © 2025 <a href="https://www.beratidealku.com" class="text-black">www.beratidealku.com</a>
+    <br>Allright Reserved
+    <br>Wellness Evaluation Tools
+    <div class="d-grid mt-4">
+      <button id="btnCloseAbout" class="btn btn-primary">OK</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -476,6 +513,34 @@ body {
 //***********  Deklarasi variabel global ****************
 const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzeWmQxlUqRVU3_W2di5Pb7V4gyUYmwWZ63EPl9BYUQ2TdX1wejirrECeW7wHSxrd0/exec';
 // ******************************************************
+
+// ***************
+// Show About form
+// ****************
+function showAbout() {
+  document.getElementById('aboutOverlay').style.display = 'flex';
+}
+
+// ****************
+// Hide About form
+// ****************
+function hideAbout() {
+  document.getElementById('aboutOverlay').style.display = 'none';
+}
+
+// ***************************
+// Event untuk tampilan About
+// ***************************
+document.addEventListener('DOMContentLoaded', function () {
+  // Event listener untuk tombol About
+  document.querySelector('a[href="#about"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    showAbout();
+  });
+  
+  // Event listener untuk tombol Close About
+  document.getElementById('btnCloseAbout').addEventListener('click', hideAbout);
+});
 
 // ***********************
 // Untuk navigasi halaman
