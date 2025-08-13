@@ -163,7 +163,7 @@
     <div class="container mt-2"> 
         <!-- Kotak Pesan Follow Up (Awalnya Tersembunyi) -->
         <!-- <div class="card mb-3" id="followUpMessageBox" style="display: none;"> -->
-        <div class="card mb-3">
+        <div class="card mb-3" style="display: none;">
             <div class="card-body">
                 <label for="waMessage" class="form-label">
                     <strong>Tulis Pesan Follow Up Anda:</strong>
@@ -316,7 +316,7 @@ const cancelFollowUpButton = document.getElementById('cancelFollowUpButton');
 const sendWaButton         = document.getElementById('sendWaButton');
 const normalToolbar        = document.getElementById('normalToolbar');
 const followUpToolbar      = document.getElementById('followUpToolbar');
-//onst followUpMessageBox   = document.getElementById('followUpMessageBox');
+const followUpMessageBox   = document.getElementById('followUpMessageBox');
     
 // Daftar Semua Event Listener  
 document.getElementById('filterButton').addEventListener('click', loadTableData);
@@ -335,7 +335,7 @@ document.getElementById('startFollowUpButton').addEventListener('click', () => {
     document.getElementById('filterButton').disabled = true;
     // Menampilkan Toolbar Normal dan MessageBox
     normalToolbar.classList.add('sembunyikan');
-    //followUpMessageBox.style.display = 'block'; 
+    followUpMessageBox.style.display = 'block'; 
     // Menyembunyikan Toolbar Followup dan checkbox
     followUpToolbar.classList.remove('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.remove('d-none'));
@@ -352,7 +352,7 @@ document.getElementById('cancelFollowUpButton').addEventListener('click', () => 
     document.getElementById('filterButton').disabled = false;
     // Menyembunyikan Toolbar Normal dan MessageBox
     normalToolbar.classList.remove('sembunyikan');
-    //followUpMessageBox.style.display = 'none';
+    followUpMessageBox.style.display = 'none';
     // Menampilkan Toolbar Followup dan checkbox
     followUpToolbar.classList.add('sembunyikan');
     document.querySelectorAll('.rowCheckbox').forEach(cb => cb.classList.add('d-none'));
