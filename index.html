@@ -619,17 +619,40 @@ function validatePage1() {
         //return showMessage(1, "Semua data wajib diisi.", "error");
         return showPesan('warning', " PERHATIAN : Semua data wajib diisi.");
     }
+    // Cek validasi nama
     if (document.getElementById("mNama").value.length < 3) 
       // return showMessage(1, "Nama harus minimal 3 karakter.", "error");
       return showPesan('warning', " PERHATIAN : Nama harus minimal 3 karakter");
+    
+    // Cek validasi nomor hp
     if (!/^[0-9]{10,14}$/.test(document.getElementById("mNomorHp").value)) 
       //return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
       return showPesan('warning', " PERHATIAN : Nomor HP harus 10-14 digit angka.");
 
+    // Cek validasi email
     const email = document.getElementById("mEmail").value;
     if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
       //return showMessage(1, "Format email salah.", "error");
       return showPesan('warning', " PERHATIAN : Format email salah");
+   
+    // Cek validasi umur
+    const umur = parseInt(document.getElementById("mUmur").value, 10);
+    if (!/^\d{2}$/.test(umur) || umur < 18 || umur > 80) {
+      return showPesan('warning', "PERHATIAN: Umur harus 2 digit, (18–80 tahun)");
+    }
+
+    // Cek Berat Badan
+    const beratBadan = parseInt(document.getElementById("mBeratBadan").value, 10);
+    if (!/^\d{2,3}$/.test(beratBadan) || beratBadan < 40 || beratBadan > 150) {
+      return showPesan('warning', "PERHATIAN: Berat badan harus 2-3 digit, (40–150 kg)");
+    }
+
+    // Cek Tinggi Badan
+    const tinggiBadan = parseInt(document.getElementById("mTinggiBadan").value, 10);
+    if (!/^\d{2,3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) {
+      return showPesan('warning', "PERHATIAN: Tinggi badan harus 2-3 digit, (100–190 cm)");
+    }
+
     navigate(1, 2);
 }
 
