@@ -20,9 +20,6 @@ Fitur Aplikasi:
 - Penambahan Inputan untuk Data Sponsor/Pengundang
 - Hasil Survey TIDAK ditampilkan ke layar
 - Tampilan lebih Responsive 
-- Form Dashboard Admin : Lihat, Edit dan Hapus
-- Tambah Fiture Kirim WA Follow UP : Isi Pesan, Pilih Record untuk kirim WA
-- Tambah Fiture Emoticon untuk kirim pesan
 ------------------------------------------------------------------->
 <!DOCTYPE html>
 <html lang="id">
@@ -58,10 +55,27 @@ body {
 .progress-bar { background-color: #0b5ed7; }
 .form-icon { margin-right: 10px; }
 
+
+/* Notifikasi Message Box */
+.notification-message {
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  display: none;
+  align-items: center;
+  gap: 10px; /* agar icon dan teks tidak dempet */
+}
+.pesan-notif-icon {font-size: 18px;}
+.notification-error { background-color: #d9534f; color: white; }
+.notification-success { background-color: #0275d8; color: white; }
+.notification-warning { background-color: #f0ad4e; color: black; }
+
 /* Style message box */
-.message-box { padding: 10px; border-radius: 5px; font-size: 0.95rem; margin-top: 1rem; }
+/* .message-box { padding: 10px; border-radius: 5px; font-size: 0.95rem; margin-top: 1rem; }
 .message-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
 .message-success { background-color: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
+*/
 
 /* Style button */
 .btn-custom { background-color: #002266; color: white; width: 100%; margin-bottom: 0.5rem; }
@@ -303,14 +317,19 @@ body {
                 </div>
               </div>
               
+              <!-- Pesan notifikasi -->
+              <div id="pesanNotification" class="notification-message">
+                  <i id="pesanNotifIcon" class="pesan-notif-icon"></i><span id="pesanNotifText"></span>
+              </div>
+
               <!-- Navigasi Hamalan1 -->
               <div id="formMessage1" class="mt-3"></div>
               <div class="d-flex flex-column flex-md-row justify-content-center gap-2 mt-2">
                 <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="resetForm()">
-                  <i class="fas fa-rotate-left me-2"></i>Reset
+                  <i class="fas fa-rotate-left me-2"></i> Reset
                 </button>
                 <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="validatePage1()">
-                  <i class="fas fa-arrow-right me-2"></i>Berikutnya
+                  <i class="fas fa-arrow-right me-2"></i> Berikutnya
                 </button>
               </div>
             </div>
@@ -457,14 +476,19 @@ body {
                   <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
               </div>
 
+              <!-- Pesan notifikasi -->
+              <div id="pesanNotification" class="notification-message">
+                  <i id="pesanNotifIcon" class="pesan-notif-icon"></i><span id="pesanNotifText"></span>
+              </div>
+
               <!-- Navigasi Halaman2 -->
               <div id="formMessage2" class="mt-3"></div>
               <div class="d-flex flex-column flex-md-row justify-content-center gap-2 mt-2">
                 <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="navigate(2, 1)">
-                  <i class="fas fa-arrow-left me-2"></i>Sebelumnya
+                  <i class="fas fa-arrow-left me-2"></i> Sebelumnya
                 </button>
                 <button type="button" class="btn btn-primary btn-sm" style="width: 100%;" onclick="validatePage2()">
-                  <i class="fas fa-paper-plane me-2"></i>Submit
+                  <i class="fas fa-paper-plane me-2"></i> Submit
                 </button>
               </div>
             </div>
@@ -575,7 +599,8 @@ function updateProgressBar(page) {
 // **********************
 function showMessage(page, text, type) {
     const msgBoxId = (page === 3) ? "hasilAnalisa" : "formMessage" + page;
-    const msgBox = document.getElementById(msgBoxId);
+    const msgBox   = document.getElementById(msgBoxId);
+
     if (msgBox) {
         msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
         if (page === 3) msgBox.style.display = 'block';
@@ -590,12 +615,21 @@ function validatePage1() {
     document.getElementById("formMessage1").innerHTML = "";
     const fields = ["mNama", "mNomorHp", "mUmur", "mBeratBadan", "mTinggiBadan", "mJenisKelamin", "mLingkarPerut", "mAktivitasFisik"];
     for (const id of fields) {
-        if (!document.getElementById(id).value) return showMessage(1, "Semua data wajib diisi.", "error");
+        if (!document.getElementById(id).value) 
+        //return showMessage(1, "Semua data wajib diisi.", "error");
+        return showPesan('warning', " PERHATIAN : Semua data wajib diisi.");
     }
-    if (document.getElementById("mNama").value.length < 3) return showMessage(1, "Nama harus minimal 3 karakter.", "error");
-    if (!/^[0-9]{10,14}$/.test(document.getElementById("mNomorHp").value)) return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
+    if (document.getElementById("mNama").value.length < 3) 
+      // return showMessage(1, "Nama harus minimal 3 karakter.", "error");
+      return showPesan('warning', " PERHATIAN : Nama harus minimal 3 karakter");
+    if (!/^[0-9]{10,14}$/.test(document.getElementById("mNomorHp").value)) 
+      //return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
+      return showPesan('warning', " PERHATIAN : Nomor HP harus 10-14 digit angka.");
+
     const email = document.getElementById("mEmail").value;
-    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) return showMessage(1, "Format email salah.", "error");
+    if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
+      //return showMessage(1, "Format email salah.", "error");
+      return showPesan('warning', " PERHATIAN : Format email salah");
     navigate(1, 2);
 }
 
@@ -608,7 +642,8 @@ function validatePage2() {
     for (const name of questions) {
         if (!document.querySelector(`input[name="${name}"]:checked`)) {
             const label = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label').textContent;
-            return showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
+            // return showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
+            return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
         }
     }
     submitForm();
@@ -664,7 +699,8 @@ function submitForm() {
 
             script.onerror = () => {
                 document.getElementById("loadingSpinner").style.display = "none";
-                showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet atau URL Script.", "error");
+                // showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet atau URL Script.", "error");
+                showPesan('error', " ERROR : Gagal terhubung ke server. Periksa koneksi internet atau URL Script");
                 delete window[callbackName];
             };
             
@@ -683,10 +719,12 @@ function submitForm() {
                         document.getElementById("tampilCTA").style.display = "block";
                         window.dataTerakhir = response.data;
                     } else {
-                        showMessage(3, `Error dari server: ${response.message || 'Format respons tidak dikenal.'}`, 'error');
+                        //showMessage(3, `Error dari server: ${response.message || 'Format respons tidak dikenal.'}`, 'error');
+                        showPesan('error', ` ERROR : dari server :${error.message || `Format respons tidak dikenal`}`);
                     }
                 } catch (e) {
-                    showMessage(3, `Terjadi error saat menampilkan hasil: ${e.message}`, 'error');
+                    //showMessage(3, `Terjadi error saat menampilkan hasil: ${e.message}`, 'error');
+                    showPesan('error', ` ERROR : Terjadi saat menampilkan hasil: ${error.message}`);
                 } finally {
                     if (script.parentNode) script.parentNode.removeChild(script);
                     delete window[callbackName];
@@ -697,7 +735,8 @@ function submitForm() {
 
     } catch (error) {
         document.getElementById("loadingSpinner").style.display = "none";
-        showMessage(3, `Terjadi kesalahan pada form: ${error.message}`, 'error');
+        //showMessage(3, `Terjadi kesalahan pada form: ${error.message}`, 'error');
+        showPesan('error', ` ERROR : Terjadi kesalahan pada form :${error.message}`);
     }
 }
 
@@ -788,8 +827,8 @@ function handleKirimSurvey() {
   btnKirim.disabled = true;
 
   if (!window.dataTerakhir) {
-    //alert("Data survey tidak ditemukan. Silakan submit ulang.");
-    showMessage(3, "Data survey tidak ditemukan. Silakan submit ulang", "error");
+    showPesan('error', " ERROR : Data survey tidak ditemukan. Silahkan submit ulang");
+    //showMessage(3, "Data survey tidak ditemukan. Silakan submit ulang", "error");
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
     return;
@@ -807,13 +846,15 @@ function handleKirimSurvey() {
   .then(() => {
     setTimeout(() => {
     // Data berhasil terkirim
-    showMessage(3, "Hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
+    showPesan('success', " SUKSES : Hasil survey telah terkirim! Silahkan periksa WA/Email Anda dalam beberapa saat");
+    //showMessage(3, "Hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
     resetForm();
     }, 3000);
   })
   .catch(error => {
     console.error("Error:", error);
-    showMessage(3, "Gagal mengirim permintaan: " + error.message, "error")
+    showPesan('error', " ERROR : Gagal mengirim permintaan" + error.message);
+    //showMessage(3, "Gagal mengirim permintaan: " + error.message, "error")
   })
   .finally(() => {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
@@ -833,8 +874,41 @@ function resetForm() {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>KIRIM HASIL SURVEY';
     btnKirim.disabled = false;
     window.dataTerakhir = null;
-    showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
+    showPesan('success', " SUKSES : Form berhasil direset. Silakan isi kembali.");
+    //showMessage(1, "Form berhasil direset. Silakan isi kembali.", "success");
 }
+
+// *****************************************
+// Pesan Notifikasi untuk di Form Tabel User
+// *****************************************
+// showPesan('success', " SUKSES : " + response.message);
+// showPesan('error', " ERROR : " + response.message);
+// showPesan('warning', " PERHATIAN : " + response.message);
+
+function showPesan(type, message, duration = 3000) {
+  const box      = document.getElementById('pesanNotification');
+  const icon     = document.getElementById('pesanNotifIcon');
+  const text     = document.getElementById('pesanNotifText');
+
+  // Reset class
+  box.className  = 'notification-message';
+  icon.className = 'pesan-notif-icon';
+
+  if (type === 'error') {
+    box.classList.add('notification-error');
+    icon.classList.add('fas', 'fa-times-circle');
+  } else if (type === 'success') {
+    box.classList.add('notification-success');
+    icon.classList.add('fas', 'fa-check-circle');
+  } else if (type === 'warning') {
+    box.classList.add('notification-warning');
+    icon.classList.add('fas', 'fa-exclamation-circle');
+  }
+  text.textContent  = message;
+  box.style.display = 'flex';
+  setTimeout(() => {box.style.display = 'none';}, duration);
+}
+
 </script>
 </body>
 </html>
