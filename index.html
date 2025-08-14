@@ -55,27 +55,22 @@ body {
 .progress-bar { background-color: #0b5ed7; }
 .form-icon { margin-right: 10px; }
 
-
 /* Notifikasi Message Box */
 .notification-message {
-  padding: 8px 12px;
+  padding: 10px 15px;
   border-radius: 4px;
   margin-bottom: 12px;
   font-size: 14px;
   display: none;
   align-items: center;
-  gap: 10px; /* agar icon dan teks tidak dempet */
+  gap: 10px;    /* agar icon dan teks tidak dempet */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
 }
 .pesan-notif-icon {font-size: 18px;}
 .notification-error { background-color: #d9534f; color: white; }
 .notification-success { background-color: #0275d8; color: white; }
 .notification-warning { background-color: #f0ad4e; color: black; }
-
-/* Style message box */
-/* .message-box { padding: 10px; border-radius: 5px; font-size: 0.95rem; margin-top: 1rem; }
-.message-error { background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
-.message-success { background-color: #dbeafe; color: #1e3a8a; border: 1px solid #93c5fd; }
-*/
 
 /* Style button */
 .btn-custom { background-color: #002266; color: white; width: 100%; margin-bottom: 0.5rem; }
@@ -317,11 +312,10 @@ body {
                 </div>
               </div>
               
-              <!-- Pesan notifikasi -->
-              <div id="pesanNotification" class="notification-message" style="margin-top:5px">
-                  <i id="pesanNotifIcon" class="pesan-notif-icon"></i><span id="pesanNotifText"></span>
+              <!-- Pesan notifikasi Halaman 1 -->
+              <div id="pesanNotification1" class="notification-message" style="margin-bottom:10px; width:100%;">
+                  <i id="pesanNotifIcon1" class="pesan-notif-icon"></i><span id="pesanNotifText1"></span>
               </div>
-
               <!-- Navigasi Hamalan1 -->
               <div id="formMessage1" class="mt-3"></div>
               <div class="d-flex flex-column flex-md-row justify-content-center gap-2 mt-2">
@@ -476,11 +470,11 @@ body {
                   <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
               </div>
 
-              <!-- Pesan notifikasi -->
-              <div id="pesanNotification" class="notification-message" style="margin-top:5px">
-                  <i id="pesanNotifIcon" class="pesan-notif-icon"></i><span id="pesanNotifText"></span>
+              <!-- Pesan notifikasi Halaman 2 -->
+              <div id="pesanNotification2" class="notification-message" style="margin-bottom:10px; width:100%;">
+                <i id="pesanNotifIcon2" class="pesan-notif-icon"></i><span id="pesanNotifText2"></span>
               </div>
-
+             
               <!-- Navigasi Halaman2 -->
               <div id="formMessage2" class="mt-3"></div>
               <div class="d-flex flex-column flex-md-row justify-content-center gap-2 mt-2">
@@ -578,8 +572,22 @@ document.addEventListener('DOMContentLoaded', function () {
 // ***********************
 // Untuk navigasi halaman
 // ***********************
-function navigate(from, to) {
+function BACKUP_navigate(from, to) {
     if (from !== null) document.getElementById("page" + from).classList.remove("active");
+    document.getElementById("page" + to).classList.add("active");
+    updateProgressBar(to);
+    const msgBox = document.getElementById("formMessage" + to);
+    if (msgBox) msgBox.innerHTML = "";
+}
+
+function navigate(from, to) {
+    if (from !== null) {
+      document.getElementById("page" + from).classList.remove("active");
+      // Sembunyikan pesan notifikasi di halaman sebelumnya
+      const prevNotif = document.getElementById(`pesanNotification${from}`);
+      if (prevNotif) prevNotif.style.display = 'none';
+    }
+    
     document.getElementById("page" + to).classList.add("active");
     updateProgressBar(to);
     const msgBox = document.getElementById("formMessage" + to);
@@ -672,37 +680,16 @@ function BACKUP_ValidatePage2() {
 function validatePage2() {
     document.getElementById("formMessage2").innerHTML = "";
     const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-    
-    console.log("Mulai validasi halaman 2");
-    
-    // Pastikan elemen notifikasi terlihat
-    const box = document.getElementById('pesanNotification');
-    if (box) {
-      box.style.display = 'none'; // Reset dulu
-    }
-    
     for (const name of questions) {
-        const inputElement = document.querySelector(`input[name="${name}"]:checked`);
-        console.log(`Validasi ${name}: ${inputElement ? 'Terisi' : 'Kosong'}`);
-        
-        if (!inputElement) {
-            try {
-                const labelElement = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label');
-                const label = labelElement ? labelElement.textContent : `Pertanyaan ${name}`;
-                console.log(`Validasi gagal: ${label}`);
-                return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: ${label}`);
-            } catch (error) {
-                console.error(`Error saat validasi ${name}:`, error);
-                return showPesan('warning', ` PERHATIAN : Terjadi kesalahan saat validasi ${name}:`);
-            }
+        if (!document.querySelector(`input[name="${name}"]:checked`)) {
+            const label = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label').textContent;
+            console.log(`Validasi gagal: ${label}`);
+            showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
+            return false; // Tambahkan return false untuk menghentikan proses
         }
-     }
-    
-    console.log("Validasi berhasil, mengirim form");
+    }
     submitForm();
 }
-
-
 
 // ***********************************
 // Untuk mengirim data ke google sheet
@@ -940,7 +927,7 @@ function resetForm() {
 // showPesan('error', " ERROR : " + response.message);
 // showPesan('warning', " PERHATIAN : " + response.message);
 
-function showPesan(type, message, duration = 3000) {
+function BACKUP_showPesan(type, message, duration = 3000) {
   const box      = document.getElementById('pesanNotification');
   const icon     = document.getElementById('pesanNotifIcon');
   const text     = document.getElementById('pesanNotifText');
@@ -962,6 +949,53 @@ function showPesan(type, message, duration = 3000) {
   text.textContent  = message;
   box.style.display = 'flex';
   setTimeout(() => {box.style.display = 'none';}, duration);
+}
+
+function showPesan(type, message, duration = 3000) {
+  // Tentukan halaman aktif saat ini
+  let activePage = 1;
+  for (let i = 1; i <= 3; i++) {
+    if (document.getElementById(`page${i}`).classList.contains('active')) {
+      activePage = i;
+      break;
+    }
+  }
+  
+  // Pilih elemen notifikasi berdasarkan halaman aktif
+  const box  = document.getElementById(`pesanNotification${activePage}`);
+  const icon = document.getElementById(`pesanNotifIcon${activePage}`);
+  const text = document.getElementById(`pesanNotifText${activePage}`);
+
+  if (!box || !icon || !text) {
+    console.error("Elemen notifikasi tidak ditemukan!");
+    return;
+  }
+
+  // Reset class
+  box.className  = 'notification-message';
+  icon.className = 'pesan-notif-icon';
+
+  if (type === 'error') {
+    box.classList.add('notification-error');
+    icon.classList.add('fas', 'fa-times-circle');
+  } else if (type === 'success') {
+    box.classList.add('notification-success');
+    icon.classList.add('fas', 'fa-check-circle');
+  } else if (type === 'warning') {
+    box.classList.add('notification-warning');
+    icon.classList.add('fas', 'fa-exclamation-circle');
+  }
+  
+  text.textContent = message;
+  // Pastikan elemen terlihat
+  box.style.display = 'flex';
+  // Scroll ke posisi elemen jika perlu
+  box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Atur timer untuk menyembunyikan pesan
+  clearTimeout(window.notificationTimer); // Hapus timer sebelumnya jika ada
+  window.notificationTimer = setTimeout(() => {
+    box.style.display = 'none';
+  }, duration);
 }
 
 </script>
