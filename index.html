@@ -675,6 +675,12 @@ function validatePage2() {
     
     console.log("Mulai validasi halaman 2");
     
+    // Pastikan elemen notifikasi terlihat
+    const box = document.getElementById('pesanNotification');
+    if (box) {
+      box.style.display = 'none'; // Reset dulu
+    }
+    
     for (const name of questions) {
         const inputElement = document.querySelector(`input[name="${name}"]:checked`);
         console.log(`Validasi ${name}: ${inputElement ? 'Terisi' : 'Kosong'}`);
@@ -695,6 +701,8 @@ function validatePage2() {
     console.log("Validasi berhasil, mengirim form");
     submitForm();
 }
+
+
 
 // ***********************************
 // Untuk mengirim data ke google sheet
