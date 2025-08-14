@@ -684,10 +684,10 @@ function validatePage2() {
                 const labelElement = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label');
                 const label = labelElement ? labelElement.textContent : `Pertanyaan ${name}`;
                 console.log(`Validasi gagal: ${label}`);
-                return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
+                return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: ${label}`);
             } catch (error) {
                 console.error(`Error saat validasi ${name}:`, error);
-                return showPesan('warning', ` PERHATIAN : Terjadi kesalahan saat validasi. Harap jawab semua pertanyaan.`);
+                return showPesan('warning', ` PERHATIAN : Terjadi kesalahan saat validasi ${name}:`);
             }
         }
      }
