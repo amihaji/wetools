@@ -656,7 +656,7 @@ function validatePage1() {
 // *************************
 // Untuk validasi halaman 2
 // *************************
-function validatePage2() {
+function BACKUP_ValidatePage2() {
     document.getElementById("formMessage2").innerHTML = "";
     const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
     for (const name of questions) {
@@ -666,6 +666,33 @@ function validatePage2() {
             return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
         }
     }
+    submitForm();
+}
+
+function validatePage2() {
+    document.getElementById("formMessage2").innerHTML = "";
+    const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
+    
+    console.log("Mulai validasi halaman 2");
+    
+    for (const name of questions) {
+        const inputElement = document.querySelector(`input[name="${name}"]:checked`);
+        console.log(`Validasi ${name}: ${inputElement ? 'Terisi' : 'Kosong'}`);
+        
+        if (!inputElement) {
+            try {
+                const labelElement = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label');
+                const label = labelElement ? labelElement.textContent : `Pertanyaan ${name}`;
+                console.log(`Validasi gagal: ${label}`);
+                return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
+            } catch (error) {
+                console.error(`Error saat validasi ${name}:`, error);
+                return showPesan('warning', ` PERHATIAN : Terjadi kesalahan saat validasi. Harap jawab semua pertanyaan.`);
+            }
+        }
+     }
+    
+    console.log("Validasi berhasil, mengirim form");
     submitForm();
 }
 
