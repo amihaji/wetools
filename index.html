@@ -637,22 +637,20 @@ function validatePage1() {
    
     // Cek validasi umur
     const umur = parseInt(document.getElementById("mUmur").value, 10);
-    if (!/^\d{2}$/.test(umur) || umur < 18 || umur > 80) {
+    if (!/^\d{2}$/.test(umur) || umur < 18 || umur > 80) 
       return showPesan('warning', "PERHATIAN: Umur harus 2 digit, (18–80 tahun)");
-    }
+    
 
     // Cek Berat Badan
     const beratBadan = parseInt(document.getElementById("mBeratBadan").value, 10);
-    if (!/^\d{2,3}$/.test(beratBadan) || beratBadan < 40 || beratBadan > 150) {
+    if (!/^\d{2,3}$/.test(beratBadan) || beratBadan < 40 || beratBadan > 150) 
       return showPesan('warning', "PERHATIAN: Berat badan harus 2-3 digit, (40–150 kg)");
-    }
-
+    
     // Cek Tinggi Badan
     const tinggiBadan = parseInt(document.getElementById("mTinggiBadan").value, 10);
-    if (!/^\d{2,3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) {
+    if (!/^\d{2,3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) 
       return showPesan('warning', "PERHATIAN: Tinggi badan harus 2-3 digit, (100–190 cm)");
-    }
-
+    
     navigate(1, 2);
 }
 
