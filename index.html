@@ -64,8 +64,8 @@ body {
   display: none;
   align-items: center;
   gap: 10px;    /* agar icon dan teks tidak dempet */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  width: 100%;
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%; */
 }
 .pesan-notif-icon {font-size: 18px;}
 .notification-error { background-color: #d9534f; color: white; }
@@ -184,7 +184,7 @@ body {
           <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f1f1f1;">
             <div class="container-fluid">
               
-              <!-- BLogo dan Nama Brand -->
+              <!-- Logo dan Nama Brand -->
               <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="images/logo-WETools.png" alt="Logo" width="80" class="me-2">
                 <div class="d-none d-md-block">
@@ -198,7 +198,7 @@ body {
                 <span class="navbar-toggler-icon"></span>
               </button>
 
-              <!-- Bagian 2 & 3: Menu dan Social Media -->
+              <!-- Bagian Menu dan Social Media -->
               <div class="collapse navbar-collapse" id="mainNavbar">
                 <!-- Social Media Icons -->
                 <ul class="navbar-nav mx-auto">
@@ -313,7 +313,7 @@ body {
               </div>
               
               <!-- Pesan notifikasi Halaman 1 -->
-              <div id="pesanNotification1" class="notification-message" style="margin-bottom:10px; width:100%;">
+              <div id="pesanNotification1" class="notification-message" style="margin-top:5px; width:100%;">
                   <i id="pesanNotifIcon1" class="pesan-notif-icon"></i><span id="pesanNotifText1"></span>
               </div>
               <!-- Navigasi Hamalan1 -->
@@ -471,7 +471,7 @@ body {
               </div>
 
               <!-- Pesan notifikasi Halaman 2 -->
-              <div id="pesanNotification2" class="notification-message" style="margin-bottom:10px; width:100%;">
+              <div id="pesanNotification2" class="notification-message" style="margin-top:5px; width:100%;">
                 <i id="pesanNotifIcon2" class="pesan-notif-icon"></i><span id="pesanNotifText2"></span>
               </div>
              
@@ -602,20 +602,6 @@ function updateProgressBar(page) {
     document.getElementById("progressBar").style.width = percent + "%";
 }
 
-// **********************
-// Untuk tampilkan pesan
-// **********************
-function BACKUP_showMessage(page, text, type) {
-    const msgBoxId = (page === 3) ? "hasilAnalisa" : "formMessage" + page;
-    const msgBox   = document.getElementById(msgBoxId);
-
-    if (msgBox) {
-        msgBox.innerHTML = `<div class="message-box ${type === 'error' ? 'message-error' : 'message-success'}">${text}</div>`;
-        if (page === 3) msgBox.style.display = 'block';
-        msgBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
 // *************************
 // Untuk validasi halaman 1
 // *************************
@@ -629,18 +615,15 @@ function validatePage1() {
     }
     // Cek validasi nama
     if (document.getElementById("mNama").value.length < 3) 
-      // return showMessage(1, "Nama harus minimal 3 karakter.", "error");
       return showPesan('warning', " PERHATIAN : Nama harus minimal 3 karakter");
     
     // Cek validasi nomor hp
     if (!/^[0-9]{10,14}$/.test(document.getElementById("mNomorHp").value)) 
-      //return showMessage(1, "Nomor HP harus 10-14 digit angka.", "error");
       return showPesan('warning', " PERHATIAN : Nomor HP harus 10-14 digit angka.");
 
     // Cek validasi email
     const email = document.getElementById("mEmail").value;
     if (email && !/^[^@]+@[^@]+\.[^@]+$/.test(email)) 
-      //return showMessage(1, "Format email salah.", "error");
       return showPesan('warning', " PERHATIAN : Format email salah");
    
     // Cek validasi umur
@@ -648,12 +631,12 @@ function validatePage1() {
     if (!/^\d{2}$/.test(umur) || umur < 18 || umur > 80) 
       return showPesan('warning', "PERHATIAN: Umur harus 2 digit, (18–80 tahun)");
   
-    // Cek Berat Badan
+    // Cek validasi Berat Badan
     const beratBadan = parseInt(document.getElementById("mBeratBadan").value, 10);
     if (!/^\d{2,3}$/.test(beratBadan) || beratBadan < 40 || beratBadan > 150) 
       return showPesan('warning', "PERHATIAN: Berat badan harus 2-3 digit, (40–150 kg)");
     
-    // Cek Tinggi Badan
+    // Cek validasi Tinggi Badan
     const tinggiBadan = parseInt(document.getElementById("mTinggiBadan").value, 10);
     if (!/^\d{3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) 
       return showPesan('warning', "PERHATIAN: Tinggi badan harus 3 digit, (100–190 cm)");
@@ -664,19 +647,6 @@ function validatePage1() {
 // *************************
 // Untuk validasi halaman 2
 // *************************
-function BACKUP_ValidatePage2() {
-    document.getElementById("formMessage2").innerHTML = "";
-    const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
-    for (const name of questions) {
-        if (!document.querySelector(`input[name="${name}"]:checked`)) {
-            const label = document.querySelector(`input[name="${name}"]`).closest('div.col-md-12').querySelector('.form-label').textContent;
-            // return showMessage(2, `Harap jawab pertanyaan: "${label}"`, "error");
-            return showPesan('warning', ` PERHATIAN : Harap jawab pertanyaan: "${label}"`);
-        }
-    }
-    submitForm();
-}
-
 function validatePage2() {
     document.getElementById("formMessage2").innerHTML = "";
     const questions = ["mSarapan","mMenu","mNgantuk","mLelah","mLambung","mLapar","mAir","mKonsumsi","mBab","mKeram","mTidur","mOlahraga","mBak","mKerutan","mSulit","mBBNaik","mRokok","mAlkohol"];
@@ -741,7 +711,6 @@ function submitForm() {
 
             script.onerror = () => {
                 document.getElementById("loadingSpinner").style.display = "none";
-                // showMessage(3, "Gagal terhubung ke server. Periksa koneksi internet atau URL Script.", "error");
                 showPesan('error', " ERROR : Gagal terhubung ke server. Periksa koneksi internet atau URL Script");
                 delete window[callbackName];
             };
@@ -761,11 +730,9 @@ function submitForm() {
                         document.getElementById("tampilCTA").style.display = "block";
                         window.dataTerakhir = response.data;
                     } else {
-                        //showMessage(3, `Error dari server: ${response.message || 'Format respons tidak dikenal.'}`, 'error');
                         showPesan('error', ` ERROR : dari server ${error.message || 'Format respons tidak dikenal'}`);
                     }
                 } catch (e) {
-                    //showMessage(3, `Terjadi error saat menampilkan hasil: ${e.message}`, 'error');
                     showPesan('error', ` ERROR : Terjadi saat menampilkan hasil: ${error.message}`);
                 } finally {
                     if (script.parentNode) script.parentNode.removeChild(script);
@@ -777,7 +744,6 @@ function submitForm() {
 
     } catch (error) {
         document.getElementById("loadingSpinner").style.display = "none";
-        //showMessage(3, `Terjadi kesalahan pada form: ${error.message}`, 'error');
         showPesan('error', ` ERROR : Terjadi kesalahan pada form :${error.message}`);
     }
 }
@@ -889,14 +855,12 @@ function handleKirimSurvey() {
     setTimeout(() => {
     // Data berhasil terkirim
     showPesan('success', " SUKSES : Hasil survey telah terkirim! Silahkan periksa WA/Email Anda dalam beberapa saat");
-    //showMessage(3, "Hasil survey telah dikirim! Silakan periksa WA/Email Anda dalam beberapa saat.", "success");
     resetForm();
     }, 3000);
   })
   .catch(error => {
     console.error("Error:", error);
     showPesan('error', " ERROR : Gagal mengirim permintaan" + error.message);
-    //showMessage(3, "Gagal mengirim permintaan: " + error.message, "error")
   })
   .finally(() => {
     btnKirim.innerHTML = '<i class="fas fa-share-square me-2"></i>TERKIRIM';
@@ -923,34 +887,6 @@ function resetForm() {
 // *****************************************
 // Pesan Notifikasi untuk di Form Tabel User
 // *****************************************
-// showPesan('success', " SUKSES : " + response.message);
-// showPesan('error', " ERROR : " + response.message);
-// showPesan('warning', " PERHATIAN : " + response.message);
-
-function BACKUP_showPesan(type, message, duration = 3000) {
-  const box      = document.getElementById('pesanNotification');
-  const icon     = document.getElementById('pesanNotifIcon');
-  const text     = document.getElementById('pesanNotifText');
-
-  // Reset class
-  box.className  = 'notification-message';
-  icon.className = 'pesan-notif-icon';
-
-  if (type === 'error') {
-    box.classList.add('notification-error');
-    icon.classList.add('fas', 'fa-times-circle');
-  } else if (type === 'success') {
-    box.classList.add('notification-success');
-    icon.classList.add('fas', 'fa-check-circle');
-  } else if (type === 'warning') {
-    box.classList.add('notification-warning');
-    icon.classList.add('fas', 'fa-exclamation-circle');
-  }
-  text.textContent  = message;
-  box.style.display = 'flex';
-  setTimeout(() => {box.style.display = 'none';}, duration);
-}
-
 function showPesan(type, message, duration = 3000) {
   // Tentukan halaman aktif saat ini
   let activePage = 1;
