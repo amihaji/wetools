@@ -597,7 +597,7 @@ function updateProgressBar(page) {
 // **********************
 // Untuk tampilkan pesan
 // **********************
-function showMessage(page, text, type) {
+function BACKUP_showMessage(page, text, type) {
     const msgBoxId = (page === 3) ? "hasilAnalisa" : "formMessage" + page;
     const msgBox   = document.getElementById(msgBoxId);
 
@@ -639,8 +639,7 @@ function validatePage1() {
     const umur = parseInt(document.getElementById("mUmur").value, 10);
     if (!/^\d{2}$/.test(umur) || umur < 18 || umur > 80) 
       return showPesan('warning', "PERHATIAN: Umur harus 2 digit, (18–80 tahun)");
-    
-
+  
     // Cek Berat Badan
     const beratBadan = parseInt(document.getElementById("mBeratBadan").value, 10);
     if (!/^\d{2,3}$/.test(beratBadan) || beratBadan < 40 || beratBadan > 150) 
@@ -648,8 +647,8 @@ function validatePage1() {
     
     // Cek Tinggi Badan
     const tinggiBadan = parseInt(document.getElementById("mTinggiBadan").value, 10);
-    if (!/^\d{2,3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) 
-      return showPesan('warning', "PERHATIAN: Tinggi badan harus 2-3 digit, (100–190 cm)");
+    if (!/^\d{3}$/.test(tinggiBadan) || tinggiBadan < 100 || tinggiBadan > 190) 
+      return showPesan('warning', "PERHATIAN: Tinggi badan harus 3 digit, (100–190 cm)");
     
     navigate(1, 2);
 }
@@ -741,7 +740,7 @@ function submitForm() {
                         window.dataTerakhir = response.data;
                     } else {
                         //showMessage(3, `Error dari server: ${response.message || 'Format respons tidak dikenal.'}`, 'error');
-                        showPesan('error', ` ERROR : dari server :${error.message || `Format respons tidak dikenal`}`);
+                        showPesan('error', ` ERROR : dari server ${error.message || 'Format respons tidak dikenal'}`);
                     }
                 } catch (e) {
                     //showMessage(3, `Terjadi error saat menampilkan hasil: ${e.message}`, 'error');
