@@ -239,42 +239,50 @@ body {
               <h5 class="mb-3"><i class="fas fa-user form-icon"></i> Data Survey (Wajib Isi)</h5>
               <p class="text-muted mb-4">Silahkan memasukkan data, Hasil Evaluasi Kebugaran melalui Whatsapp Anda</p>
               <div class="row g-3">
-                <div class="col-md-12">
-                  <label for="mNama" class="form-label">Nama Lengkap</label>
-                  <input type="text" id="mNama" class="form-control" required oninput="this.value = this.value.toUpperCase().substring(0, 40)">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-user-alt"></i></span>
+                  <input type="text" id="mNama" class="form-control" placeholder="Input nama anda" oninput="this.value = this.value.toUpperCase().substring(0, 40)" maxlength="40" pattern="[A-Za-z ]+" required >
                 </div>
-                <div class="col-md-12">
-                  <label for="mNomorHp" class="form-label">Nomor HP</label>
-                  <input type="tel" id="mNomorHp" class="form-control" required pattern="[0-9]{10,14}">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+                  <input type="tel" id="mNomorHp" class="form-control" placeholder="Input nomor handphone" required pattern="[0-9]{10,14}">
                 </div>
-                <div class="col-md-12">
-                  <label for="mEmail" class="form-label">Email (opsional)</label>
-                  <input type="email" id="mEmail" class="form-control" oninput="this.value = this.value.toLowerCase()">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-envelope-open-text"></i></span>
+                  <input type="email" id="mEmail" class="form-control" placeholder="Input alamat email (optional)" oninput="this.value = this.value.toLowerCase()">
                 </div>
-                <div class="col-md-12">
-                  <label for="mUmur" class="form-label">Umur</label>
-                  <input type="number" id="mUmur" class="form-control" required min="18" max="80">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="far fa-calendar-check"></i></span>
+                  <input type="number" id="mUmur" class="form-control" placeholder="Input usia antara 18-80 tahun" required min="18" max="80">
                 </div>
-                <div class="col-md-12">
-                  <label for="mJenisKelamin" class="form-label">Jenis Kelamin</label>
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
                   <select id="mJenisKelamin" class="form-select" required>
-                    <option value="">Pilih Gender</option>
+                    <option value="">Pilih Gender...</option>
                     <option value="Pria">Pria</option>
                     <option value="Wanita">Wanita</option>
                   </select>
                 </div>
-                <div class="col-md-12">
-                  <label for="mBeratBadan" class="form-label">Berat Badan (kg)</label>
-                  <input type="number" id="mBeratBadan" class="form-control" required min="40" max="150">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-weight"></i></span>
+                  <input type="number" id="mBeratBadan" class="form-control" placeholder="Input berat badan (kg)" min="40" max="150">
                 </div>
-                <div class="col-md-12">
-                  <label for="mTinggiBadan" class="form-label">Tinggi Badan (cm)</label>
-                  <input type="number" id="mTinggiBadan" class="form-control" required min="100" max="190">
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-ruler-vertical"></i></span>
+                  <input type="number" id="mTinggiBadan" class="form-control" placeholder="Input tinggi badan (cm)" min="100" max="190">
                 </div>
-                <div class="col-md-12">
-                  <label for="mLingkarPerut" class="form-label">Lingkar Perut (gunakan ukuran celana)</label>
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-ribbon"></i></span>
                   <select id="mLingkarPerut" class="form-select" required>
-                    <option value="">Pilih Ukuran Celana</option>
+                    <option value="">Pilih lingkar perut gunakan ukuran celana...</option>
                     <option value="68">26 = Lingkar 68 cm</option>
                     <option value="70">27 = Lingkar 70 cm</option>
                     <option value="72">28 = Lingkar 72 cm</option>
@@ -299,10 +307,11 @@ body {
                     <option value="110">47 = Lingkar 110 cm</option>
                   </select>
                 </div>
-                <div class="col-md-12">
-                  <label for="mAktivitasFisik" class="form-label">Aktivitas Fisik</label>
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"><i class="fas fa-dumbbell"></i></span>
                   <select id="mAktivitasFisik" class="form-select" required>
-                    <option value="">Pilih aktifitas yang dijalani</option>
+                    <option value="">Pilih aktifitas yang dijalani...</option>
                     <option value="Sedikit/Tidak Olahraga">Sedikit/Tidak Olahraga</option>
                     <option value="Olahraga ringan 1-3 hari/minggu">Olahraga ringan 1-3 hari/minggu</option>
                     <option value="Olahraga moderat 3-5 hari/minggu">Olahraga moderat 3-5 hari/minggu</option>
