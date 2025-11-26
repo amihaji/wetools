@@ -539,7 +539,7 @@ body {
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyNFVJLYMksBGzy8sDdf1d-gNXjvY1Lr76ORfYIUxT3WeEbgo8pQNEkVXGuRSdkX-g/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzA6ApWqOuMpa7rJvKbxoeKswEpkzc_d-NSC5ajr5JMMuqgavtYQnVWRGZPGy8H5sRL/exec';
 // ******************************************************
 
 // ***************
@@ -573,14 +573,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // ***********************
 // Untuk navigasi halaman
 // ***********************
-function BACKUP_navigate(from, to) {
-    if (from !== null) document.getElementById("page" + from).classList.remove("active");
-    document.getElementById("page" + to).classList.add("active");
-    updateProgressBar(to);
-    const msgBox = document.getElementById("formMessage" + to);
-    if (msgBox) msgBox.innerHTML = "";
-}
-
 function navigate(from, to) {
     if (from !== null) {
       document.getElementById("page" + from).classList.remove("active");
