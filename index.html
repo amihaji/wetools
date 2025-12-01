@@ -548,7 +548,7 @@ body {
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzA6ApWqOuMpa7rJvKbxoeKswEpkzc_d-NSC5ajr5JMMuqgavtYQnVWRGZPGy8H5sRL/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxshOTzkt6VcO5Wu_R8S4aVb70P6O7HOWQsVR2N_GVaO32GjRj9_an45fGdf_sghV87/exec';
 // ******************************************************
 
 // ***************
@@ -814,9 +814,13 @@ function tampilkanHasilEvaluasi(data) {
             <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
             <table class="table table-bordered">
               <tbody>
+
+                <!-- TIDAK DIAKTIFKAN ----
                 <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
                   <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen || "0%"}</strong></td>
                 </tr>
+                ------------------------->
+
                 <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
                   <td style="width:85%;">${data.kesimpulan || "-"}</td>
                 </tr>
