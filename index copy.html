@@ -548,7 +548,7 @@ body {
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwuvhvFvTSNWQ14ZBj5_0XM9_dvy17kAAitqNnLMB8oEc__cGebo9zBt1d5RIckLTk3/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwAYp_KJLInFxXImSrMiEOMOj_yNGFtu7VdI5taqbOnB3syD5fycqSIO6y8f66bvg1t/exec';
 // ******************************************************
 
 // ***************
@@ -811,7 +811,7 @@ function tampilkanHasilEvaluasi(data) {
             </div>
             
             <!-- DATA KESIMPULAN DAN REKOMENDASI -->
-            <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Rekomendasi</h5>
+            <h5 class="mt-4"><i class="fas fa-clipboard-check me-2"></i>Kesimpulan & Rekomendasi</h5>
             <table class="table table-bordered">
               <tbody>
 
@@ -819,15 +819,16 @@ function tampilkanHasilEvaluasi(data) {
                 <tr><th style="background-color:#4d94ff; width:15%;">Skor</th>
                   <td style="width:85%;">Persentase kebugaran anda : <strong>${data.persen || "0%"}</strong></td>
                 </tr>
-                
-                <tr><th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
-                  <td style="width:85%;">${data.kesimpulan || "-"}</td>
-                </tr>
                 ------------------------->
 
                 <tr>
-                  <!-- <th style="background-color:#4d94ff; width:15%;">Rekomendasi</th> -->
-                  <td style="width:100%; background-color:#cccccc;">${data.rekomendasi || "-"}</td>
+                  <th style="background-color:#4d94ff; width:15%;">Kesimpulan </th>
+                  <td style="width:85%;">${data.kesimpulan || "-"}</td>
+                </tr>
+               
+                <tr>
+                  <th style="background-color:#4d94ff; width:15%;">Rekomendasi</th>
+                  <td style="width:85%;">${data.rekomendasi || "-"}</td>
                 </tr>
               </tbody>
             </table>
