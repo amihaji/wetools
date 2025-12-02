@@ -472,11 +472,23 @@ body {
 
               <!-- DATA SPONSOR -->
               <div class="border p-3 rounded bg-light mt-4">
-                <h6><i class="fas fa-user me-2"></i>Data Sponsor (Opsional)</h6>
+                <h6><i class="fas fa-user-friends"></i>Data Sponsor (Opsional)</h6>
+                <!-- 
                 <div class="mb-12"><label class="form-label">Nama Sponsor</label>
                   <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)"></div>
                 <div class="mb-12"><label class="form-label">HP Sponsor</label>
                   <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" pattern="[0-9]{10,14}"></div>
+                -->
+              
+                <div class="input-group mt-2">
+                  <span class="input-group-text"> <i class="fas fa-user-alt"> </i></span>
+                  <input type="text" id="mSponsor" class="form-control" placeholder="Masukkan Nama Sponsor jika ada" oninput="this.value = this.value.toUpperCase().substring(0, 40)" maxlength="40" pattern="[A-Za-z ]" >
+                </div>
+
+                <div class="input-group mt-2">
+                  <span class="input-group-text"> <i class="fab fa-whatsapp"> </i></span>
+                  <input type="tel" id="mHpSponsor" class="form-control" placeholder="Nomor WA tanpa awal angka 0" required pattern="[0-9]{10,14}">
+                </div>
               </div>
 
               <!-- Pesan notifikasi Halaman 2 -->
@@ -548,7 +560,7 @@ body {
 
 <script>
 //***********  Deklarasi variabel global ****************
-const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwuvhvFvTSNWQ14ZBj5_0XM9_dvy17kAAitqNnLMB8oEc__cGebo9zBt1d5RIckLTk3/exec';
+const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxttLBWXGW2UeNXtYU7V2ymdKWTnJoo_W27zYgHXqQvEO3UHtWBgRAYNlYHQhCP7AY/exec';
 // ******************************************************
 
 // ***************
