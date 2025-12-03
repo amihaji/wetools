@@ -769,11 +769,14 @@ function tampilkanHasilEvaluasi(data) {
     
     // Versi Aman: Gunakan "|| []" untuk .map dan "?." untuk objek
     const fungsionalHTML = (data.fungsional || []).map(item => `
-        <tr><td>${item.label || "-"}</td><td style="text-align:center;">${item.jawaban || "-"}</td></tr>`).join('');
+        <tr>
+          <td>${item.label || "-"}</td>
+          <td style="text-align:center;">${item.jawaban || "-"}</td>
+        </tr>`).join('');
 
     const evaluasiHTML = (data.evaluasi || []).map(item => `
         <tr>
-          <td style="background-color:#cccccc;">${item.param || "-"}</td>
+          <td style="background-color: #e6e6e6;">${item.param || "-"}</td>
           <td style="text-align:center;">${item.hasil || "-"}</td>
           <td style="text-align:center;">${item.ideal || "-"}</td>
           <td style="text-align:center;">${item.satuan || "-"}</td>
